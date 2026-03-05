@@ -1,720 +1,940 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <title>BATMAN WORKOUT</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&display=swap');
 
+    /* ── Variables ── */
     :root {
-      --bat-yellow: #FFD700;
+      --bat-yellow:      #FFD700;
       --bat-yellow-dark: #c9a800;
-      --bat-black: #0a0a0a;
-      --bat-dark: #111111;
-      --bat-gray: #1a1a1a;
-      --bat-mid: #222222;
-      --bat-text: #e0e0e0;
+      --bat-yellow-dim:  #FFD70033;
+      --bat-black:       #0a0a0a;
+      --bat-dark:        #111111;
+      --bat-gray:        #1a1a1a;
+      --bat-mid:         #222222;
+      --bat-border:      #2d2d2d;
+      --bat-text:        #e0e0e0;
+      --bat-muted:       #666;
+      --safe-bottom:     env(safe-area-inset-bottom, 0px);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
       background: var(--bat-black);
       color: var(--bat-text);
       font-family: 'Oswald', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
+      font-weight: 400;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
     }
+    input { font-family: 'Oswald', sans-serif; }
+    button { font-family: 'Oswald', sans-serif; cursor: pointer; border: none; background: none; }
 
-    /* ── City skyline ── */
-    .skyline {
-      width: 100%;
-      height: 120px;
-      position: relative;
-      background: #050505;
-      flex-shrink: 0;
-    }
+    /* ── App shell ── */
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ══════════════════════════════════════════
+       SHARED COMPONENTS
+    ══════════════════════════════════════════ */
+
+    /* Skyline */
+    .skyline { width: 100%; height: 90px; flex-shrink: 0; background: #050505; display: block; }
     .skyline svg { width: 100%; height: 100%; }
 
-    /* ── Header ── */
-    header {
-      width: 100%;
-      text-align: center;
-      padding: 10px 20px 0;
-      position: relative;
-    }
-
+    /* Bat logo */
     .bat-logo {
-      width: 90px;
-      filter: drop-shadow(0 0 18px #FFD700cc);
-      margin-bottom: 6px;
+      width: 64px;
+      filter: drop-shadow(0 0 14px #FFD700bb);
       animation: logoGlow 3s ease-in-out infinite;
     }
     @keyframes logoGlow {
-      0%, 100% { filter: drop-shadow(0 0 14px #FFD700aa); }
-      50%       { filter: drop-shadow(0 0 30px #FFD700ff); }
+      0%,100% { filter: drop-shadow(0 0 10px #FFD700aa); }
+      50%      { filter: drop-shadow(0 0 26px #FFD700ff); }
     }
 
-    .title {
+    /* Flash overlay */
+    #flash {
+      position: fixed; inset: 0; background: var(--bat-yellow);
+      opacity: 0; pointer-events: none; z-index: 9999;
+    }
+    #flash.go { animation: flashAnim .22s ease-out forwards; }
+    @keyframes flashAnim { 0%{opacity:.35} 100%{opacity:0} }
+
+    /* Section label */
+    .section-label {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2rem, 7vw, 3.8rem);
-      letter-spacing: 6px;
-      color: var(--bat-yellow);
-      text-shadow: 0 0 30px #FFD70088;
-      line-height: 1;
-    }
-    .subtitle {
-      font-size: 0.75rem;
-      letter-spacing: 4px;
-      color: #888;
+      font-size: .7rem; letter-spacing: 3px;
+      color: var(--bat-yellow); opacity: .7;
       text-transform: uppercase;
-      margin-top: 2px;
     }
 
-    /* ── Main card ── */
-    .card {
-      background: var(--bat-gray);
-      border: 1px solid #2a2a2a;
-      border-radius: 16px;
-      padding: 28px 28px 32px;
-      margin: 20px 16px 32px;
-      width: min(480px, calc(100% - 32px));
-      box-shadow: 0 8px 40px #00000099, inset 0 1px 0 #333;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -60px; left: 50%; transform: translateX(-50%);
-      width: 300px; height: 120px;
-      background: radial-gradient(ellipse, #FFD70015 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* ── Phase labels ── */
-    .phase-label {
+    /* Yellow button */
+    .btn-yellow {
+      background: linear-gradient(135deg, var(--bat-yellow-dark), var(--bat-yellow));
+      color: #111; border-radius: 10px;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 3px;
-      color: var(--bat-yellow);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      opacity: 0.8;
+      font-size: 1.2rem; letter-spacing: 3px;
+      padding: 15px 24px;
+      box-shadow: 0 4px 20px #FFD70044;
+      transition: box-shadow .15s, transform .1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
+    .btn-yellow:hover  { box-shadow: 0 6px 28px #FFD70099; }
+    .btn-yellow:active { transform: scale(.97); }
 
-    /* ── Exercise picker ── */
-    .exercise-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 24px;
+    /* ══════════════════════════════════════════
+       SCREEN: HOME
+    ══════════════════════════════════════════ */
+    #screen-home {
+      display: flex; flex-direction: column; align-items: center;
+      padding-bottom: calc(32px + var(--safe-bottom));
     }
-    .exercise-btn {
-      background: var(--bat-mid);
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 14px 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.18s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .exercise-btn:hover {
-      border-color: var(--bat-yellow-dark);
-      background: #2a2a2a;
-    }
-    .exercise-btn.selected {
-      border-color: var(--bat-yellow);
-      background: #252100;
-      box-shadow: 0 0 16px #FFD70033;
-    }
-    .exercise-btn.selected::after {
-      content: '✔';
-      position: absolute;
-      top: 6px; right: 8px;
-      color: var(--bat-yellow);
-      font-size: 0.7rem;
-    }
-    .ex-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
-    .ex-name {
-      font-size: 0.78rem;
-      letter-spacing: 1.5px;
-      color: #ccc;
-      text-transform: uppercase;
-    }
-    .exercise-btn.selected .ex-name { color: var(--bat-yellow); }
-
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #333, transparent);
-      margin: 0 0 22px;
-    }
-
-    /* ── Rep input ── */
-    .rep-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .rep-label {
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      color: #888;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .rep-controls {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      background: var(--bat-mid);
-      border: 1px solid #333;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .rep-adj {
-      background: none;
-      border: none;
-      color: var(--bat-yellow);
-      font-size: 1.3rem;
-      font-family: 'Oswald', sans-serif;
-      width: 40px; height: 44px;
-      cursor: pointer;
-      transition: background 0.15s;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .rep-adj:hover { background: #2a2a00; }
-    .rep-num {
-      width: 70px; height: 44px;
-      background: none;
-      border: none;
-      color: var(--bat-yellow);
+    .home-header { width: 100%; text-align: center; padding: 14px 20px 18px; }
+    .home-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      text-align: center;
-      outline: none;
+      font-size: clamp(2rem, 8vw, 3.4rem);
+      letter-spacing: 6px; color: var(--bat-yellow);
+      text-shadow: 0 0 28px #FFD70066; line-height: 1;
+    }
+    .home-sub { font-size: .65rem; letter-spacing: 4px; color: var(--bat-muted); margin-top: 2px; }
+
+    .template-section { width: min(480px, calc(100% - 32px)); margin-bottom: 16px; }
+    .template-label   { margin-bottom: 10px; }
+    .template-card {
+      background: var(--bat-gray); border: 1px solid var(--bat-border);
+      border-radius: 14px; padding: 16px 18px;
+      cursor: pointer; transition: border-color .15s, background .15s;
+      width: 100%; text-align: left; margin-bottom: 10px;
+    }
+    .template-card:hover  { border-color: #444; background: #202020; }
+    .template-card:active { transform: scale(.99); }
+    .template-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem; letter-spacing: 2px;
+      color: var(--bat-yellow); margin-bottom: 6px;
+    }
+    .template-exercises { font-size: .72rem; color: #888; letter-spacing: .5px; line-height: 1.6; }
+
+    .start-wrap { width: min(480px, calc(100% - 32px)); }
+    .start-wrap .btn-yellow { width: 100%; font-size: 1.4rem; padding: 18px; }
+
+    /* ══════════════════════════════════════════
+       SCREEN: WORKOUT
+    ══════════════════════════════════════════ */
+    #screen-workout { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Top bar */
+    .top-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: #0e0e0e; border-bottom: 1px solid var(--bat-border);
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .top-bar-name {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--bat-text); font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 2px; min-width: 0;
+    }
+    .top-bar-name::placeholder { color: #444; }
+    .top-bar-timer {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 3px;
+      color: var(--bat-yellow); white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-finish {
+      background: linear-gradient(135deg, #b00, #e00);
+      color: #fff; border-radius: 8px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .85rem; letter-spacing: 2px;
+      padding: 8px 14px; flex-shrink: 0;
+      transition: opacity .15s;
+    }
+    .btn-finish:hover { opacity: .85; }
+
+    /* Scrollable body */
+    .workout-body {
+      flex: 1; overflow-y: auto; padding: 14px 14px 130px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    /* Exercise block */
+    .exercise-block {
+      background: var(--bat-gray); border: 1px solid var(--bat-border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .ex-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px 10px; border-bottom: 1px solid var(--bat-border);
+    }
+    .ex-header-name {
+      flex: 1; font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 2px; color: var(--bat-yellow);
+    }
+    .btn-del-ex {
+      color: #444; font-size: 1rem; line-height: 1;
+      padding: 4px 6px; border-radius: 6px; transition: color .15s;
+    }
+    .btn-del-ex:hover { color: #e55; }
+
+    /* Set table */
+    .set-table-head {
+      display: grid; grid-template-columns: 32px 1fr 1fr 1fr 44px;
+      gap: 4px; padding: 6px 14px; border-bottom: 1px solid #1e1e1e;
+    }
+    .set-table-head span {
+      font-size: .6rem; letter-spacing: 2px;
+      color: #555; text-transform: uppercase; text-align: center;
+    }
+    .set-table-head span:first-child { text-align: left; }
+
+    .set-rows { display: flex; flex-direction: column; }
+    .set-row {
+      display: grid; grid-template-columns: 32px 1fr 1fr 1fr 44px;
+      gap: 4px; align-items: center; padding: 7px 14px;
+      border-bottom: 1px solid #1c1c1c; transition: background .2s;
+    }
+    .set-row:last-child { border-bottom: none; }
+    .set-row.done { background: #1c1700; }
+
+    .set-num { font-family: 'Bebas Neue', sans-serif; font-size: .95rem; color: #555; }
+    .set-row.done .set-num { color: var(--bat-yellow); }
+
+    .set-prev {
+      font-size: .7rem; color: #555; text-align: center;
+      line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .set-input {
+      background: var(--bat-mid); border: 1px solid #2e2e2e; border-radius: 6px;
+      outline: none; color: var(--bat-text); text-align: center;
+      font-family: 'Oswald', sans-serif; font-size: .9rem;
+      padding: 7px 4px; width: 100%; transition: border-color .15s;
       -moz-appearance: textfield;
     }
-    .rep-num::-webkit-inner-spin-button,
-    .rep-num::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .set-input::-webkit-inner-spin-button,
+    .set-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .set-input:focus { border-color: var(--bat-yellow-dark); }
+    .set-row.done .set-input { background: #1a1500; border-color: #3a3000; color: var(--bat-yellow); }
 
-    /* ── Timer display ── */
-    .timer-wrap {
-      text-align: center;
-      margin-bottom: 26px;
+    .btn-check {
+      width: 36px; height: 36px; border-radius: 50%; border: 2px solid #333;
+      display: flex; align-items: center; justify-content: center; justify-self: center;
+      font-size: .9rem; color: transparent; transition: all .15s;
     }
-    .timer-ring {
-      position: relative;
-      display: inline-block;
-      width: 160px; height: 160px;
+    .btn-check:hover { border-color: var(--bat-yellow-dark); color: #555; }
+    .set-row.done .btn-check { background: var(--bat-yellow); border-color: var(--bat-yellow); color: #111; }
+
+    .btn-add-set {
+      width: 100%; padding: 10px; color: var(--bat-yellow);
+      font-family: 'Bebas Neue', sans-serif; font-size: .85rem; letter-spacing: 2px;
+      opacity: .7; transition: opacity .15s; border-top: 1px solid var(--bat-border);
     }
-    .timer-ring svg {
-      transform: rotate(-90deg);
-      position: absolute; top: 0; left: 0;
+    .btn-add-set:hover { opacity: 1; }
+
+    /* Add exercise floating button */
+    .btn-add-exercise {
+      position: fixed; bottom: calc(20px + var(--safe-bottom)); left: 50%;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 460px); padding: 16px;
+      background: var(--bat-gray); border: 1px solid #333; border-radius: 14px;
+      color: var(--bat-yellow); font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 3px;
+      box-shadow: 0 8px 32px #000a; transition: border-color .15s, background .15s;
     }
-    .ring-bg { fill: none; stroke: #222; stroke-width: 8; }
-    .ring-prog {
-      fill: none;
-      stroke: var(--bat-yellow);
-      stroke-width: 8;
-      stroke-linecap: round;
-      stroke-dasharray: 440;
-      stroke-dashoffset: 440;
-      filter: drop-shadow(0 0 6px #FFD700);
-      transition: stroke-dashoffset 0.5s linear;
+    .btn-add-exercise:hover { border-color: var(--bat-yellow-dark); background: #1c1700; }
+
+    /* Empty state */
+    .empty-workout { text-align: center; padding: 48px 20px; color: #444; }
+    .empty-workout .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-workout p { font-size: .75rem; letter-spacing: 2px; text-transform: uppercase; line-height: 1.6; }
+
+    /* ══════════════════════════════════════════
+       REST TIMER SHEET
+    ══════════════════════════════════════════ */
+    #rest-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+      background: #131300; border-top: 1px solid var(--bat-yellow-dark);
+      border-radius: 20px 20px 0 0;
+      padding: 18px 20px calc(20px + var(--safe-bottom));
+      display: flex; align-items: center; gap: 16px;
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(.25,.8,.25,1);
+      box-shadow: 0 -8px 40px #000c;
     }
-    .timer-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    #rest-sheet.open { transform: translateY(0); }
+
+    .rest-ring { position: relative; flex-shrink: 0; width: 68px; height: 68px; }
+    .rest-ring svg { transform: rotate(-90deg); }
+    .rest-ring-bg   { fill:none; stroke:#222; stroke-width:5; }
+    .rest-ring-prog {
+      fill:none; stroke: var(--bat-yellow); stroke-width:5; stroke-linecap:round;
+      stroke-dasharray: 188; stroke-dashoffset: 0;
+      filter: drop-shadow(0 0 4px #FFD700); transition: stroke-dashoffset .5s linear;
     }
-    .timer-digits {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3rem;
-      letter-spacing: 4px;
+    .rest-ring-label {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 2px;
       color: var(--bat-yellow);
-      text-shadow: 0 0 20px #FFD70099;
-      line-height: 1;
     }
-    .timer-state {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      color: #666;
-      text-transform: uppercase;
-      margin-top: 2px;
+    .rest-info { flex: 1; min-width: 0; }
+    .rest-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: .75rem; letter-spacing: 3px;
+      color: var(--bat-yellow); opacity: .6; margin-bottom: 2px;
+    }
+    .rest-exercise { font-size: .8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rest-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+    .btn-rest-skip {
+      font-family: 'Bebas Neue', sans-serif; font-size: .75rem; letter-spacing: 2px;
+      color: #555; transition: color .15s;
+    }
+    .btn-rest-skip:hover { color: #aaa; }
+    .btn-rest-add30 {
+      font-family: 'Bebas Neue', sans-serif; font-size: .75rem; letter-spacing: 1px;
+      color: var(--bat-yellow); opacity: .6; transition: opacity .15s;
+    }
+    .btn-rest-add30:hover { opacity: 1; }
+
+    /* ══════════════════════════════════════════
+       EXERCISE PICKER MODAL
+    ══════════════════════════════════════════ */
+    #modal-overlay {
+      position: fixed; inset: 0; z-index: 800; background: #000a;
+      display: flex; align-items: flex-end;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    #modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-sheet {
+      width: 100%; background: #131313;
+      border-top: 1px solid var(--bat-border); border-radius: 20px 20px 0 0;
+      padding-bottom: calc(24px + var(--safe-bottom));
+      max-height: 80vh; display: flex; flex-direction: column;
+      transform: translateY(40px); transition: transform .25s;
+    }
+    #modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+    .modal-handle { width: 40px; height: 4px; border-radius: 2px; background: #333; margin: 12px auto 0; }
+    .modal-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 10px; border-bottom: 1px solid var(--bat-border);
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px;
+      color: var(--bat-yellow); flex: 1;
+    }
+    .btn-modal-close { color: #555; font-size: 1.1rem; padding: 4px 8px; border-radius: 6px; transition: color .15s; }
+    .btn-modal-close:hover { color: #aaa; }
+
+    .modal-search-wrap { padding: 10px 16px; }
+    .modal-search {
+      width: 100%; background: var(--bat-mid); border: 1px solid var(--bat-border);
+      border-radius: 8px; color: var(--bat-text); outline: none;
+      font-size: .85rem; padding: 9px 12px; transition: border-color .15s;
+    }
+    .modal-search:focus { border-color: #444; }
+    .modal-search::placeholder { color: #444; }
+
+    .modal-list { overflow-y: auto; flex: 1; }
+    .modal-category {
+      padding: 10px 16px 4px;
+      font-family: 'Bebas Neue', sans-serif; font-size: .65rem; letter-spacing: 3px;
+      color: #444; text-transform: uppercase;
+    }
+    .modal-ex-item {
+      display: flex; align-items: center; padding: 13px 16px; gap: 12px;
+      border-bottom: 1px solid #1a1a1a; cursor: pointer; transition: background .15s;
+    }
+    .modal-ex-item:hover { background: #1e1e1e; }
+    .modal-ex-item:active { background: #1c1700; }
+    .modal-ex-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .modal-ex-info { flex: 1; min-width: 0; }
+    .modal-ex-name { font-size: .85rem; color: var(--bat-text); font-weight: 600; letter-spacing: .5px; }
+    .modal-ex-muscle { font-size: .68rem; color: #555; letter-spacing: .5px; margin-top: 1px; }
+    .modal-ex-add { font-size: 1.2rem; color: var(--bat-yellow); opacity: .5; flex-shrink: 0; }
+    .modal-ex-item:hover .modal-ex-add { opacity: 1; }
+
+    /* ══════════════════════════════════════════
+       CONFIRM DIALOG
+    ══════════════════════════════════════════ */
+    #confirm-overlay {
+      position: fixed; inset: 0; z-index: 900; background: #000b;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    #confirm-overlay.open { opacity: 1; pointer-events: all; }
+    .confirm-box {
+      background: #1a1a1a; border: 1px solid var(--bat-border);
+      border-radius: 16px; padding: 24px 22px;
+      width: min(320px, calc(100% - 40px));
+      transform: scale(.95); transition: transform .2s; text-align: center;
+    }
+    #confirm-overlay.open .confirm-box { transform: scale(1); }
+    .confirm-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 3px;
+      color: var(--bat-yellow); margin-bottom: 8px;
+    }
+    .confirm-body { font-size: .78rem; color: #888; line-height: 1.6; margin-bottom: 20px; }
+    .confirm-actions { display: flex; gap: 10px; }
+    .confirm-actions button { flex: 1; border-radius: 10px; padding: 13px; }
+    .btn-confirm-yes {
+      background: linear-gradient(135deg, #b00, #e00); color: #fff;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px;
+    }
+    .btn-confirm-no {
+      background: var(--bat-mid); border: 1px solid #333; color: #aaa;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px;
     }
 
-    /* ── Buttons ── */
-    .btn-row {
-      display: flex;
-      gap: 12px;
+    /* ══════════════════════════════════════════
+       SCREEN: SUMMARY
+    ══════════════════════════════════════════ */
+    #screen-summary {
+      display: flex; flex-direction: column; align-items: center;
+      padding-bottom: calc(40px + var(--safe-bottom));
     }
-    .btn {
-      flex: 1;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.25rem;
-      letter-spacing: 3px;
-      cursor: pointer;
-      padding: 16px 12px;
-      transition: all 0.18s ease;
-      position: relative;
-      overflow: hidden;
+    .summary-header { width: 100%; text-align: center; padding: 14px 20px 16px; }
+    .summary-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 5px;
+      color: var(--bat-yellow); text-shadow: 0 0 24px #FFD70055;
     }
-    .btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.07);
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-    .btn:hover::after { opacity: 1; }
-    .btn:active { transform: scale(0.97); }
+    .summary-sub { font-size: .65rem; letter-spacing: 3px; color: #555; margin-top: 3px; }
 
-    .btn-start {
-      background: linear-gradient(135deg, #c9a800, #FFD700);
-      color: #111;
-      box-shadow: 0 4px 20px #FFD70055;
+    .summary-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--bat-border); width: 100%;
+      border-top: 1px solid var(--bat-border); border-bottom: 1px solid var(--bat-border);
+      margin-bottom: 20px;
     }
-    .btn-start:hover { box-shadow: 0 6px 28px #FFD70099; }
-    .btn-start:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .btn-done {
-      background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
-      color: var(--bat-yellow);
-      border: 1px solid #444;
-    }
-    .btn-done:disabled {
-      opacity: 0.25;
-      cursor: not-allowed;
-    }
-    .btn-reset {
-      background: none;
-      color: #555;
-      border: 1px solid #2a2a2a;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      flex: 0 0 auto;
-      padding: 16px 16px;
-    }
-    .btn-reset:hover { color: #999; border-color: #444; }
-
-    /* ── Result panel ── */
-    .result-panel {
-      display: none;
-      text-align: center;
-      padding: 22px 16px;
-      border-radius: 12px;
-      background: #0d0d00;
-      border: 1px solid var(--bat-yellow-dark);
-      box-shadow: 0 0 30px #FFD70022;
-      animation: fadeUp 0.4s ease;
-    }
-    .result-panel.visible { display: block; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .result-hero {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      letter-spacing: 5px;
-      color: var(--bat-yellow);
-      margin-bottom: 14px;
-    }
-    .result-stats {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-    }
-    .stat { text-align: center; }
+    .stat-cell { background: var(--bat-gray); padding: 18px 10px; text-align: center; }
     .stat-val {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.4rem;
-      color: var(--bat-yellow);
-      line-height: 1;
-      text-shadow: 0 0 16px #FFD70077;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+      color: var(--bat-yellow); text-shadow: 0 0 12px #FFD70055; line-height: 1;
     }
-    .stat-lbl {
-      font-size: 0.6rem;
-      letter-spacing: 2px;
-      color: #666;
-      text-transform: uppercase;
-    }
-    .quote {
-      font-size: 0.72rem;
-      color: #555;
-      font-style: italic;
-      margin-top: 14px;
-      letter-spacing: 0.5px;
-      line-height: 1.5;
-    }
+    .stat-lbl { font-size: .58rem; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-top: 3px; }
 
-    /* ── Flash overlay ── */
-    .flash {
-      position: fixed; inset: 0;
-      background: var(--bat-yellow);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 999;
-      animation: none;
+    .summary-exercises {
+      width: min(480px, calc(100% - 28px));
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
     }
-    .flash.go { animation: flash 0.25s ease-out; }
-    @keyframes flash {
-      0%   { opacity: 0.3; }
-      100% { opacity: 0; }
+    .summary-ex-block {
+      background: var(--bat-gray); border: 1px solid var(--bat-border); border-radius: 12px; overflow: hidden;
     }
+    .summary-ex-name {
+      padding: 10px 14px; font-family: 'Bebas Neue', sans-serif;
+      font-size: .9rem; letter-spacing: 2px; color: var(--bat-yellow);
+      border-bottom: 1px solid var(--bat-border);
+    }
+    .summary-set-row {
+      display: flex; justify-content: space-between; padding: 8px 14px;
+      font-size: .78rem; color: #999; border-bottom: 1px solid #1c1c1c;
+    }
+    .summary-set-row:last-child { border-bottom: none; }
+    .summary-set-row span:last-child { color: var(--bat-text); }
 
-    /* ── Footer ── */
-    footer {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      color: #333;
-      text-align: center;
-      padding-bottom: 20px;
+    .summary-quote {
+      width: min(480px, calc(100% - 28px));
+      font-size: .72rem; color: #444; font-style: italic; text-align: center;
+      line-height: 1.7; letter-spacing: .3px; padding: 0 8px; margin-bottom: 28px;
     }
+    .summary-done-wrap { width: min(480px, calc(100% - 28px)); }
+    .summary-done-wrap .btn-yellow { width: 100%; font-size: 1.3rem; }
 
-    /* ── Responsive tweaks ── */
-    @media (max-width: 360px) {
-      .exercise-grid { grid-template-columns: 1fr 1fr; }
-      .timer-digits { font-size: 2.4rem; }
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
+<div id="flash"></div>
+<div id="app"></div>
 
-<!-- Yellow flash overlay -->
-<div class="flash" id="flash"></div>
-
-<!-- Gotham skyline -->
-<div class="skyline" aria-hidden="true">
-  <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#0a0a0a"/>
-        <stop offset="100%" stop-color="#050505"/>
-      </linearGradient>
-    </defs>
-    <rect width="1200" height="120" fill="url(#skyGrad)"/>
-    <!-- buildings -->
-    <g fill="#111">
-      <rect x="0"   y="70" width="40"  height="50"/>
-      <rect x="30"  y="50" width="25"  height="70"/>
-      <rect x="50"  y="60" width="50"  height="60"/>
-      <rect x="95"  y="30" width="30"  height="90"/>
-      <rect x="120" y="55" width="40"  height="65"/>
-      <rect x="155" y="40" width="20"  height="80"/>
-      <rect x="170" y="65" width="35"  height="55"/>
-      <rect x="200" y="20" width="28"  height="100"/>
-      <rect x="225" y="55" width="45"  height="65"/>
-      <rect x="265" y="38" width="22"  height="82"/>
-      <rect x="282" y="60" width="55"  height="60"/>
-      <rect x="332" y="45" width="30"  height="75"/>
-      <rect x="357" y="25" width="25"  height="95"/>
-      <rect x="378" y="58" width="42"  height="62"/>
-      <rect x="415" y="42" width="20"  height="78"/>
-      <!-- gap for center bat signal -->
-      <rect x="780" y="42" width="20"  height="78"/>
-      <rect x="795" y="58" width="42"  height="62"/>
-      <rect x="832" y="25" width="25"  height="95"/>
-      <rect x="852" y="45" width="30"  height="75"/>
-      <rect x="877" y="60" width="55"  height="60"/>
-      <rect x="927" y="38" width="22"  height="82"/>
-      <rect x="944" y="55" width="45"  height="65"/>
-      <rect x="984" y="20" width="28"  height="100"/>
-      <rect x="1007" y="65" width="35" height="55"/>
-      <rect x="1037" y="40" width="20" height="80"/>
-      <rect x="1052" y="55" width="40" height="65"/>
-      <rect x="1087" y="30" width="30" height="90"/>
-      <rect x="1112" y="60" width="50" height="60"/>
-      <rect x="1157" y="50" width="25" height="70"/>
-      <rect x="1177" y="70" width="40" height="50"/>
-    </g>
-    <!-- window dots -->
-    <g fill="#FFD700" opacity="0.25">
-      <rect x="36" y="58" width="3" height="3"/> <rect x="36" y="64" width="3" height="3"/>
-      <rect x="58" y="68" width="3" height="3"/> <rect x="65" y="68" width="3" height="3"/>
-      <rect x="100" y="38" width="3" height="3"/> <rect x="100" y="46" width="3" height="3"/>
-      <rect x="207" y="30" width="3" height="3"/> <rect x="207" y="38" width="3" height="3"/>
-      <rect x="360" y="35" width="3" height="3"/> <rect x="368" y="35" width="3" height="3"/>
-      <rect x="838" y="35" width="3" height="3"/> <rect x="846" y="35" width="3" height="3"/>
-      <rect x="990" y="30" width="3" height="3"/> <rect x="990" y="38" width="3" height="3"/>
-      <rect x="1094" y="38" width="3" height="3"/> <rect x="1094" y="46" width="3" height="3"/>
-    </g>
-    <!-- Bat signal beam -->
-    <defs>
-      <radialGradient id="beamGrad" cx="50%" cy="100%" r="80%">
-        <stop offset="0%" stop-color="#FFD700" stop-opacity="0.18"/>
-        <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-    <ellipse cx="600" cy="120" rx="160" ry="120" fill="url(#beamGrad)"/>
-  </svg>
+<!-- REST TIMER SHEET -->
+<div id="rest-sheet" aria-live="polite">
+  <div class="rest-ring">
+    <svg viewBox="0 0 68 68" width="68" height="68">
+      <circle class="rest-ring-bg"   cx="34" cy="34" r="30"/>
+      <circle class="rest-ring-prog" cx="34" cy="34" r="30" id="restRingProg"/>
+    </svg>
+    <div class="rest-ring-label" id="restLabel">1:00</div>
+  </div>
+  <div class="rest-info">
+    <div class="rest-title">Rest Timer</div>
+    <div class="rest-exercise" id="restExName">—</div>
+  </div>
+  <div class="rest-actions">
+    <button class="btn-rest-skip"  id="btnRestSkip">Skip</button>
+    <button class="btn-rest-add30" id="btnRestAdd30">+30s</button>
+  </div>
 </div>
 
-<!-- Header -->
-<header>
-  <!-- Bat logo SVG -->
-  <svg class="bat-logo" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#FFD700" d="
-      M100 30
-      C100 30 85 10 60 15
-      C40 18 20 10 5 20
-      C20 22 30 30 35 42
-      C25 38 10 38 0 48
-      C15 46 30 50 40 60
-      C30 65 22 75 25 85
-      C35 72 50 66 60 70
-      C70 74 80 88 100 90
-      C120 88 130 74 140 70
-      C150 66 165 72 175 85
-      C178 75 170 65 160 60
-      C170 50 185 46 200 48
-      C190 38 175 38 165 42
-      C170 30 180 22 195 20
-      C180 10 160 18 140 15
-      C115 10 100 30 100 30Z
-    "/>
-  </svg>
-  <div class="title">BATMAN WORKOUT</div>
-  <div class="subtitle">Gotham's Fitness Protocol</div>
-</header>
-
-<!-- Main card -->
-<main class="card">
-
-  <!-- Step 1: Choose exercise -->
-  <div class="phase-label">01 — Choose Your Mission</div>
-  <div class="exercise-grid" id="exerciseGrid">
-    <button class="exercise-btn selected" data-ex="pushups" onclick="selectExercise(this)">
-      <span class="ex-icon">💪</span>
-      <span class="ex-name">Push-Ups</span>
-    </button>
-    <button class="exercise-btn" data-ex="squats" onclick="selectExercise(this)">
-      <span class="ex-icon">🦵</span>
-      <span class="ex-name">Squats</span>
-    </button>
-    <button class="exercise-btn" data-ex="calf-raises" onclick="selectExercise(this)">
-      <span class="ex-icon">🦿</span>
-      <span class="ex-name">Calf Raises</span>
-    </button>
-    <button class="exercise-btn" data-ex="lateral-raises" onclick="selectExercise(this)">
-      <span class="ex-icon">🏋️</span>
-      <span class="ex-name">Lateral Raises</span>
-    </button>
+<!-- EXERCISE PICKER MODAL -->
+<div id="modal-overlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Add Exercise</div>
+      <button class="btn-modal-close" id="btnModalClose">✕</button>
+    </div>
+    <div class="modal-search-wrap">
+      <input class="modal-search" id="modalSearch" type="search" placeholder="Search exercises…" autocomplete="off"/>
+    </div>
+    <div class="modal-list" id="modalList"></div>
   </div>
+</div>
 
-  <div class="divider"></div>
-
-  <!-- Step 2: Set reps -->
-  <div class="phase-label">02 — Set Your Reps</div>
-  <div class="rep-row">
-    <span class="rep-label">Target Reps</span>
-    <div class="rep-controls">
-      <button class="rep-adj" onclick="adjustReps(-5)" title="-5">−</button>
-      <input class="rep-num" type="number" id="repInput" value="10" min="1" max="999" />
-      <button class="rep-adj" onclick="adjustReps(+5)" title="+5">+</button>
+<!-- CONFIRM DIALOG -->
+<div id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">End Workout?</div>
+    <div class="confirm-body">Your session will be saved and you'll see your summary.</div>
+    <div class="confirm-actions">
+      <button class="btn-confirm-no"  id="btnConfirmNo">Cancel</button>
+      <button class="btn-confirm-yes" id="btnConfirmYes">Finish</button>
     </div>
   </div>
-
-  <div class="divider"></div>
-
-  <!-- Step 3: Timer -->
-  <div class="phase-label">03 — Execute</div>
-  <div class="timer-wrap">
-    <div class="timer-ring">
-      <svg viewBox="0 0 160 160" width="160" height="160">
-        <circle class="ring-bg"   cx="80" cy="80" r="70"/>
-        <circle class="ring-prog" cx="80" cy="80" r="70" id="ringProg"/>
-      </svg>
-      <div class="timer-inner">
-        <div class="timer-digits" id="timerDisplay">00:00</div>
-        <div class="timer-state"  id="timerState">Ready</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CTA buttons -->
-  <div class="btn-row">
-    <button class="btn btn-start" id="btnStart" onclick="startWorkout()">⚡ Start</button>
-    <button class="btn btn-done"  id="btnDone"  onclick="doneWorkout()" disabled>Done</button>
-    <button class="btn btn-reset" id="btnReset" onclick="resetAll()" title="Reset">↺</button>
-  </div>
-
-  <!-- Result panel (hidden until done) -->
-  <div class="result-panel" id="resultPanel">
-    <div class="result-hero">Mission Complete, Dark Knight</div>
-    <div class="result-stats">
-      <div class="stat">
-        <div class="stat-val" id="resTime">--:--</div>
-        <div class="stat-lbl">Time</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val" id="resReps">--</div>
-        <div class="stat-lbl">Reps</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val" id="resExercise">--</div>
-        <div class="stat-lbl">Exercise</div>
-      </div>
-    </div>
-    <div class="quote" id="resQuote"></div>
-  </div>
-
-</main>
-
-<footer>GOTHAM NEVER SLEEPS &nbsp;|&nbsp; NOR DOES THE BATMAN</footer>
+</div>
 
 <script>
-  /* ── State ── */
-  let selectedExercise = 'pushups';
-  let timerInterval = null;
-  let elapsedSeconds = 0;
-  let isRunning = false;
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const EXERCISES = [
+  { cat:'Chest',     name:'Bench Press',          muscle:'Pecs · Triceps',      icon:'🏋️' },
+  { cat:'Chest',     name:'Push-Up',               muscle:'Pecs · Core',          icon:'💪' },
+  { cat:'Chest',     name:'Incline DB Press',      muscle:'Upper Pecs',           icon:'🏋️' },
+  { cat:'Back',      name:'Pull-Up',               muscle:'Lats · Biceps',        icon:'🧲' },
+  { cat:'Back',      name:'Barbell Row',           muscle:'Lats · Rhomboids',     icon:'🏋️' },
+  { cat:'Back',      name:'Lat Pulldown',          muscle:'Lats · Biceps',        icon:'⬇️' },
+  { cat:'Legs',      name:'Squat',                 muscle:'Quads · Glutes',       icon:'🦵' },
+  { cat:'Legs',      name:'Romanian Deadlift',     muscle:'Hamstrings · Glutes',  icon:'🏋️' },
+  { cat:'Legs',      name:'Calf Raise',            muscle:'Gastrocnemius',        icon:'🦿' },
+  { cat:'Legs',      name:'Leg Press',             muscle:'Quads · Glutes',       icon:'⚙️' },
+  { cat:'Shoulders', name:'Overhead Press',        muscle:'Deltoids · Triceps',   icon:'🏋️' },
+  { cat:'Shoulders', name:'Lateral Raise',         muscle:'Side Deltoids',        icon:'🤸' },
+  { cat:'Arms',      name:'Barbell Curl',          muscle:'Biceps',               icon:'💪' },
+  { cat:'Arms',      name:'Tricep Dip',            muscle:'Triceps',              icon:'⬇️' },
+  { cat:'Arms',      name:'Hammer Curl',           muscle:'Biceps · Brachialis',  icon:'🔨' },
+  { cat:'Core',      name:'Plank',                 muscle:'Core · Abs',           icon:'🧱' },
+  { cat:'Core',      name:'Hanging Leg Raise',     muscle:'Abs · Hip Flexors',    icon:'🏗️' },
+];
 
-  /* ── Exercise selection ── */
-  function selectExercise(btn) {
-    if (isRunning) return;
-    document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedExercise = btn.dataset.ex;
+const TEMPLATES = [
+  { name:'Gotham Strength Routine',   exercises:['Bench Press','Squat','Barbell Row','Overhead Press'] },
+  { name:'Dark Knight Conditioning',  exercises:['Push-Up','Pull-Up','Romanian Deadlift','Lateral Raise','Plank'] },
+];
+
+const QUOTES = [
+  '"It\'s not who I am underneath, but what I do that defines me."',
+  '"Why do we fall? So we can learn to pick ourselves back up."',
+  '"Endure, Master Wayne. Take it."',
+  '"A hero can be anyone. Even someone doing something small."',
+  '"The night is darkest just before the dawn."',
+  '"Some men just want to watch the world… get fit."',
+  '"You either die a hero, or live long enough to skip leg day. You didn\'t."',
+  '"I am vengeance. I am the night. I am… gainz."',
+];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let _id = 1;
+const uid = () => _id++;
+
+const state = {
+  screen: 'home',
+  workout: null,
+  summary: null,
+  elapsedInterval: null,
+  rest: { active:false, total:60, remaining:60, exName:'', interval:null },
+};
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function formatTime(s) {
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+function escHtml(v) {
+  return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function doFlash() {
+  const el = document.getElementById('flash');
+  el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+}
+function getExDef(name) { return EXERCISES.find(e=>e.name===name)||{icon:'💪',muscle:''}; }
+
+/* ══════════════════════════════════════════
+   SHARED SVGs
+══════════════════════════════════════════ */
+function skylineSVG() {
+  return `<div class="skyline" aria-hidden="true"><svg viewBox="0 0 1200 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="90" fill="#050505"/>
+    <g fill="#111">
+      <rect x="0"    y="55" width="40"  height="35"/><rect x="30"   y="38" width="25"  height="52"/>
+      <rect x="50"   y="46" width="50"  height="44"/><rect x="95"   y="22" width="30"  height="68"/>
+      <rect x="120"  y="42" width="40"  height="48"/><rect x="155"  y="30" width="20"  height="60"/>
+      <rect x="170"  y="50" width="35"  height="40"/><rect x="200"  y="14" width="28"  height="76"/>
+      <rect x="225"  y="42" width="45"  height="48"/><rect x="265"  y="28" width="22"  height="62"/>
+      <rect x="282"  y="46" width="55"  height="44"/><rect x="332"  y="34" width="30"  height="56"/>
+      <rect x="357"  y="18" width="25"  height="72"/><rect x="378"  y="44" width="42"  height="46"/>
+      <rect x="415"  y="32" width="20"  height="58"/>
+      <rect x="780"  y="32" width="20"  height="58"/><rect x="795"  y="44" width="42"  height="46"/>
+      <rect x="832"  y="18" width="25"  height="72"/><rect x="852"  y="34" width="30"  height="56"/>
+      <rect x="877"  y="46" width="55"  height="44"/><rect x="927"  y="28" width="22"  height="62"/>
+      <rect x="944"  y="42" width="45"  height="48"/><rect x="984"  y="14" width="28"  height="76"/>
+      <rect x="1007" y="50" width="35"  height="40"/><rect x="1037" y="30" width="20"  height="60"/>
+      <rect x="1052" y="42" width="40"  height="48"/><rect x="1087" y="22" width="30"  height="68"/>
+      <rect x="1112" y="46" width="50"  height="44"/><rect x="1157" y="38" width="25"  height="52"/>
+      <rect x="1177" y="55" width="40"  height="35"/>
+    </g>
+    <defs><radialGradient id="beam" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+    </radialGradient></defs>
+    <ellipse cx="600" cy="90" rx="140" ry="90" fill="url(#beam)"/>
+  </svg></div>`;
+}
+
+function batLogoSVG() {
+  return `<svg class="bat-logo" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#FFD700" d="M100 30C100 30 85 10 60 15C40 18 20 10 5 20C20 22 30 30 35 42
+      C25 38 10 38 0 48C15 46 30 50 40 60C30 65 22 75 25 85C35 72 50 66 60 70
+      C70 74 80 88 100 90C120 88 130 74 140 70C150 66 165 72 175 85
+      C178 75 170 65 160 60C170 50 185 46 200 48C190 38 175 38 165 42
+      C170 30 180 22 195 20C180 10 160 18 140 15C115 10 100 30 100 30Z"/>
+  </svg>`;
+}
+
+/* ══════════════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════════════ */
+function renderHome() {
+  document.getElementById('app').innerHTML = `
+    <div id="screen-home">
+      ${skylineSVG()}
+      <div class="home-header">${batLogoSVG()}
+        <div class="home-title">BATMAN WORKOUT</div>
+        <div class="home-sub">Gotham's Fitness Protocol</div>
+      </div>
+      <div class="template-section">
+        <div class="section-label template-label">Quick Start</div>
+        ${TEMPLATES.map((t,i)=>`
+          <button class="template-card" data-tmpl="${i}">
+            <div class="template-name">${escHtml(t.name)}</div>
+            <div class="template-exercises">${t.exercises.join(' · ')}</div>
+          </button>`).join('')}
+      </div>
+      <div class="start-wrap">
+        <button class="btn-yellow" id="btnStartEmpty"><span>+</span> Start Empty Workout</button>
+      </div>
+    </div>`;
+
+  document.getElementById('btnStartEmpty').addEventListener('click', ()=>startWorkout(null));
+  document.querySelectorAll('.template-card').forEach(btn=>{
+    btn.addEventListener('click', ()=>startWorkout(TEMPLATES[+btn.dataset.tmpl]));
+  });
+}
+
+/* ══════════════════════════════════════════
+   WORKOUT LOGIC
+══════════════════════════════════════════ */
+function startWorkout(template) {
+  doFlash();
+  state.workout = {
+    name: template ? template.name : 'My Workout',
+    startTime: Date.now(),
+    elapsed: 0,
+    exercises: template ? template.exercises.map(makeExercise) : [],
+  };
+  state.screen = 'workout';
+  renderWorkout();
+
+  clearInterval(state.elapsedInterval);
+  state.elapsedInterval = setInterval(()=>{
+    if (!state.workout) return;
+    state.workout.elapsed++;
+    const el = document.getElementById('topBarTimer');
+    if (el) el.textContent = formatTime(state.workout.elapsed);
+  }, 1000);
+}
+
+function makeExercise(name) { return { id:uid(), name, sets:[makeSet()] }; }
+function makeSet(w='',r='')  { return { id:uid(), weight:w, reps:r, done:false }; }
+
+function prevLabel(exIdx, setIdx) {
+  const sets = state.workout.exercises[exIdx].sets;
+  const p = sets[setIdx-1];
+  if (!p || (!p.weight && !p.reps)) return '—';
+  return `${p.weight||'—'}kg×${p.reps||'—'}`;
+}
+
+/* ══════════════════════════════════════════
+   RENDER WORKOUT
+══════════════════════════════════════════ */
+function renderWorkout() {
+  const w = state.workout;
+  document.getElementById('app').innerHTML = `
+    <div id="screen-workout">
+      <div class="top-bar">
+        <input class="top-bar-name" id="topBarName" value="${escHtml(w.name)}" placeholder="Workout Name" maxlength="40"/>
+        <div class="top-bar-timer" id="topBarTimer">${formatTime(w.elapsed)}</div>
+        <button class="btn-finish" id="btnFinish">Finish</button>
+      </div>
+      <div class="workout-body" id="workoutBody">
+        ${w.exercises.length===0
+          ? `<div class="empty-workout"><div class="empty-icon">🏋️</div><p>No exercises yet.<br/>Tap below to add one.</p></div>`
+          : w.exercises.map(renderExBlock).join('')}
+      </div>
+      <button class="btn-add-exercise" id="btnAddExercise">+ Add Exercise</button>
+    </div>`;
+
+  document.getElementById('topBarName').addEventListener('input', e=>{ state.workout.name=e.target.value; });
+  document.getElementById('btnFinish').addEventListener('click', openConfirm);
+  document.getElementById('btnAddExercise').addEventListener('click', openModal);
+
+  document.getElementById('workoutBody').addEventListener('input', e=>{
+    const inp = e.target;
+    if (!inp.classList.contains('set-input')) return;
+    state.workout.exercises[+inp.dataset.ex].sets[+inp.dataset.set][inp.dataset.field] = inp.value;
+  });
+
+  document.getElementById('workoutBody').addEventListener('click', e=>{
+    const check  = e.target.closest('.btn-check');
+    const addSet = e.target.closest('.btn-add-set');
+    const delEx  = e.target.closest('.btn-del-ex');
+    if (check)  { toggleDone(+check.dataset.ex,  +check.dataset.set);  return; }
+    if (addSet) { addNewSet(+addSet.dataset.addSet);                    return; }
+    if (delEx)  { removeEx(+delEx.dataset.delEx);                       return; }
+  });
+}
+
+function renderExBlock(ex, exIdx) {
+  return `<div class="exercise-block" data-ex-block="${exIdx}">
+    <div class="ex-header">
+      <div class="ex-header-name">${getExDef(ex.name).icon} ${escHtml(ex.name)}</div>
+      <button class="btn-del-ex" data-del-ex="${exIdx}" aria-label="Remove">✕</button>
+    </div>
+    <div class="set-table-head">
+      <span>Set</span><span>Previous</span><span>kg</span><span>Reps</span><span></span>
+    </div>
+    <div class="set-rows">${ex.sets.map((s,si)=>renderSetRow(s,exIdx,si)).join('')}</div>
+    <button class="btn-add-set" data-add-set="${exIdx}">+ Add Set</button>
+  </div>`;
+}
+
+function renderSetRow(set, exIdx, setIdx) {
+  const done = set.done;
+  return `<div class="set-row${done?' done':''}" data-ex="${exIdx}" data-set="${setIdx}">
+    <div class="set-num">${setIdx+1}</div>
+    <div class="set-prev">${prevLabel(exIdx,setIdx)}</div>
+    <input class="set-input" type="number" inputmode="decimal"  placeholder="kg"   value="${escHtml(set.weight)}" data-field="weight" data-ex="${exIdx}" data-set="${setIdx}"/>
+    <input class="set-input" type="number" inputmode="numeric"  placeholder="reps" value="${escHtml(set.reps)}"   data-field="reps"   data-ex="${exIdx}" data-set="${setIdx}"/>
+    <button class="btn-check" data-ex="${exIdx}" data-set="${setIdx}" aria-label="Complete">✓</button>
+  </div>`;
+}
+
+function toggleDone(exIdx, setIdx) {
+  const set = state.workout.exercises[exIdx].sets[setIdx];
+  set.done = !set.done;
+  const row = document.querySelector(`.set-row[data-ex="${exIdx}"][data-set="${setIdx}"]`);
+  if (row) {
+    row.classList.toggle('done', set.done);
+    const check = row.querySelector('.btn-check');
+    const style = set.done
+      ? { bg:'var(--bat-yellow)', bc:'var(--bat-yellow)', c:'#111', rowBg:'#1c1700', inBg:'#1a1500', inBc:'#3a3000', inC:'var(--bat-yellow)' }
+      : { bg:'', bc:'', c:'', rowBg:'', inBg:'', inBc:'', inC:'' };
+    check.style.background  = style.bg;
+    check.style.borderColor = style.bc;
+    check.style.color       = style.c;
+    row.style.background    = style.rowBg;
+    row.querySelectorAll('.set-input').forEach(inp=>{
+      inp.style.background  = style.inBg;
+      inp.style.borderColor = style.inBc;
+      inp.style.color       = style.inC;
+    });
   }
+  if (set.done) startRest(state.workout.exercises[exIdx].name);
+}
 
-  /* ── Rep adjusters ── */
-  function adjustReps(delta) {
-    const inp = document.getElementById('repInput');
-    const cur = parseInt(inp.value) || 0;
-    inp.value = Math.max(1, Math.min(999, cur + delta));
-  }
+function addNewSet(exIdx) {
+  state.workout.exercises[exIdx].sets.push(makeSet());
+  const si  = state.workout.exercises[exIdx].sets.length - 1;
+  const div = document.createElement('div');
+  div.innerHTML = renderSetRow(state.workout.exercises[exIdx].sets[si], exIdx, si);
+  const block = document.querySelector(`[data-ex-block="${exIdx}"] .set-rows`);
+  if (block) { block.appendChild(div.firstElementChild); div.firstElementChild.querySelector('input').focus(); }
+}
 
-  /* ── Timer helpers ── */
-  function formatTime(secs) {
-    const m = String(Math.floor(secs / 60)).padStart(2, '0');
-    const s = String(secs % 60).padStart(2, '0');
-    return `${m}:${s}`;
-  }
+function removeEx(exIdx) {
+  state.workout.exercises.splice(exIdx, 1);
+  renderWorkout();
+}
 
-  /* Ring: max 10 min (600s) */
-  const CIRCUMFERENCE = 2 * Math.PI * 70; // ≈ 440
-  function updateRing(secs) {
-    const maxSecs = 600;
-    const ratio = Math.min(secs / maxSecs, 1);
-    const offset = CIRCUMFERENCE * (1 - ratio);
-    document.getElementById('ringProg').style.strokeDashoffset = offset;
-  }
+/* ══════════════════════════════════════════
+   REST TIMER
+══════════════════════════════════════════ */
+const REST_C = 2*Math.PI*30; // ~188.5
 
-  /* ── Start ── */
-  function startWorkout() {
-    if (isRunning) return;
+function startRest(exName) {
+  clearInterval(state.rest.interval);
+  Object.assign(state.rest, { active:true, total:60, remaining:60, exName });
+  updateRestUI();
+  document.getElementById('rest-sheet').classList.add('open');
+  state.rest.interval = setInterval(()=>{
+    state.rest.remaining--;
+    state.rest.remaining<=0 ? stopRest() : updateRestUI();
+  }, 1000);
+}
+function stopRest() {
+  clearInterval(state.rest.interval);
+  state.rest.active = false;
+  document.getElementById('rest-sheet').classList.remove('open');
+}
+function updateRestUI() {
+  const { remaining, total, exName } = state.rest;
+  document.getElementById('restLabel').textContent  = formatTime(remaining);
+  document.getElementById('restExName').textContent = exName;
+  document.getElementById('restRingProg').style.strokeDashoffset = REST_C*(1 - remaining/total);
+}
 
-    // Flash
-    const fl = document.getElementById('flash');
-    fl.classList.remove('go');
-    void fl.offsetWidth;
-    fl.classList.add('go');
+document.getElementById('btnRestSkip').addEventListener('click', stopRest);
+document.getElementById('btnRestAdd30').addEventListener('click', ()=>{
+  state.rest.remaining += 30;
+  state.rest.total = Math.max(state.rest.total, state.rest.remaining);
+  updateRestUI();
+});
 
-    isRunning = true;
-    elapsedSeconds = 0;
+/* ══════════════════════════════════════════
+   EXERCISE PICKER MODAL
+══════════════════════════════════════════ */
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modalSearch').value = '';
+  renderModalList('');
+  setTimeout(()=>document.getElementById('modalSearch').focus(), 300);
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 
-    document.getElementById('btnStart').disabled = true;
-    document.getElementById('btnDone').disabled = false;
-    document.getElementById('timerState').textContent = 'Active';
-    document.getElementById('resultPanel').classList.remove('visible');
+function renderModalList(q) {
+  const query = q.trim().toLowerCase();
+  const filtered = query
+    ? EXERCISES.filter(e=>e.name.toLowerCase().includes(query)||e.muscle.toLowerCase().includes(query)||e.cat.toLowerCase().includes(query))
+    : EXERCISES;
+  const bycat = {};
+  filtered.forEach(e=>{ (bycat[e.cat]=bycat[e.cat]||[]).push(e); });
+  document.getElementById('modalList').innerHTML = Object.entries(bycat).map(([cat,exs])=>`
+    <div class="modal-category">${cat}</div>
+    ${exs.map(e=>`<div class="modal-ex-item" data-exname="${escHtml(e.name)}">
+      <div class="modal-ex-icon">${e.icon}</div>
+      <div class="modal-ex-info"><div class="modal-ex-name">${escHtml(e.name)}</div><div class="modal-ex-muscle">${e.muscle}</div></div>
+      <div class="modal-ex-add">+</div>
+    </div>`).join('')}`).join('') || '<div class="modal-category">No results</div>';
+}
 
-    // Lock exercise & reps
-    document.querySelectorAll('.exercise-btn').forEach(b => b.style.pointerEvents = 'none');
+document.getElementById('btnModalClose').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('modal-overlay')) closeModal(); });
+document.getElementById('modalSearch').addEventListener('input', e=>renderModalList(e.target.value));
+document.getElementById('modalList').addEventListener('click', e=>{
+  const item = e.target.closest('.modal-ex-item');
+  if (!item) return;
+  appendExercise(item.dataset.exname);
+  closeModal();
+});
 
-    timerInterval = setInterval(() => {
-      elapsedSeconds++;
-      document.getElementById('timerDisplay').textContent = formatTime(elapsedSeconds);
-      updateRing(elapsedSeconds);
-    }, 1000);
-  }
+function appendExercise(name) {
+  if (!state.workout) return;
+  state.workout.exercises.push(makeExercise(name));
+  const exIdx = state.workout.exercises.length-1;
+  const ex    = state.workout.exercises[exIdx];
+  const body  = document.getElementById('workoutBody');
+  if (!body) return;
+  const empty = body.querySelector('.empty-workout');
+  if (empty) empty.remove();
+  const div = document.createElement('div');
+  div.innerHTML = renderExBlock(ex, exIdx);
+  body.appendChild(div.firstElementChild);
+}
 
-  /* ── Done ── */
-  function doneWorkout() {
-    if (!isRunning) return;
-    clearInterval(timerInterval);
-    isRunning = false;
+/* ══════════════════════════════════════════
+   CONFIRM / FINISH
+══════════════════════════════════════════ */
+function openConfirm()  { document.getElementById('confirm-overlay').classList.add('open'); }
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); }
 
-    const finalTime = formatTime(elapsedSeconds);
-    const reps = parseInt(document.getElementById('repInput').value) || 0;
+document.getElementById('btnConfirmNo').addEventListener('click', closeConfirm);
+document.getElementById('btnConfirmYes').addEventListener('click', ()=>{ closeConfirm(); finishWorkout(); });
 
-    document.getElementById('btnDone').disabled = true;
-    document.getElementById('timerState').textContent = 'Done!';
+function finishWorkout() {
+  clearInterval(state.elapsedInterval);
+  stopRest();
+  doFlash();
+  const w = state.workout;
+  const doneSets = w.exercises.flatMap(ex=>ex.sets.filter(s=>s.done));
+  const vol = doneSets.reduce((a,s)=>{
+    return a + (parseFloat(s.weight)||0)*(parseInt(s.reps)||0);
+  }, 0);
+  state.summary = {
+    name: w.name, elapsed: w.elapsed, exercises: w.exercises,
+    totalSets: doneSets.length, totalVol: vol,
+    quote: QUOTES[Math.floor(Math.random()*QUOTES.length)],
+  };
+  state.screen  = 'summary';
+  state.workout = null;
+  renderSummary();
+}
 
-    // Populate results
-    document.getElementById('resTime').textContent = finalTime;
-    document.getElementById('resReps').textContent = reps;
-    document.getElementById('resExercise').textContent = exerciseShortName();
-    document.getElementById('resQuote').textContent = batmanQuote(reps, elapsedSeconds);
-    document.getElementById('resultPanel').classList.add('visible');
+/* ══════════════════════════════════════════
+   SUMMARY SCREEN
+══════════════════════════════════════════ */
+function renderSummary() {
+  const s = state.summary;
+  const vol = s.totalVol > 0 ? (s.totalVol>=1000 ? (s.totalVol/1000).toFixed(1)+'k' : Math.round(s.totalVol)+'') : '—';
 
-    // Flash
-    const fl = document.getElementById('flash');
-    fl.classList.remove('go');
-    void fl.offsetWidth;
-    fl.classList.add('go');
-  }
+  const exBlocks = s.exercises.map(ex=>{
+    const done = ex.sets.filter(st=>st.done);
+    if (!done.length) return '';
+    return `<div class="summary-ex-block">
+      <div class="summary-ex-name">${getExDef(ex.name).icon} ${escHtml(ex.name)}</div>
+      ${done.map((st,i)=>`<div class="summary-set-row"><span>Set ${i+1}</span><span>${st.weight?st.weight+' kg':'—'} × ${st.reps||'—'} reps</span></div>`).join('')}
+    </div>`;
+  }).filter(Boolean).join('');
 
-  /* ── Reset ── */
-  function resetAll() {
-    clearInterval(timerInterval);
-    isRunning = false;
-    elapsedSeconds = 0;
+  document.getElementById('app').innerHTML = `
+    <div id="screen-summary">
+      ${skylineSVG()}
+      <div class="summary-header">${batLogoSVG()}
+        <div class="summary-title">Mission Complete</div>
+        <div class="summary-sub">${escHtml(s.name)}</div>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-cell"><div class="stat-val">${formatTime(s.elapsed)}</div><div class="stat-lbl">Duration</div></div>
+        <div class="stat-cell"><div class="stat-val">${s.totalSets}</div><div class="stat-lbl">Sets Done</div></div>
+        <div class="stat-cell"><div class="stat-val">${vol}</div><div class="stat-lbl">Vol (kg)</div></div>
+      </div>
+      <div class="summary-exercises">
+        ${exBlocks||'<p style="color:#444;font-size:.75rem;letter-spacing:2px;text-align:center;padding:20px 0">No completed sets.</p>'}
+      </div>
+      <div class="summary-quote">${s.quote}</div>
+      <div class="summary-done-wrap">
+        <button class="btn-yellow" id="btnSummaryDone">Back to Gotham</button>
+      </div>
+    </div>`;
 
-    document.getElementById('timerDisplay').textContent = '00:00';
-    document.getElementById('timerState').textContent = 'Ready';
-    document.getElementById('btnStart').disabled = false;
-    document.getElementById('btnDone').disabled = true;
-    document.getElementById('resultPanel').classList.remove('visible');
-    document.getElementById('ringProg').style.strokeDashoffset = CIRCUMFERENCE;
+  document.getElementById('btnSummaryDone').addEventListener('click', ()=>{ doFlash(); state.screen='home'; renderHome(); });
+}
 
-    document.querySelectorAll('.exercise-btn').forEach(b => b.style.pointerEvents = '');
-  }
-
-  /* ── Helpers ── */
-  function exerciseShortName() {
-    const map = {
-      'pushups': 'Push', 'squats': 'Squat',
-      'calf-raises': 'Calves', 'lateral-raises': 'Lateral'
-    };
-    return map[selectedExercise] || selectedExercise;
-  }
-
-  function batmanQuote(reps, secs) {
-    const quotes = [
-      '"It\'s not who I am underneath, but what I do that defines me."',
-      '"Why do we fall? So we can learn to pick ourselves back up."',
-      '"Endure, Master Wayne. Take it."',
-      '"I\'m not wearing hockey pads."',
-      '"A hero can be anyone. Even someone doing something small like finishing a workout."',
-      '"The night is darkest just before the dawn. And the burn is real just before the gain."',
-      '"You either die a hero, or live long enough to skip leg day. You didn\'t."',
-      '"Some men just want to watch the world... get fit."',
-    ];
-    return quotes[Math.floor(Math.random() * quotes.length)];
-  }
-
-  /* ── Init ring ── */
-  document.getElementById('ringProg').style.strokeDasharray = CIRCUMFERENCE;
-  document.getElementById('ringProg').style.strokeDashoffset = CIRCUMFERENCE;
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+const prog = document.getElementById('restRingProg');
+prog.style.strokeDasharray  = REST_C;
+prog.style.strokeDashoffset = 0;
+renderHome();
 </script>
 </body>
 </html>

@@ -104,7 +104,19 @@
     }
     .home-sub { font-size: .65rem; letter-spacing: 4px; color: var(--bat-muted); margin-top: 2px; }
 
-    .template-section { width: min(480px, calc(100% - 32px)); margin-bottom: 16px; }
+    .template-section { width: min(480px, calc(100% - 32px)); margin-bottom: 4px; }
+    .tmpl-group       { width: min(480px, calc(100% - 32px)); margin-bottom: 18px; }
+    .tmpl-group-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; padding: 0 2px;
+    }
+    .tmpl-group-icon { font-size: 1rem; }
+    .tmpl-group-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .7rem; letter-spacing: 3px;
+      color: var(--bat-yellow); opacity: .7;
+      text-transform: uppercase;
+    }
     .template-label   { margin-bottom: 10px; }
     .template-card {
       background: var(--bat-gray); border: 1px solid var(--bat-border);
@@ -504,28 +516,166 @@
    DATA
 ══════════════════════════════════════════ */
 const EXERCISES = [
-  { cat:'Chest',     name:'Bench Press',          muscle:'Pecs · Triceps',      icon:'🏋️' },
-  { cat:'Chest',     name:'Push-Up',               muscle:'Pecs · Core',          icon:'💪' },
-  { cat:'Chest',     name:'Incline DB Press',      muscle:'Upper Pecs',           icon:'🏋️' },
-  { cat:'Back',      name:'Pull-Up',               muscle:'Lats · Biceps',        icon:'🧲' },
-  { cat:'Back',      name:'Barbell Row',           muscle:'Lats · Rhomboids',     icon:'🏋️' },
-  { cat:'Back',      name:'Lat Pulldown',          muscle:'Lats · Biceps',        icon:'⬇️' },
-  { cat:'Legs',      name:'Squat',                 muscle:'Quads · Glutes',       icon:'🦵' },
-  { cat:'Legs',      name:'Romanian Deadlift',     muscle:'Hamstrings · Glutes',  icon:'🏋️' },
-  { cat:'Legs',      name:'Calf Raise',            muscle:'Gastrocnemius',        icon:'🦿' },
-  { cat:'Legs',      name:'Leg Press',             muscle:'Quads · Glutes',       icon:'⚙️' },
-  { cat:'Shoulders', name:'Overhead Press',        muscle:'Deltoids · Triceps',   icon:'🏋️' },
-  { cat:'Shoulders', name:'Lateral Raise',         muscle:'Side Deltoids',        icon:'🤸' },
-  { cat:'Arms',      name:'Barbell Curl',          muscle:'Biceps',               icon:'💪' },
-  { cat:'Arms',      name:'Tricep Dip',            muscle:'Triceps',              icon:'⬇️' },
-  { cat:'Arms',      name:'Hammer Curl',           muscle:'Biceps · Brachialis',  icon:'🔨' },
-  { cat:'Core',      name:'Plank',                 muscle:'Core · Abs',           icon:'🧱' },
-  { cat:'Core',      name:'Hanging Leg Raise',     muscle:'Abs · Hip Flexors',    icon:'🏗️' },
+  // Back
+  { cat:'Back',      name:'Pull-Up',                                    muscle:'Lats · Biceps',          icon:'🧲' },
+  { cat:'Back',      name:'Barbell Row',                                muscle:'Lats · Rhomboids',        icon:'🏋️' },
+  { cat:'Back',      name:'One Arm Dumbbell Row',                       muscle:'Lats · Rhomboids',        icon:'💪' },
+  { cat:'Back',      name:'One Arm Seated Chest-Supported Machine Row', muscle:'Mid Back',                icon:'🪑' },
+  { cat:'Back',      name:'Seated Wide Grip Cable Row',                 muscle:'Lats · Mid Back',         icon:'🔗' },
+  { cat:'Back',      name:'Cable Lat Pullover',                         muscle:'Lats',                    icon:'⬇️' },
+  { cat:'Back',      name:'Lat Pulldown',                               muscle:'Lats · Biceps',           icon:'⬇️' },
+  { cat:'Back',      name:'Reverse Pec Dec Fly',                        muscle:'Rear Delts · Rhomboids',  icon:'🔄' },
+  { cat:'Back',      name:'Dumbbell Deadlift',                          muscle:'Full Back · Hamstrings',  icon:'🏋️' },
+  // Chest
+  { cat:'Chest',     name:'High Incline Dumbbell Bench Press',          muscle:'Upper Pecs',              icon:'🏋️' },
+  { cat:'Chest',     name:'Very High Incline Dumbbell Bench Press',     muscle:'Upper Pecs',              icon:'🏋️' },
+  { cat:'Chest',     name:'Low Incline Dumbbell Bench Press',           muscle:'Mid Pecs',                icon:'🏋️' },
+  { cat:'Chest',     name:'Flat Dumbbell Bench Press',                  muscle:'Pecs · Triceps',          icon:'🏋️' },
+  { cat:'Chest',     name:'Cable Chest Fly',                            muscle:'Pecs',                    icon:'🔗' },
+  { cat:'Chest',     name:'Pec Deck Fly Machine',                       muscle:'Pecs',                    icon:'🏋️' },
+  { cat:'Chest',     name:'Hammer Strength Chest Press',                muscle:'Pecs · Triceps',          icon:'💪' },
+  { cat:'Chest',     name:'Normal Width Push-Up',                       muscle:'Pecs · Triceps · Core',   icon:'💪' },
+  { cat:'Chest',     name:'Close Width Push-Up',                        muscle:'Triceps · Pecs',          icon:'💪' },
+  // Shoulders
+  { cat:'Shoulders', name:'Dumbbell Lateral Raise',                     muscle:'Side Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Dumbbell Isolation Lateral Raise',           muscle:'Side Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Standing Dumbbell Isolation Lateral Raise',  muscle:'Side Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Seated Dumbbell Lateral Raise',              muscle:'Side Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'One Arm Dumbbell Lateral Raise',             muscle:'Side Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Cable Handle Lateral Raise',                 muscle:'Side Deltoids',           icon:'🔗' },
+  { cat:'Shoulders', name:'Cable Handle Behind-The-Back Lateral Raise', muscle:'Side Deltoids',           icon:'🔗' },
+  { cat:'Shoulders', name:'One Arm Standing Lateral Raise Machine',     muscle:'Side Deltoids',           icon:'🏋️' },
+  { cat:'Shoulders', name:'Dumbbell Shoulder Press',                    muscle:'Deltoids · Triceps',      icon:'🏋️' },
+  { cat:'Shoulders', name:'Neutral Grip Shoulder Press Machine',        muscle:'Deltoids · Triceps',      icon:'🏋️' },
+  { cat:'Shoulders', name:'Barbell Overhead Press',                     muscle:'Deltoids · Triceps',      icon:'🏋️' },
+  { cat:'Shoulders', name:'Cable Rope Front Raise',                     muscle:'Front Deltoids',          icon:'🔗' },
+  { cat:'Shoulders', name:'Seated Dumbbell Rear Delt Fly',              muscle:'Rear Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Dumbbell Rear Delt Raise',                   muscle:'Rear Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'Seated Dumbbell Rear Delt Raise',            muscle:'Rear Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'One Arm Dumbbell Rear Delt Raise',           muscle:'Rear Deltoids',           icon:'🤸' },
+  { cat:'Shoulders', name:'One Arm Cable Handle Rear Delt Fly',         muscle:'Rear Deltoids',           icon:'🔗' },
+  { cat:'Shoulders', name:'Dumbbell Around-The-World Lateral Raise',    muscle:'All Deltoids',            icon:'🔄' },
+  // Traps
+  { cat:'Traps',     name:'Barbell Shrug',                              muscle:'Traps',                   icon:'🏋️' },
+  // Triceps
+  { cat:'Triceps',   name:'Tricep V-Bar Pushdown',                      muscle:'Triceps',                 icon:'⬇️' },
+  { cat:'Triceps',   name:'Tricep Bar Pushdown',                        muscle:'Triceps',                 icon:'⬇️' },
+  { cat:'Triceps',   name:'Tricep Rope Pushdown',                       muscle:'Triceps',                 icon:'🔗' },
+  { cat:'Triceps',   name:'One Arm Tricep Rope Pushdown',               muscle:'Triceps',                 icon:'🔗' },
+  { cat:'Triceps',   name:'One Arm Cable Overhead Tricep Handle Extension', muscle:'Triceps Long Head',   icon:'🔗' },
+  { cat:'Triceps',   name:'One Arm Cable Tricep Handle Extension',      muscle:'Triceps',                 icon:'🔗' },
+  { cat:'Triceps',   name:'One Arm Overhead Dumbbell Tricep Extension', muscle:'Triceps Long Head',       icon:'💪' },
+  { cat:'Triceps',   name:'Low Incline Lying Dumbbell Tricep Extension',muscle:'Triceps',                 icon:'🏋️' },
+  { cat:'Triceps',   name:'One Arm Dumbbell Tricep Kickback',           muscle:'Triceps',                 icon:'💪' },
+  { cat:'Triceps',   name:'Tricep Dip Machine',                         muscle:'Triceps',                 icon:'🏋️' },
+  // Biceps
+  { cat:'Biceps',    name:'Barbell Curl',                               muscle:'Biceps',                  icon:'💪' },
+  { cat:'Biceps',    name:'One Arm Dumbbell Bicep Curl',                muscle:'Biceps',                  icon:'💪' },
+  { cat:'Biceps',    name:'Two Arm Dumbbell Bicep Curl',                muscle:'Biceps',                  icon:'💪' },
+  { cat:'Biceps',    name:'One Arm Dumbbell Sideways Hammer Curl',      muscle:'Biceps · Brachialis',     icon:'🔨' },
+  { cat:'Biceps',    name:'Dumbbell Hammer Curl',                       muscle:'Biceps · Brachialis',     icon:'🔨' },
+  { cat:'Biceps',    name:'One Arm Dumbbell Hammer Curl',               muscle:'Biceps · Brachialis',     icon:'🔨' },
+  // Forearms
+  { cat:'Forearms',  name:'One Arm Dumbbell Reverse Curl',              muscle:'Brachioradialis',         icon:'💪' },
+  { cat:'Forearms',  name:'One Arm Dumbbell Seated Wrist Curl',         muscle:'Forearms',                icon:'💪' },
+  { cat:'Forearms',  name:'Cable Handle Behind-The-Back Wrist Curl',    muscle:'Forearms',                icon:'🔗' },
+  // Legs
+  { cat:'Legs',      name:'Leg Press',                                  muscle:'Quads · Glutes',          icon:'⚙️' },
+  { cat:'Legs',      name:'Leg Press Machine Wide And High Stance',     muscle:'Glutes · Quads',          icon:'⚙️' },
+  { cat:'Legs',      name:'Leg Extensions',                             muscle:'Quads',                   icon:'⚙️' },
+  { cat:'Legs',      name:'One Leg Leg Extensions',                     muscle:'Quads',                   icon:'⚙️' },
+  { cat:'Legs',      name:'Seated Leg Curl',                            muscle:'Hamstrings',              icon:'⚙️' },
+  { cat:'Legs',      name:'Hip Abductor Machine',                       muscle:'Glutes · Abductors',      icon:'⚙️' },
+  { cat:'Legs',      name:'Dumbbell Romanian Deadlift',                 muscle:'Hamstrings · Glutes',     icon:'🏋️' },
+  { cat:'Legs',      name:'Two Dumbbell Goblet Squat Normal Stance',    muscle:'Quads · Glutes',          icon:'🏋️' },
+  { cat:'Legs',      name:'Two Dumbbell Goblet Squat Wide Stance',      muscle:'Glutes · Quads',          icon:'🏋️' },
+  { cat:'Legs',      name:'Two Dumbbell Goblet Squat Close Stance',     muscle:'Quads',                   icon:'🏋️' },
+  { cat:'Legs',      name:'One Dumbbell Normal Width Goblet Squat',     muscle:'Quads · Glutes',          icon:'🏋️' },
+  { cat:'Legs',      name:'One Dumbbell Bulgarian Split Squats',        muscle:'Quads · Glutes',          icon:'🦵' },
+  { cat:'Legs',      name:'One Arm Dumbbell Lunge',                     muscle:'Quads · Glutes',          icon:'🦵' },
+  { cat:'Legs',      name:'One Leg Bodyweight Lunges',                  muscle:'Quads · Glutes',          icon:'🦵' },
+  { cat:'Legs',      name:'Normal Squats',                              muscle:'Quads · Glutes',          icon:'🦵' },
+  { cat:'Legs',      name:'Wide Squats',                                muscle:'Glutes · Quads',          icon:'🦵' },
+  { cat:'Legs',      name:'Close Squats',                               muscle:'Quads',                   icon:'🦵' },
+  { cat:'Legs',      name:'Wide Bodyweight Squat',                      muscle:'Glutes · Quads',          icon:'🦵' },
+  // Calves
+  { cat:'Calves',    name:'Seated Calf Raise Machine',                  muscle:'Soleus',                  icon:'🦿' },
+  { cat:'Calves',    name:'Calf Press On Leg Press Machine',            muscle:'Gastrocnemius',           icon:'⚙️' },
+  { cat:'Calves',    name:'One Leg Calf Press On Leg Press Machine',    muscle:'Gastrocnemius',           icon:'⚙️' },
+  { cat:'Calves',    name:'Calf Press Machine',                         muscle:'Gastrocnemius',           icon:'⚙️' },
+  { cat:'Calves',    name:'Dumbbell Normal Width Calf Raise',           muscle:'Gastrocnemius',           icon:'🦿' },
+  { cat:'Calves',    name:'Dumbbell Close Width Calf Raise',            muscle:'Gastrocnemius (Inner)',   icon:'🦿' },
+  { cat:'Calves',    name:'Dumbbell Calf Raise',                        muscle:'Gastrocnemius',           icon:'🦿' },
+  { cat:'Calves',    name:'Bodyweight Donkey Calf Raise',               muscle:'Gastrocnemius',           icon:'🦿' },
+  { cat:'Calves',    name:'Normal Width Standing Calf Raise',           muscle:'Gastrocnemius',           icon:'🦿' },
+  { cat:'Calves',    name:'Close Width Standing Calf Raise',            muscle:'Gastrocnemius (Inner)',   icon:'🦿' },
+  // Abs
+  { cat:'Abs',       name:'Decline Situps',                             muscle:'Abs',                     icon:'🧱' },
+  { cat:'Abs',       name:'Hanging Leg Crunches',                       muscle:'Abs · Hip Flexors',       icon:'🏗️' },
+  { cat:'Abs',       name:'Oblique Knee To Elbow Crunches',             muscle:'Obliques · Abs',          icon:'🧱' },
+  { cat:'Abs',       name:'Ab Flutter Kicks',                           muscle:'Lower Abs',               icon:'🧱' },
+  { cat:'Abs',       name:'Situps',                                     muscle:'Abs',                     icon:'🧱' },
+  { cat:'Abs',       name:'Ab Half-Crunches',                           muscle:'Upper Abs',               icon:'🧱' },
+  // Neck
+  { cat:'Neck',      name:'Plate Neck Curl Lying Off Flat Bench',       muscle:'Neck Flexors',            icon:'💆' },
+  // Cardio
+  { cat:'Cardio',    name:'Stairmaster',                                muscle:'Calves · Cardio',         icon:'🏃' },
+  { cat:'Cardio',    name:'High Incline Treadmill',                     muscle:'Calves · Cardio',         icon:'🏃' },
+  { cat:'Cardio',    name:'Assault Bike',                               muscle:'Full Body Cardio',        icon:'🚴' },
 ];
 
-const TEMPLATES = [
-  { name:'Gotham Strength Routine',   exercises:['Bench Press','Squat','Barbell Row','Overhead Press'] },
-  { name:'Dark Knight Conditioning',  exercises:['Push-Up','Pull-Up','Romanian Deadlift','Lateral Raise','Plank'] },
+const TEMPLATE_GROUPS = [
+  {
+    group:'Upper Body', icon:'💪',
+    templates:[
+      { name:'Upper Body Aesthetics · Gym',   exercises:['Pull-Up','Barbell Row','Barbell Shrug','One Arm Seated Chest-Supported Machine Row','Cable Chest Fly','High Incline Dumbbell Bench Press','Seated Dumbbell Rear Delt Fly','Cable Handle Lateral Raise','Tricep V-Bar Pushdown','Barbell Curl'] },
+      { name:'Upper Body Aesthetics · Home',  exercises:['One Arm Dumbbell Row','Dumbbell Deadlift','Very High Incline Dumbbell Bench Press','Low Incline Dumbbell Bench Press','Seated Dumbbell Rear Delt Fly','Dumbbell Lateral Raise','One Arm Overhead Dumbbell Tricep Extension','One Arm Dumbbell Reverse Curl','One Arm Dumbbell Bicep Curl'] },
+      { name:'Arms Aesthetics · Home',        exercises:['One Arm Overhead Dumbbell Tricep Extension','One Arm Dumbbell Reverse Curl','One Arm Dumbbell Seated Wrist Curl','One Arm Dumbbell Tricep Kickback','One Arm Dumbbell Bicep Curl'] },
+      { name:'Shoulders Aesthetics · Home',   exercises:['Dumbbell Isolation Lateral Raise','Dumbbell Rear Delt Raise','One Arm Dumbbell Lateral Raise','Dumbbell Shoulder Press','Dumbbell Lateral Raise'] },
+      { name:'High Volume Upper · Gym',       exercises:['High Incline Dumbbell Bench Press','Barbell Curl','Cable Chest Fly','Tricep Bar Pushdown','One Arm Tricep Rope Pushdown','Cable Handle Lateral Raise','One Arm Cable Handle Rear Delt Fly','One Arm Cable Overhead Tricep Handle Extension','Cable Handle Behind-The-Back Lateral Raise','Barbell Row','Barbell Shrug','Barbell Overhead Press','One Arm Dumbbell Hammer Curl','Seated Wide Grip Cable Row','Cable Lat Pullover'] },
+      { name:'High Volume Upper · Home',      exercises:['High Incline Dumbbell Bench Press','Low Incline Dumbbell Bench Press','Low Incline Lying Dumbbell Tricep Extension','Dumbbell Around-The-World Lateral Raise','Standing Dumbbell Isolation Lateral Raise','Seated Dumbbell Lateral Raise','Seated Dumbbell Rear Delt Raise','One Arm Dumbbell Rear Delt Raise','One Arm Dumbbell Bicep Curl','One Arm Dumbbell Reverse Curl','Two Arm Dumbbell Bicep Curl','One Arm Dumbbell Sideways Hammer Curl','Dumbbell Shoulder Press','One Arm Dumbbell Row','Dumbbell Deadlift'] },
+    ]
+  },
+  {
+    group:'Lower Body', icon:'🦵',
+    templates:[
+      { name:'Lower Body Aesthetics · Gym',   exercises:['Hanging Leg Crunches','Seated Calf Raise Machine','One Leg Leg Extensions','Leg Extensions','Seated Leg Curl','Hip Abductor Machine','Calf Press On Leg Press Machine','Dumbbell Romanian Deadlift','Leg Press','Decline Situps'] },
+      { name:'Lower Body Aesthetics · Home',  exercises:['Dumbbell Normal Width Calf Raise','Dumbbell Close Width Calf Raise','One Dumbbell Normal Width Goblet Squat','One Dumbbell Bulgarian Split Squats','Dumbbell Romanian Deadlift','One Leg Bodyweight Lunges'] },
+      { name:'High Volume Lower · Gym',       exercises:['Seated Leg Curl','Dumbbell Romanian Deadlift','Leg Extensions','One Leg Leg Extensions','Calf Press Machine','Leg Press','Seated Calf Raise Machine','Hip Abductor Machine','Leg Press Machine Wide And High Stance','Decline Situps'] },
+      { name:'High Volume Lower · Home',      exercises:['Dumbbell Romanian Deadlift','Two Dumbbell Goblet Squat Normal Stance','Two Dumbbell Goblet Squat Wide Stance','Two Dumbbell Goblet Squat Close Stance','Bodyweight Donkey Calf Raise','Dumbbell Calf Raise','Oblique Knee To Elbow Crunches','One Arm Dumbbell Lunge'] },
+      { name:'Bodyweight Leg Pump · Home',    exercises:['Normal Width Standing Calf Raise','Normal Squats','Wide Squats','Close Squats','Close Width Standing Calf Raise','Normal Squats','Wide Squats','Close Squats'] },
+    ]
+  },
+  {
+    group:'Full Body', icon:'🔄',
+    templates:[
+      { name:'Full Body Aesthetics · Home',       exercises:['One Arm Dumbbell Row','One Dumbbell Bulgarian Split Squats','Dumbbell Lateral Raise','Dumbbell Romanian Deadlift','Dumbbell Normal Width Calf Raise'] },
+      { name:'Full Body Suicide Circuit · Home',  exercises:['Normal Width Push-Up','Wide Bodyweight Squat','Close Width Push-Up','One Arm Dumbbell Row'] },
+      { name:'Full Body Dumbbell Circuit · Home', exercises:['Two Dumbbell Goblet Squat Normal Stance','Dumbbell Romanian Deadlift','Dumbbell Calf Raise','Flat Dumbbell Bench Press','One Arm Dumbbell Row','Dumbbell Lateral Raise'] },
+    ]
+  },
+  {
+    group:'Push', icon:'⬆️',
+    templates:[
+      { name:'Push Aesthetics · Gym',     exercises:['Cable Chest Fly','High Incline Dumbbell Bench Press','Hammer Strength Chest Press','Tricep Rope Pushdown','One Arm Tricep Rope Pushdown','Cable Rope Front Raise','One Arm Cable Tricep Handle Extension','Tricep Dip Machine','Neutral Grip Shoulder Press Machine','Pec Deck Fly Machine'] },
+      { name:'Pushup Chest Pump · Home',  exercises:['Normal Width Push-Up','Close Width Push-Up'] },
+    ]
+  },
+  {
+    group:'Pull', icon:'⬇️',
+    templates:[
+      { name:'Pull Aesthetics · Gym', exercises:['Pull-Up','Barbell Row','Barbell Shrug','One Arm Seated Chest-Supported Machine Row','Seated Dumbbell Rear Delt Fly','Cable Handle Lateral Raise','Cable Lat Pullover','Reverse Pec Dec Fly','One Arm Standing Lateral Raise Machine','Barbell Curl'] },
+    ]
+  },
+  {
+    group:'Misc', icon:'✨',
+    templates:[
+      { name:'Abs & Neck · Home',          exercises:['Plate Neck Curl Lying Off Flat Bench','Ab Flutter Kicks','Oblique Knee To Elbow Crunches','Situps'] },
+      { name:'Calves & Forearms · Gym',    exercises:['Seated Calf Raise Machine','One Leg Calf Press On Leg Press Machine','Calf Press On Leg Press Machine','Cable Handle Behind-The-Back Wrist Curl','Dumbbell Hammer Curl','One Arm Dumbbell Reverse Curl','Calf Press Machine'] },
+      { name:'Abs Anywhere · Home',        exercises:['Ab Half-Crunches','Situps'] },
+      { name:'Calves, Abs & Neck · Home',  exercises:['Bodyweight Donkey Calf Raise','Dumbbell Calf Raise','Oblique Knee To Elbow Crunches','Situps','Plate Neck Curl Lying Off Flat Bench'] },
+    ]
+  },
 ];
 
 const QUOTES = [
@@ -614,6 +764,24 @@ function batLogoSVG() {
    HOME SCREEN
 ══════════════════════════════════════════ */
 function renderHome() {
+  // Build flat index for all templates across groups
+  const allTemplates = TEMPLATE_GROUPS.flatMap(g=>g.templates);
+
+  const groupsHtml = TEMPLATE_GROUPS.map(g=>`
+    <div class="tmpl-group">
+      <div class="tmpl-group-header">
+        <span class="tmpl-group-icon">${g.icon}</span>
+        <span class="tmpl-group-label">${g.group}</span>
+      </div>
+      ${g.templates.map(t=>{
+        const gi = allTemplates.indexOf(t);
+        return `<button class="template-card" data-tmpl="${gi}">
+          <div class="template-name">${escHtml(t.name)}</div>
+          <div class="template-exercises">${t.exercises.slice(0,6).join(' · ')}${t.exercises.length>6?' …':''}</div>
+        </button>`;
+      }).join('')}
+    </div>`).join('');
+
   document.getElementById('app').innerHTML = `
     <div id="screen-home">
       ${skylineSVG()}
@@ -621,22 +789,15 @@ function renderHome() {
         <div class="home-title">BATMAN WORKOUT</div>
         <div class="home-sub">Gotham's Fitness Protocol</div>
       </div>
-      <div class="template-section">
-        <div class="section-label template-label">Quick Start</div>
-        ${TEMPLATES.map((t,i)=>`
-          <button class="template-card" data-tmpl="${i}">
-            <div class="template-name">${escHtml(t.name)}</div>
-            <div class="template-exercises">${t.exercises.join(' · ')}</div>
-          </button>`).join('')}
-      </div>
-      <div class="start-wrap">
+      <div class="start-wrap" style="margin-bottom:20px">
         <button class="btn-yellow" id="btnStartEmpty"><span>+</span> Start Empty Workout</button>
       </div>
+      ${groupsHtml}
     </div>`;
 
   document.getElementById('btnStartEmpty').addEventListener('click', ()=>startWorkout(null));
   document.querySelectorAll('.template-card').forEach(btn=>{
-    btn.addEventListener('click', ()=>startWorkout(TEMPLATES[+btn.dataset.tmpl]));
+    btn.addEventListener('click', ()=>startWorkout(allTemplates[+btn.dataset.tmpl]));
   });
 }
 
@@ -670,7 +831,7 @@ function prevLabel(exIdx, setIdx) {
   const sets = state.workout.exercises[exIdx].sets;
   const p = sets[setIdx-1];
   if (!p || (!p.weight && !p.reps)) return '—';
-  return `${p.weight||'—'}kg×${p.reps||'—'}`;
+  return `${p.weight||'—'}lbs×${p.reps||'—'}`;
 }
 
 /* ══════════════════════════════════════════
@@ -720,7 +881,7 @@ function renderExBlock(ex, exIdx) {
       <button class="btn-del-ex" data-del-ex="${exIdx}" aria-label="Remove">✕</button>
     </div>
     <div class="set-table-head">
-      <span>Set</span><span>Previous</span><span>kg</span><span>Reps</span><span></span>
+      <span>Set</span><span>Previous</span><span>lbs</span><span>Reps</span><span></span>
     </div>
     <div class="set-rows">${ex.sets.map((s,si)=>renderSetRow(s,exIdx,si)).join('')}</div>
     <button class="btn-add-set" data-add-set="${exIdx}">+ Add Set</button>
@@ -732,7 +893,7 @@ function renderSetRow(set, exIdx, setIdx) {
   return `<div class="set-row${done?' done':''}" data-ex="${exIdx}" data-set="${setIdx}">
     <div class="set-num">${setIdx+1}</div>
     <div class="set-prev">${prevLabel(exIdx,setIdx)}</div>
-    <input class="set-input" type="number" inputmode="decimal"  placeholder="kg"   value="${escHtml(set.weight)}" data-field="weight" data-ex="${exIdx}" data-set="${setIdx}"/>
+    <input class="set-input" type="number" inputmode="decimal"  placeholder="lbs"  value="${escHtml(set.weight)}" data-field="weight" data-ex="${exIdx}" data-set="${setIdx}"/>
     <input class="set-input" type="number" inputmode="numeric"  placeholder="reps" value="${escHtml(set.reps)}"   data-field="reps"   data-ex="${exIdx}" data-set="${setIdx}"/>
     <button class="btn-check" data-ex="${exIdx}" data-set="${setIdx}" aria-label="Complete">✓</button>
   </div>`;
@@ -900,7 +1061,7 @@ function renderSummary() {
     if (!done.length) return '';
     return `<div class="summary-ex-block">
       <div class="summary-ex-name">${getExDef(ex.name).icon} ${escHtml(ex.name)}</div>
-      ${done.map((st,i)=>`<div class="summary-set-row"><span>Set ${i+1}</span><span>${st.weight?st.weight+' kg':'—'} × ${st.reps||'—'} reps</span></div>`).join('')}
+      ${done.map((st,i)=>`<div class="summary-set-row"><span>Set ${i+1}</span><span>${st.weight?st.weight+' lbs':'—'} × ${st.reps||'—'} reps</span></div>`).join('')}
     </div>`;
   }).filter(Boolean).join('');
 
@@ -914,7 +1075,7 @@ function renderSummary() {
       <div class="summary-stats">
         <div class="stat-cell"><div class="stat-val">${formatTime(s.elapsed)}</div><div class="stat-lbl">Duration</div></div>
         <div class="stat-cell"><div class="stat-val">${s.totalSets}</div><div class="stat-lbl">Sets Done</div></div>
-        <div class="stat-cell"><div class="stat-val">${vol}</div><div class="stat-lbl">Vol (kg)</div></div>
+        <div class="stat-cell"><div class="stat-val">${vol}</div><div class="stat-lbl">Vol (lbs)</div></div>
       </div>
       <div class="summary-exercises">
         ${exBlocks||'<p style="color:#444;font-size:.75rem;letter-spacing:2px;text-align:center;padding:20px 0">No completed sets.</p>'}

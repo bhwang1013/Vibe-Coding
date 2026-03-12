@@ -718,6 +718,20 @@ function doFlash() {
 }
 function getExDef(name) { return EXERCISES.find(e=>e.name===name)||{icon:'💪',muscle:''}; }
 
+/* ── localStorage history ── */
+const HISTORY_KEY = 'batmanHistory';
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}'); } catch { return {}; }
+}
+function saveHistory(exercises) {
+  const h = loadHistory();
+  exercises.forEach(ex => {
+    const done = ex.sets.filter(s=>s.done);
+    if (done.length) h[ex.name] = done.map(s=>({ weight:s.weight, reps:s.reps }));
+  });
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
+}
+
 /* ══════════════════════════════════════════
    SHARED SVGs
 ══════════════════════════════════════════ */
@@ -824,14 +838,19 @@ function startWorkout(template) {
   }, 1000);
 }
 
-function makeExercise(name) { return { id:uid(), name, sets:[makeSet()] }; }
+function makeExercise(name) {
+  const hist = loadHistory()[name];
+  const first = hist && hist[0] ? makeSet(hist[0].weight, hist[0].reps) : makeSet();
+  return { id:uid(), name, sets:[first] };
+}
 function makeSet(w='',r='')  { return { id:uid(), weight:w, reps:r, done:false }; }
 
 function prevLabel(exIdx, setIdx) {
-  const sets = state.workout.exercises[exIdx].sets;
-  const p = sets[setIdx-1];
+  const exName = state.workout.exercises[exIdx].name;
+  const hist   = loadHistory()[exName];
+  const p      = hist && hist[setIdx];
   if (!p || (!p.weight && !p.reps)) return '—';
-  return `${p.weight||'—'}lbs×${p.reps||'—'}`;
+  return `${p.weight||'—'} × ${p.reps||'—'}`;
 }
 
 /* ══════════════════════════════════════════
@@ -923,10 +942,16 @@ function toggleDone(exIdx, setIdx) {
 }
 
 function addNewSet(exIdx) {
-  state.workout.exercises[exIdx].sets.push(makeSet());
-  const si  = state.workout.exercises[exIdx].sets.length - 1;
+  const ex   = state.workout.exercises[exIdx];
+  const si   = ex.sets.length;                          // index of the new set
+  const hist = loadHistory()[ex.name];
+  const prev = hist && hist[si]
+    ? makeSet(hist[si].weight, hist[si].reps)           // last session's same set
+    : (ex.sets.length ? makeSet(ex.sets[ex.sets.length-1].weight, ex.sets[ex.sets.length-1].reps) : makeSet());
+  ex.sets.push(prev);
+  const si2 = ex.sets.length - 1;
   const div = document.createElement('div');
-  div.innerHTML = renderSetRow(state.workout.exercises[exIdx].sets[si], exIdx, si);
+  div.innerHTML = renderSetRow(ex.sets[si2], exIdx, si2);
   const block = document.querySelector(`[data-ex-block="${exIdx}"] .set-rows`);
   if (block) { block.appendChild(div.firstElementChild); div.firstElementChild.querySelector('input').focus(); }
 }
@@ -1035,6 +1060,7 @@ function finishWorkout() {
   stopRest();
   doFlash();
   const w = state.workout;
+  saveHistory(w.exercises);
   const doneSets = w.exercises.flatMap(ex=>ex.sets.filter(s=>s.done));
   const vol = doneSets.reduce((a,s)=>{
     return a + (parseFloat(s.weight)||0)*(parseInt(s.reps)||0);

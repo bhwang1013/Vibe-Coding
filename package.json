@@ -1,0 +1,15 @@
+{
+  "name": "reply-smart",
+  "version": "1.0.0",
+  "description": "Reply Smart - screenshot to 3 reply options",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "@anthropic-ai/sdk": "^0.30.0",
+    "dotenv": "^16.3.1"
+  }
+}

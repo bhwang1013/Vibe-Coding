@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Reply Smart ✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+    :root {
+      --purple:      #7c3aed;
+      --purple-light:#a78bfa;
+      --purple-dark: #5b21b6;
+      --pink:        #ec4899;
+      --pink-light:  #f9a8d4;
+      --bg:          #faf5ff;
+      --bg-card:     #ffffff;
+      --text:        #1e1b4b;
+      --text-muted:  #6b7280;
+      --border:      #e5e7eb;
+      --friendly:    #10b981;
+      --friendly-bg: #ecfdf5;
+      --pro:         #3b82f6;
+      --pro-bg:      #eff6ff;
+      --mirror:      #f59e0b;
+      --mirror-bg:   #fffbeb;
+      --shadow:      0 4px 24px rgba(124,58,237,0.12);
+      --radius:      20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      padding: 28px 24px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: -30px;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    .header-emoji { font-size: 48px; display: block; margin-bottom: 8px; }
+    .header h1 {
+      color: white;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      color: rgba(255,255,255,0.85);
+      font-size: 15px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* ─── Main Content ─── */
+    .main { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ─── Card ─── */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--border);
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── API Key ─── */
+    .api-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .api-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .api-input:focus { border-color: var(--purple-light); }
+    .api-input::placeholder { color: var(--text-muted); }
+    .api-save-btn {
+      padding: 12px 20px;
+      background: var(--purple);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .api-save-btn:hover { background: var(--purple-dark); }
+    .api-save-btn:active { transform: scale(0.97); }
+    .api-status {
+      font-size: 13px;
+      margin-top: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+    .api-status.ok {
+      display: block;
+      background: #ecfdf5;
+      color: #065f46;
+    }
+    .api-status.err {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    /* ─── Upload Area ─── */
+    .upload-area {
+      border: 3px dashed var(--purple-light);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f5f3ff;
+      position: relative;
+    }
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--purple);
+      background: #ede9fe;
+    }
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+    .upload-label {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--purple);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .upload-sublabel {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* ─── Preview ─── */
+    .preview-wrap {
+      display: none;
+      margin-top: 16px;
+      position: relative;
+    }
+    .preview-wrap.show { display: block; }
+    .preview-img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: #f9f9f9;
+    }
+    .preview-remove {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(0,0,0,0.55);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.2s;
+    }
+    .preview-remove:hover { background: rgba(0,0,0,0.75); }
+
+    /* ─── Generate Button ─── */
+    .generate-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Nunito', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(124,58,237,0.35);
+      margin-bottom: 20px;
+    }
+    .generate-btn:hover { opacity: 0.92; }
+    .generate-btn:active { transform: scale(0.98); }
+    .generate-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ─── Loading ─── */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 32px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .loading.show { display: block; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 5px solid #e9d5ff;
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p {
+      color: var(--text-muted);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* ─── Error ─── */
+    .error-box {
+      display: none;
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: #991b1b;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    .error-box.show { display: block; }
+
+    /* ─── Results ─── */
+    .results { display: none; }
+    .results.show { display: block; }
+    .results-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    /* ─── Response Card ─── */
+    .response-card {
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 16px;
+      border: 2px solid;
+      position: relative;
+    }
+    .response-card.friendly {
+      background: var(--friendly-bg);
+      border-color: var(--friendly);
+    }
+    .response-card.professional {
+      background: var(--pro-bg);
+      border-color: var(--pro);
+    }
+    .response-card.mirror {
+      background: var(--mirror-bg);
+      border-color: var(--mirror);
+    }
+
+    .response-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .friendly .response-badge { background: var(--friendly); color: white; }
+    .professional .response-badge { background: var(--pro); color: white; }
+    .mirror .response-badge { background: var(--mirror); color: white; }
+
+    .response-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px;
+      border: 2px solid;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: white;
+    }
+    .friendly .copy-btn { border-color: var(--friendly); color: var(--friendly); }
+    .friendly .copy-btn:hover { background: var(--friendly); color: white; }
+    .professional .copy-btn { border-color: var(--pro); color: var(--pro); }
+    .professional .copy-btn:hover { background: var(--pro); color: white; }
+    .mirror .copy-btn { border-color: var(--mirror); color: var(--mirror); }
+    .mirror .copy-btn:hover { background: var(--mirror); color: white; }
+    .copy-btn:active { transform: scale(0.97); }
+
+    /* ─── New Scan Button ─── */
+    .reset-btn {
+      width: 100%;
+      padding: 16px;
+      background: white;
+      color: var(--purple);
+      border: 2.5px solid var(--purple);
+      border-radius: var(--radius);
+      font-family: 'Nunito', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .reset-btn:hover { background: var(--purple); color: white; }
+    .reset-btn:active { transform: scale(0.98); }
+
+    /* ─── Tips ─── */
+    .tips {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 24px;
+      padding: 0 8px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <span class="header-emoji">💬✨</span>
+  <h1>Reply Smart</h1>
+  <p>Upload a screenshot — get 3 perfect reply options instantly</p>
+</div>
+
+<div class="main">
+
+  <!-- API Key Card -->
+  <div class="card" id="apiCard">
+    <div class="card-title">🔑 Anthropic API Key</div>
+    <div class="api-row">
+      <input
+        type="password"
+        class="api-input"
+        id="apiKeyInput"
+        placeholder="sk-ant-api03-..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="api-save-btn" id="apiSaveBtn" onclick="saveApiKey()">Save</button>
+    </div>
+    <div class="api-status" id="apiStatus"></div>
+  </div>
+
+  <!-- Upload Card -->
+  <div class="card" id="uploadCard">
+    <div class="card-title">📸 Upload Screenshot</div>
+    <div
+      class="upload-area"
+      id="uploadArea"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave(event)"
+      ondrop="handleDrop(event)"
+    >
+      <input type="file" accept="image/*" id="fileInput" onchange="handleFile(event)"/>
+      <span class="upload-icon">📷</span>
+      <span class="upload-label">Tap to choose a screenshot</span>
+      <span class="upload-sublabel">Or drag &amp; drop an image here<br>Works with emails, texts, DMs — anything!</span>
+    </div>
+    <div class="preview-wrap" id="previewWrap">
+      <img class="preview-img" id="previewImg" src="" alt="Screenshot preview"/>
+      <button class="preview-remove" onclick="removeImage()" title="Remove">✕</button>
+    </div>
+  </div>
+
+  <!-- Generate Button -->
+  <button class="generate-btn" id="generateBtn" onclick="generateReplies()" disabled>
+    <span>✨</span> Generate My 3 Replies
+  </button>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Reading your message &amp; crafting replies…</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <div class="results-title">✨ Your 3 Reply Options</div>
+
+    <!-- Friendly -->
+    <div class="response-card friendly">
+      <span class="response-badge">😊 Friendly</span>
+      <div class="response-text" id="friendlyText"></div>
+      <button class="copy-btn" onclick="copyText('friendlyText', this)">
+        📋 Copy This Reply
+      </button>
+    </div>
+
+    <!-- Professional -->
+    <div class="response-card professional">
+      <span class="response-badge">💼 Professional</span>
+      <div class="response-text" id="proText"></div>
+      <button class="copy-btn" onclick="copyText('proText', this)">
+        📋 Copy This Reply
+      </button>
+    </div>
+
+    <!-- Mirror Tone -->
+    <div class="response-card mirror">
+      <span class="response-badge">🪞 Their Tone</span>
+      <div class="response-text" id="mirrorText"></div>
+      <button class="copy-btn" onclick="copyText('mirrorText', this)">
+        📋 Copy This Reply
+      </button>
+    </div>
+
+    <!-- New Scan -->
+    <button class="reset-btn" onclick="resetApp()">
+      📸 Scan Another Message
+    </button>
+  </div>
+
+  <div class="tips">
+    💡 Tip: Works best with clear, readable screenshots.<br>
+    Your API key is saved only on your device — never shared.
+  </div>
+
+</div>
+
+<script>
+  // ─── State ───────────────────────────────────────────────
+  let imageBase64 = null;
+  let imageMediaType = null;
+
+  // ─── API Key ─────────────────────────────────────────────
+  function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    const status = document.getElementById('apiStatus');
+    if (!key.startsWith('sk-ant-')) {
+      status.textContent = '⚠️ That doesn\'t look like an Anthropic key. It should start with sk-ant-';
+      status.className = 'api-status err';
+      return;
+    }
+    localStorage.setItem('reply_smart_api_key', key);
+    status.textContent = '✅ Key saved! You\'re all set.';
+    status.className = 'api-status ok';
+    updateGenerateBtn();
+    // Collapse key after 3 seconds
+    setTimeout(() => {
+      document.getElementById('apiCard').style.maxHeight = '0';
+      document.getElementById('apiCard').style.overflow = 'hidden';
+      document.getElementById('apiCard').style.padding = '0';
+      document.getElementById('apiCard').style.marginBottom = '0';
+      document.getElementById('apiCard').style.borderWidth = '0';
+    }, 2000);
+  }
+
+  function getApiKey() {
+    return localStorage.getItem('reply_smart_api_key') || '';
+  }
+
+  // ─── File Handling ────────────────────────────────────────
+  function handleFile(event) {
+    const file = event.target.files[0];
+    if (file) processFile(file);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.add('drag-over');
+  }
+
+  function handleDragLeave(e) {
+    document.getElementById('uploadArea').classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) processFile(file);
+  }
+
+  function processFile(file) {
+    imageMediaType = file.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      imageBase64 = dataUrl.split(',')[1];
+
+      // Show preview
+      document.getElementById('previewImg').src = dataUrl;
+      document.getElementById('previewWrap').classList.add('show');
+      updateGenerateBtn();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage() {
+    imageBase64 = null;
+    imageMediaType = null;
+    document.getElementById('previewWrap').classList.remove('show');
+    document.getElementById('fileInput').value = '';
+    updateGenerateBtn();
+  }
+
+  function updateGenerateBtn() {
+    const btn = document.getElementById('generateBtn');
+    const hasKey = getApiKey().startsWith('sk-ant-');
+    const hasImage = !!imageBase64;
+    btn.disabled = !(hasKey && hasImage);
+  }
+
+  // ─── Generate ─────────────────────────────────────────────
+  async function generateReplies() {
+    const apiKey = getApiKey();
+    if (!apiKey || !imageBase64) return;
+
+    // Reset UI
+    hideError();
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('generateBtn').disabled = true;
+
+    const prompt = `You are a helpful reply assistant. Analyze the screenshot of an email, text message, or any written message shown in this image.
+
+First, carefully read the message(s) visible in the screenshot and understand:
+- Who is sending the message and what they want/are saying
+- The tone, style, and energy of the message
+- Any specific questions or requests that need addressing
+
+Then write THREE different reply options. Each reply should be complete and ready to send.
+
+Reply in this exact JSON format:
+{
+  "summary": "One sentence describing what the message is about",
+  "friendly": "A warm, casual, friendly reply using natural language, emojis if appropriate, feels personal and kind",
+  "professional": "A polished, clear, and respectful professional reply — appropriate for work or formal situations",
+  "mirror": "A reply that matches the sender's own tone, style, energy, vocabulary, and formality level — if they used emojis you use emojis, if they were brief you are brief, if they were formal you are formal"
+}
+
+Only output the JSON object, nothing else.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-opus-4-6',
+          max_tokens: 2048,
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: {
+                  type: 'base64',
+                  media_type: imageMediaType,
+                  data: imageBase64
+                }
+              },
+              {
+                type: 'text',
+                text: prompt
+              }
+            ]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error?.message || `API error ${response.status}`);
+      }
+
+      const data = await response.json();
+      const rawText = data.content?.[0]?.text || '';
+
+      // Parse JSON from response
+      let parsed;
+      try {
+        // Try direct parse first
+        parsed = JSON.parse(rawText);
+      } catch {
+        // Try extracting JSON from markdown code block
+        const match = rawText.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (match) {
+          parsed = JSON.parse(match[1].trim());
+        } else {
+          // Try finding { ... } in the text
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            parsed = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error('Could not parse response from AI');
+          }
+        }
+      }
+
+      document.getElementById('friendlyText').textContent = parsed.friendly || 'No response generated';
+      document.getElementById('proText').textContent = parsed.professional || 'No response generated';
+      document.getElementById('mirrorText').textContent = parsed.mirror || 'No response generated';
+
+      document.getElementById('results').classList.add('show');
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+      showError('😕 Something went wrong: ' + err.message);
+    } finally {
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('generateBtn').disabled = false;
+    }
+  }
+
+  // ─── Copy ─────────────────────────────────────────────────
+  function copyText(elementId, btn) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    }).catch(() => {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    });
+  }
+
+  // ─── Reset ────────────────────────────────────────────────
+  function resetApp() {
+    removeImage();
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('uploadCard').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ─── Error ────────────────────────────────────────────────
+  function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.textContent = msg;
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function hideError() {
+    document.getElementById('errorBox').classList.remove('show');
+  }
+
+  // ─── Init ─────────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    const saved = getApiKey();
+    if (saved) {
+      document.getElementById('apiKeyInput').value = saved;
+      const status = document.getElementById('apiStatus');
+      status.textContent = '✅ API key loaded from your device';
+      status.className = 'api-status ok';
+    }
+    updateGenerateBtn();
+  });
+</script>
+</body>
+</html>

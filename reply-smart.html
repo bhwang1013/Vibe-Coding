@@ -2,209 +2,314 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Reply Smart ✨</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
 
     :root {
-      --purple:       #7c3aed;
-      --purple-light: #a78bfa;
-      --purple-dark:  #5b21b6;
-      --pink:         #ec4899;
-      --bg:           #faf5ff;
-      --bg-card:      #ffffff;
-      --text:         #1e1b4b;
-      --text-muted:   #6b7280;
-      --border:       #e5e7eb;
-      --friendly:     #10b981;
-      --friendly-bg:  #ecfdf5;
-      --pro:          #3b82f6;
-      --pro-bg:       #eff6ff;
-      --mirror:       #f59e0b;
-      --mirror-bg:    #fffbeb;
-      --shadow:       0 4px 24px rgba(124,58,237,0.12);
-      --radius:       20px;
+      --deep:    #0d0520;
+      --purple1: #1a0a3d;
+      --purple2: #2d1066;
+      --purple3: #4c1d95;
+      --violet:  #7c3aed;
+      --lavender:#a78bfa;
+      --lilac:   #c4b5fd;
+      --gold:    #fbbf24;
+      --gold2:   #f59e0b;
+      --white:   #f5f0ff;
+      --muted:   #c4b5fd99;
+      --glass:   rgba(124,58,237,0.18);
+      --glass2:  rgba(167,139,250,0.12);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--deep);
+      color: var(--white);
       font-family: 'Nunito', sans-serif;
       font-weight: 600;
       min-height: 100vh;
-      padding-bottom: 48px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ══ BACKGROUND ══════════════════════════════════════════ */
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%,   #3b0764 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%,  #1e1b4b 0%, transparent 55%),
+        radial-gradient(ellipse 100% 80% at 50% 50%,  #0d0520 0%, #0d0520 100%);
+      z-index: 0;
+    }
+
+    /* Animated aurora streaks */
+    .aurora {
+      position: fixed;
+      width: 200%;
+      height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(167,139,250,0.4) 30%,
+        rgba(196,181,253,0.7) 50%,
+        rgba(251,191,36,0.4) 70%,
+        transparent 100%);
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: aurora 8s ease-in-out infinite;
+      z-index: 1;
+    }
+    .aurora:nth-child(1) { top: 20%; animation-delay: 0s; }
+    .aurora:nth-child(2) { top: 55%; animation-delay: 3s; opacity: .6; }
+    .aurora:nth-child(3) { top: 80%; animation-delay: 5.5s; opacity: .4; }
+    @keyframes aurora {
+      0%   { transform: translateX(-100%) rotate(-1deg); }
+      100% { transform: translateX(0%)    rotate(1deg); }
+    }
+
+    /* Stars */
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+    }
+    @keyframes twinkle {
+      0%,100% { opacity: .15; transform: scale(1); }
+      50%      { opacity: 1;   transform: scale(1.4); }
+    }
+
+    /* Horse silhouettes */
+    .horses-bg {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 260px;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .horse-row {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 0 5%;
+    }
+    .horse {
+      font-size: var(--sz, 80px);
+      opacity: var(--op, 0.12);
+      filter: blur(var(--blur, 0px)) brightness(0.4) sepia(1) saturate(3) hue-rotate(240deg);
+      transform: scaleX(-1);
+      animation: gallop var(--gd, 4s) ease-in-out infinite var(--gdelay, 0s);
+      line-height: 1;
+    }
+    .horse.flip { transform: scaleX(1); }
+    @keyframes gallop {
+      0%,100% { transform: scaleX(-1) translateY(0px); }
+      50%      { transform: scaleX(-1) translateY(-12px); }
+    }
+    .horse.flip { animation-name: gallop-flip; }
+    @keyframes gallop-flip {
+      0%,100% { transform: scaleX(1) translateY(0px); }
+      50%      { transform: scaleX(1) translateY(-10px); }
+    }
+
+    /* Floating horse top-right accent */
+    .horse-accent {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      font-size: 52px;
+      opacity: .18;
+      filter: brightness(0.5) sepia(1) saturate(4) hue-rotate(250deg);
+      z-index: 2;
+      animation: floatHorse 6s ease-in-out infinite;
+    }
+    @keyframes floatHorse {
+      0%,100% { transform: translateY(0) rotate(-5deg); }
+      50%      { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    /* ══ CONTENT ═════════════════════════════════════════════ */
+    .content {
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 80px;
     }
 
     /* ── Header ── */
     .header {
-      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
-      padding: 32px 24px 36px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      padding: 48px 16px 36px;
     }
-    .header::before, .header::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
+    .header-horses {
+      font-size: 38px;
+      letter-spacing: 4px;
+      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 12px rgba(251,191,36,0.5));
     }
-    .header::before { width: 200px; height: 200px; top: -60px; right: -50px; }
-    .header::after  { width: 160px; height: 160px; bottom: -60px; left: -40px; }
+    .header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 38px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--lilac) 50%, var(--gold2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-shadow: none;
+      filter: drop-shadow(0 0 20px rgba(251,191,36,0.3));
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
 
-    .header-emoji { font-size: 52px; display: block; margin-bottom: 10px; }
-    .header h1 { color: #fff; font-size: 34px; font-weight: 900; letter-spacing: -0.5px; }
-    .header p  { color: rgba(255,255,255,.85); font-size: 16px; margin-top: 7px; font-weight: 600; }
+    /* ── Divider ── */
+    .divider {
+      width: 180px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--lavender), var(--gold), transparent);
+      margin: 0 auto 32px;
+      border-radius: 2px;
+      box-shadow: 0 0 12px rgba(251,191,36,.4);
+    }
 
-    /* ── Layout ── */
-    .main { max-width: 680px; margin: 0 auto; padding: 28px 16px 0; }
-
-    /* ── Card ── */
+    /* ── Glass Card ── */
     .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 24px;
+      background: var(--glass);
+      border: 1.5px solid rgba(167,139,250,.3);
+      border-radius: 24px;
+      padding: 28px;
       margin-bottom: 20px;
-      box-shadow: var(--shadow);
-      border: 1.5px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,.4),
+        inset 0 1px 0 rgba(255,255,255,.08);
     }
+
     .card-title {
-      font-size: 18px;
-      font-weight: 800;
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    /* ── Upload Area ── */
-    .upload-area {
-      border: 3px dashed var(--purple-light);
+    /* ── Textarea ── */
+    .msg-textarea {
+      width: 100%;
+      min-height: 160px;
+      background: rgba(13,5,32,.6);
+      border: 1.5px solid rgba(167,139,250,.35);
       border-radius: 16px;
-      padding: 40px 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all .2s;
-      background: #f5f3ff;
-      position: relative;
-      user-select: none;
+      padding: 18px 20px;
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
     }
-    .upload-area:hover, .upload-area.drag-over {
-      border-color: var(--purple);
-      background: #ede9fe;
+    .msg-textarea::placeholder {
+      color: rgba(196,181,253,.45);
+      font-style: italic;
     }
-    .upload-area input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
+    .msg-textarea:focus {
+      border-color: var(--lavender);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.25), 0 0 20px rgba(167,139,250,.15);
     }
-    .upload-icon  { font-size: 52px; display: block; margin-bottom: 14px; pointer-events: none; }
-    .upload-label { font-size: 20px; font-weight: 800; color: var(--purple); display: block; margin-bottom: 6px; pointer-events: none; }
-    .upload-sub   { font-size: 14px; color: var(--text-muted); line-height: 1.5; pointer-events: none; }
-
-    /* ── Preview ── */
-    .preview-wrap { display: none; margin-top: 18px; position: relative; }
-    .preview-wrap.show { display: block; }
-    .preview-img {
-      width: 100%;
-      max-height: 340px;
-      object-fit: contain;
-      border-radius: 14px;
-      border: 2px solid var(--border);
-      background: #f9f9f9;
-      display: block;
-    }
-    .preview-remove {
-      position: absolute;
-      top: 8px; right: 8px;
-      background: rgba(0,0,0,.55);
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 34px; height: 34px;
-      font-size: 17px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .preview-remove:hover { background: rgba(0,0,0,.78); }
 
     /* ── Generate Button ── */
     .generate-btn {
       width: 100%;
       padding: 20px;
-      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 40%, #9333ea 70%, #c026d3 100%);
       color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'Nunito', sans-serif;
-      font-size: 21px;
-      font-weight: 900;
+      border: 1.5px solid rgba(251,191,36,.4);
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
       cursor: pointer;
-      transition: opacity .2s, transform .1s;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 6px 24px rgba(124,58,237,.38);
+      gap: 12px;
+      box-shadow:
+        0 6px 30px rgba(124,58,237,.55),
+        0 0 60px rgba(124,58,237,.2),
+        inset 0 1px 0 rgba(255,255,255,.15);
       margin-bottom: 20px;
     }
-    .generate-btn:hover:not(:disabled) { opacity: .91; }
-    .generate-btn:active:not(:disabled) { transform: scale(.98); }
-    .generate-btn:disabled {
-      opacity: .4;
-      cursor: not-allowed;
+    .generate-btn:hover:not(:disabled) {
+      opacity: .92;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(124,58,237,.7), 0 0 80px rgba(167,139,250,.25);
     }
-    /* hint shown below button when no image yet */
-    .hint {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-top: -12px;
-      margin-bottom: 20px;
-      display: none;
-    }
-    .hint.show { display: block; }
+    .generate-btn:active:not(:disabled) { transform: scale(.98) translateY(0); }
+    .generate-btn:disabled { opacity: .35; cursor: not-allowed; }
 
     /* ── Loading ── */
     .loading {
       display: none;
       text-align: center;
-      padding: 36px 24px;
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1.5px solid var(--border);
-      margin-bottom: 20px;
+      padding: 40px 24px;
     }
     .loading.show { display: block; }
-    .spinner {
-      width: 52px; height: 52px;
-      border: 5px solid #e9d5ff;
-      border-top-color: var(--purple);
-      border-radius: 50%;
-      animation: spin .9s linear infinite;
-      margin: 0 auto 18px;
+    .horse-loader { font-size: 48px; animation: rideAcross 1.8s ease-in-out infinite; display: block; margin: 0 auto 18px; }
+    @keyframes rideAcross {
+      0%   { transform: translateX(-20px) scaleX(-1); }
+      50%  { transform: translateX(20px) scaleX(-1); }
+      100% { transform: translateX(-20px) scaleX(-1); }
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading p { color: var(--text-muted); font-size: 17px; font-weight: 700; }
+    .loading p {
+      color: var(--lilac);
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
 
     /* ── Error ── */
     .error-box {
       display: none;
-      background: #fef2f2;
-      border: 2px solid #fca5a5;
-      border-radius: 14px;
+      background: rgba(185,28,28,.25);
+      border: 1.5px solid rgba(252,165,165,.4);
+      border-radius: 16px;
       padding: 18px 22px;
-      color: #991b1b;
+      color: #fca5a5;
       font-size: 15px;
       margin-bottom: 20px;
       line-height: 1.5;
@@ -214,56 +319,92 @@
     /* ── Results ── */
     .results { display: none; }
     .results.show { display: block; }
-    .results-title {
-      font-size: 24px;
-      font-weight: 900;
+
+    .results-header {
       text-align: center;
+      margin-bottom: 24px;
+    }
+    .results-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      background: linear-gradient(135deg, var(--gold), var(--lilac));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1.5px;
+    }
+
+    /* ── Reply Cards ── */
+    .reply-card {
+      border-radius: 24px;
+      padding: 26px;
       margin-bottom: 18px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .reply-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 24px 24px 0 0;
     }
 
-    /* ── Response Cards ── */
-    .response-card {
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 16px;
-      border: 2px solid;
+    /* Friendly */
+    .reply-card.friendly {
+      background: rgba(16,185,129,.12);
+      border: 1.5px solid rgba(16,185,129,.35);
     }
-    .response-card.friendly    { background: var(--friendly-bg); border-color: var(--friendly); }
-    .response-card.professional{ background: var(--pro-bg);      border-color: var(--pro); }
-    .response-card.mirror      { background: var(--mirror-bg);   border-color: var(--mirror); }
+    .reply-card.friendly::before { background: linear-gradient(90deg, #10b981, #34d399, #10b981); }
 
-    .response-badge {
+    /* Professional */
+    .reply-card.professional {
+      background: rgba(59,130,246,.12);
+      border: 1.5px solid rgba(59,130,246,.35);
+    }
+    .reply-card.professional::before { background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6); }
+
+    /* Mirror */
+    .reply-card.mirror {
+      background: rgba(245,158,11,.1);
+      border: 1.5px solid rgba(245,158,11,.35);
+    }
+    .reply-card.mirror::before { background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b); }
+
+    .reply-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 800;
+      gap: 7px;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       padding: 5px 14px;
       border-radius: 100px;
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      color: #fff;
+      margin-bottom: 16px;
     }
-    .friendly     .response-badge { background: var(--friendly); }
-    .professional .response-badge { background: var(--pro); }
-    .mirror       .response-badge { background: var(--mirror); }
+    .friendly     .reply-badge { background: rgba(16,185,129,.2);  color: #6ee7b7; border: 1px solid rgba(16,185,129,.4); }
+    .professional .reply-badge { background: rgba(59,130,246,.2);  color: #93c5fd; border: 1px solid rgba(59,130,246,.4); }
+    .mirror       .reply-badge { background: rgba(245,158,11,.2);  color: #fcd34d; border: 1px solid rgba(245,158,11,.4); }
 
-    .response-text {
+    .reply-text {
       font-size: 16px;
       font-weight: 600;
-      color: var(--text);
-      line-height: 1.7;
+      color: rgba(245,240,255,.92);
+      line-height: 1.75;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
     .copy-btn {
       width: 100%;
-      margin-top: 16px;
+      margin-top: 18px;
       padding: 13px;
-      border: 2.5px solid;
-      border-radius: 12px;
+      border-radius: 14px;
       font-family: 'Nunito', sans-serif;
       font-size: 15px;
       font-weight: 800;
@@ -273,83 +414,151 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: #fff;
+      background: transparent;
     }
-    .friendly     .copy-btn { border-color: var(--friendly); color: var(--friendly); }
-    .friendly     .copy-btn:hover { background: var(--friendly); color: #fff; }
-    .professional .copy-btn { border-color: var(--pro); color: var(--pro); }
-    .professional .copy-btn:hover { background: var(--pro); color: #fff; }
-    .mirror       .copy-btn { border-color: var(--mirror); color: var(--mirror); }
-    .mirror       .copy-btn:hover { background: var(--mirror); color: #fff; }
+    .friendly     .copy-btn { border: 1.5px solid rgba(16,185,129,.5);  color: #6ee7b7; }
+    .friendly     .copy-btn:hover { background: rgba(16,185,129,.2); }
+    .professional .copy-btn { border: 1.5px solid rgba(59,130,246,.5);  color: #93c5fd; }
+    .professional .copy-btn:hover { background: rgba(59,130,246,.2); }
+    .mirror       .copy-btn { border: 1.5px solid rgba(245,158,11,.5);  color: #fcd34d; }
+    .mirror       .copy-btn:hover { background: rgba(245,158,11,.2); }
     .copy-btn:active { transform: scale(.97); }
 
-    /* ── Reset Button ── */
-    .reset-btn {
+    /* ── Again Button ── */
+    .again-btn {
       width: 100%;
       padding: 17px;
-      background: #fff;
-      color: var(--purple);
-      border: 2.5px solid var(--purple);
-      border-radius: var(--radius);
-      font-family: 'Nunito', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
+      background: transparent;
+      color: var(--lavender);
+      border: 1.5px solid rgba(167,139,250,.4);
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
       cursor: pointer;
       transition: all .2s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
-    .reset-btn:hover  { background: var(--purple); color: #fff; }
-    .reset-btn:active { transform: scale(.98); }
+    .again-btn:hover { background: rgba(124,58,237,.25); border-color: var(--lavender); color: #fff; }
+
+    /* ── API Key subtle setup ── */
+    .setup-bar {
+      background: rgba(251,191,36,.08);
+      border: 1px solid rgba(251,191,36,.25);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .setup-bar.show { display: block; }
+    .setup-bar p {
+      font-size: 13px;
+      color: rgba(251,191,36,.8);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .setup-row { display: flex; gap: 10px; }
+    .key-input {
+      flex: 1;
+      background: rgba(13,5,32,.7);
+      border: 1px solid rgba(251,191,36,.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+    .key-input:focus { border-color: var(--gold); }
+    .key-input::placeholder { color: rgba(251,191,36,.35); }
+    .key-save {
+      padding: 10px 18px;
+      background: rgba(251,191,36,.2);
+      border: 1px solid rgba(251,191,36,.4);
+      border-radius: 10px;
+      color: var(--gold);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s;
+    }
+    .key-save:hover { background: rgba(251,191,36,.35); }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <span class="header-emoji">💬✨</span>
-  <h1>Reply Smart</h1>
-  <p>Upload a screenshot — get 3 perfect reply options instantly</p>
+<!-- Background layers -->
+<div class="bg-gradient"></div>
+<div class="aurora"></div>
+<div class="aurora"></div>
+<div class="aurora"></div>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Horse silhouettes bottom -->
+<div class="horses-bg">
+  <div class="horse-row">
+    <span class="horse" style="--sz:60px;--op:0.08;--blur:1px;--gd:5s;--gdelay:0s">🐴</span>
+    <span class="horse flip" style="--sz:90px;--op:0.13;--blur:0px;--gd:4.2s;--gdelay:1.5s">🐎</span>
+    <span class="horse" style="--sz:70px;--op:0.09;--blur:1px;--gd:6s;--gdelay:0.8s">🐴</span>
+    <span class="horse flip" style="--sz:100px;--op:0.14;--blur:0px;--gd:3.8s;--gdelay:2.5s">🐎</span>
+    <span class="horse" style="--sz:65px;--op:0.07;--blur:2px;--gd:5.5s;--gdelay:1s">🐴</span>
+    <span class="horse flip" style="--sz:80px;--op:0.11;--blur:0px;--gd:4.8s;--gdelay:0.3s">🐎</span>
+  </div>
 </div>
 
-<div class="main">
+<!-- Floating accent horse -->
+<div class="horse-accent">🐎</div>
 
-  <!-- Upload Card -->
-  <div class="card">
-    <div class="card-title">📸 Upload Your Screenshot</div>
-    <div
-      class="upload-area"
-      id="uploadArea"
-      ondragover="handleDragOver(event)"
-      ondragleave="handleDragLeave(event)"
-      ondrop="handleDrop(event)"
-    >
-      <input type="file" accept="image/*" id="fileInput" onchange="handleFile(event)"/>
-      <span class="upload-icon">📷</span>
-      <span class="upload-label">Tap to choose a screenshot</span>
-      <span class="upload-sub">
-        Works with emails, texts, DMs — anything!<br>
-        Drag &amp; drop also works
-      </span>
-    </div>
-    <div class="preview-wrap" id="previewWrap">
-      <img class="preview-img" id="previewImg" src="" alt="Screenshot preview"/>
-      <button class="preview-remove" onclick="removeImage()" title="Remove image">✕</button>
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="header-horses">🐎 ✨ 🐎</span>
+    <h1>REPLY SMART</h1>
+    <p>Paste any message — get 3 perfect replies instantly</p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- API Key Setup (shown only if no key saved) -->
+  <div class="setup-bar" id="setupBar">
+    <p>🔑 One-time setup: enter your Anthropic API key (saved privately on your device)</p>
+    <div class="setup-row">
+      <input type="password" class="key-input" id="keyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+      <button class="key-save" onclick="saveKey()">Save</button>
     </div>
   </div>
 
+  <!-- Message Input -->
+  <div class="card">
+    <div class="card-title">✦ Paste The Message You Received</div>
+    <textarea
+      class="msg-textarea"
+      id="msgInput"
+      placeholder="Paste or type the email, text, or message here…&#10;&#10;Example: &quot;Hey! Are you free this weekend? We're having a little get-together 🎉&quot;"
+      oninput="updateBtn()"
+    ></textarea>
+  </div>
+
   <!-- Generate Button -->
-  <button class="generate-btn" id="generateBtn" onclick="generateReplies()" disabled>
-    <span>✨</span> Generate My 3 Replies
+  <button class="generate-btn" id="generateBtn" onclick="generate()" disabled>
+    🐎 &nbsp;Generate My 3 Replies&nbsp; ✨
   </button>
-  <p class="hint show" id="hint">👆 Upload a screenshot first, then tap the button above</p>
 
   <!-- Loading -->
   <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p>Reading your message &amp; writing replies…</p>
+    <span class="horse-loader">🐎</span>
+    <p>Crafting your perfect replies…</p>
   </div>
 
   <!-- Error -->
@@ -357,97 +566,136 @@
 
   <!-- Results -->
   <div class="results" id="results">
-    <div class="results-title">✨ Your 3 Reply Options</div>
-
-    <div class="response-card friendly">
-      <span class="response-badge">😊 Friendly</span>
-      <div class="response-text" id="friendlyText"></div>
-      <button class="copy-btn" onclick="copyText('friendlyText', this)">📋 Copy This Reply</button>
+    <div class="results-header">
+      <h2>✦ Your 3 Reply Options ✦</h2>
     </div>
 
-    <div class="response-card professional">
-      <span class="response-badge">💼 Professional</span>
-      <div class="response-text" id="proText"></div>
-      <button class="copy-btn" onclick="copyText('proText', this)">📋 Copy This Reply</button>
+    <div class="reply-card friendly">
+      <span class="reply-badge">😊 Friendly</span>
+      <div class="reply-text" id="friendlyText"></div>
+      <button class="copy-btn" onclick="copy('friendlyText',this)">📋 Copy This Reply</button>
     </div>
 
-    <div class="response-card mirror">
-      <span class="response-badge">🪞 Their Tone</span>
-      <div class="response-text" id="mirrorText"></div>
-      <button class="copy-btn" onclick="copyText('mirrorText', this)">📋 Copy This Reply</button>
+    <div class="reply-card professional">
+      <span class="reply-badge">💼 Professional</span>
+      <div class="reply-text" id="proText"></div>
+      <button class="copy-btn" onclick="copy('proText',this)">📋 Copy This Reply</button>
     </div>
 
-    <button class="reset-btn" onclick="resetApp()">📸 Scan Another Message</button>
+    <div class="reply-card mirror">
+      <span class="reply-badge">🪞 Their Tone</span>
+      <div class="reply-text" id="mirrorText"></div>
+      <button class="copy-btn" onclick="copy('mirrorText',this)">📋 Copy This Reply</button>
+    </div>
+
+    <button class="again-btn" onclick="reset()">🐎 &nbsp; Reply To Another Message</button>
   </div>
 
 </div>
 
 <script>
-  let selectedFile = null;
+  // ── Stars ──────────────────────────────────────────────────
+  (function makeStars() {
+    const el = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      const size = Math.random() * 2.5 + 0.5;
+      s.className = 'star';
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        --d:${(Math.random()*4+2).toFixed(1)}s;
+        --delay:-${(Math.random()*6).toFixed(1)}s;
+      `;
+      el.appendChild(s);
+    }
+  })();
 
-  // ── File Handling ──────────────────────────────────────────
-  function handleFile(e) {
-    const file = e.target.files[0];
-    if (file) loadFile(file);
+  // ── API Key ────────────────────────────────────────────────
+  function getKey() { return localStorage.getItem('rs_key') || ''; }
+
+  function saveKey() {
+    const v = document.getElementById('keyInput').value.trim();
+    if (!v.startsWith('sk-ant-')) {
+      alert('That doesn\'t look right. The key should start with sk-ant-');
+      return;
+    }
+    localStorage.setItem('rs_key', v);
+    document.getElementById('setupBar').classList.remove('show');
+    updateBtn();
   }
 
-  function handleDragOver(e) {
-    e.preventDefault();
-    document.getElementById('uploadArea').classList.add('drag-over');
+  function checkSetup() {
+    if (!getKey()) document.getElementById('setupBar').classList.add('show');
   }
 
-  function handleDragLeave() {
-    document.getElementById('uploadArea').classList.remove('drag-over');
+  // ── Button State ───────────────────────────────────────────
+  function updateBtn() {
+    const hasMsg = document.getElementById('msgInput').value.trim().length > 0;
+    const hasKey = getKey().length > 0;
+    document.getElementById('generateBtn').disabled = !(hasMsg && hasKey);
   }
 
-  function handleDrop(e) {
-    e.preventDefault();
-    document.getElementById('uploadArea').classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) loadFile(file);
-  }
-
-  function loadFile(file) {
-    selectedFile = file;
-    const url = URL.createObjectURL(file);
-    document.getElementById('previewImg').src = url;
-    document.getElementById('previewWrap').classList.add('show');
-    // Enable button
-    document.getElementById('generateBtn').disabled = false;
-    document.getElementById('hint').classList.remove('show');
-  }
-
-  function removeImage() {
-    selectedFile = null;
-    document.getElementById('previewWrap').classList.remove('show');
-    document.getElementById('previewImg').src = '';
-    document.getElementById('fileInput').value = '';
-    document.getElementById('generateBtn').disabled = true;
-    document.getElementById('hint').classList.add('show');
-    document.getElementById('results').classList.remove('show');
-  }
-
-  // ── Generate ──────────────────────────────────────────────
-  async function generateReplies() {
-    if (!selectedFile) return;
+  // ── Generate ───────────────────────────────────────────────
+  async function generate() {
+    const msg = document.getElementById('msgInput').value.trim();
+    const key = getKey();
+    if (!msg || !key) return;
 
     hideError();
     document.getElementById('results').classList.remove('show');
     document.getElementById('loading').classList.add('show');
     document.getElementById('generateBtn').disabled = true;
 
+    const prompt = `You are a reply assistant. Here is a message someone received:
+
+"""
+${msg}
+"""
+
+Write THREE different replies. Return ONLY a JSON object — no markdown, no code blocks:
+{
+  "friendly": "A warm, casual, friendly reply — natural, personal, use emojis if appropriate",
+  "professional": "A polished, clear, respectful professional reply suitable for work or formal situations",
+  "mirror": "A reply that perfectly mirrors the sender's own tone, style, energy, vocabulary, and formality — if they used emojis use them, if they were brief be brief, if formal be formal"
+}`;
+
     try {
-      const formData = new FormData();
-      formData.append('screenshot', selectedFile);
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-opus-4-6',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
 
-      const res = await fetch('/generate', { method: 'POST', body: formData });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        throw new Error(e.error?.message || `Error ${res.status}`);
+      }
+
       const data = await res.json();
+      const raw  = data.content?.[0]?.text || '';
 
-      if (!res.ok) throw new Error(data.error || 'Server error. Please try again.');
+      let parsed;
+      try { parsed = JSON.parse(raw); }
+      catch {
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (m) parsed = JSON.parse(m[0]);
+        else throw new Error('Could not read the response. Please try again.');
+      }
 
-      document.getElementById('friendlyText').textContent = data.friendly     || '(no response)';
-      document.getElementById('proText').textContent      = data.professional || '(no response)';
-      document.getElementById('mirrorText').textContent   = data.mirror       || '(no response)';
+      document.getElementById('friendlyText').textContent = parsed.friendly     || '';
+      document.getElementById('proText').textContent      = parsed.professional || '';
+      document.getElementById('mirrorText').textContent   = parsed.mirror       || '';
 
       document.getElementById('results').classList.add('show');
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -460,32 +708,37 @@
     }
   }
 
-  // ── Copy ─────────────────────────────────────────────────
-  function copyText(id, btn) {
-    const text = document.getElementById(id).textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = btn.innerHTML;
+  // ── Copy ──────────────────────────────────────────────────
+  function copy(id, btn) {
+    navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
+      const o = btn.innerHTML;
       btn.innerHTML = '✅ Copied!';
-      setTimeout(() => btn.innerHTML = orig, 2000);
+      setTimeout(() => btn.innerHTML = o, 2000);
     });
   }
 
   // ── Reset ─────────────────────────────────────────────────
-  function resetApp() {
-    removeImage();
+  function reset() {
+    document.getElementById('msgInput').value = '';
+    document.getElementById('results').classList.remove('show');
+    updateBtn();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => document.getElementById('msgInput').focus(), 600);
   }
 
   // ── Error ─────────────────────────────────────────────────
-  function showError(msg) {
+  function showError(m) {
     const b = document.getElementById('errorBox');
-    b.textContent = msg;
+    b.textContent = m;
     b.classList.add('show');
   }
-
   function hideError() {
     document.getElementById('errorBox').classList.remove('show');
   }
+
+  // ── Init ──────────────────────────────────────────────────
+  checkSetup();
+  updateBtn();
 </script>
 </body>
 </html>

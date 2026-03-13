@@ -837,7 +837,7 @@ function startWorkout(template) {
   clearInterval(state.elapsedInterval);
   state.elapsedInterval = setInterval(()=>{
     if (!state.workout) return;
-    state.workout.elapsed++;
+    state.workout.elapsed = Math.floor((Date.now() - state.workout.startTime) / 1000);
     const el = document.getElementById('topBarTimer');
     if (el) el.textContent = formatTime(state.workout.elapsed);
   }, 1000);

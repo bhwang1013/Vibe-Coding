@@ -962,7 +962,7 @@ function renderHome() {
 }
 
 function renderHistoryContent() {
-  const workouts = loadWorkouts().slice().reverse();
+  const workouts = loadWorkouts().slice().sort((a,b)=>b.date-a.date);
   if (!workouts.length) return `<div class="hist-empty">No workouts logged yet.<br/>Finish a session to see<br/>your history here.</div>`;
   return `<div class="hist-list">${workouts.map(renderHistCard).join('')}</div>`;
 }
@@ -1327,10 +1327,11 @@ function buildChartHTML(exName) {
     .filter(w => w.exercises && w.exercises.some(e=>e.name===exName))
     .map(w => {
       const ex = w.exercises.find(e=>e.name===exName);
-      const maxW = ex.sets.reduce((m,s)=>Math.max(m, parseFloat(s.weight)||0), 0);
+      const wMax = ex.sets.reduce((m,s)=>Math.max(m, parseFloat(s.weight)||0), 0);
       const d = new Date(w.date);
-      return { label: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), weight: maxW };
+      return { date: w.date, label: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), weight: wMax };
     })
+    .sort((a,b)=>a.date-b.date)
     .slice(-10);
 
   if (!points.length) return `<div class="chart-no-data">No history yet.<br/>Complete a set to start tracking.</div>`;

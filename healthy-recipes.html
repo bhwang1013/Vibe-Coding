@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>健康食譜 · Healthy Recipes for Mom</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+TC:wght@300;400;500&family=Inter:wght@300;400;500&display=swap');
+
+    :root {
+      --imperial: #2d0057;
+      --royal:    #4a0080;
+      --violet:   #6b21a8;
+      --orchid:   #9333ea;
+      --lavender: #c084fc;
+      --mist:     #f3e8ff;
+      --cream:    #fdf8ff;
+      --gold:     #d4a853;
+      --jade:     #2d7a5a;
+      --jade-lt:  #4caf82;
+      --text:     #1a0033;
+      --subtext:  #6b4c80;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Inter', 'Noto Serif TC', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--imperial) 0%, var(--royal) 45%, var(--violet) 100%);
+      padding: 60px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 80%, rgba(147,51,234,.25) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 300px at 80% 20%, rgba(212,168,83,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(212,168,83,.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .hero h1 span { color: var(--lavender); }
+    .hero-sub {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.15rem;
+      color: rgba(255,255,255,.75);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .hero-en {
+      font-size: .9rem;
+      color: rgba(255,255,255,.5);
+      margin-bottom: 36px;
+      letter-spacing: 2px;
+      font-weight: 300;
+    }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .pill {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      font-size: .8rem;
+      padding: 6px 16px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+    .pill.jade { background: rgba(45,122,90,.4); border-color: var(--jade-lt); color: #a7f3d0; }
+    .deco-line {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── BENEFITS BAR ── */
+    .benefits {
+      background: var(--imperial);
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,.8);
+      font-size: .82rem;
+      letter-spacing: .5px;
+    }
+    .benefit-icon { font-size: 1.1rem; }
+
+    /* ── FILTERS ── */
+    .filters-section {
+      padding: 36px 24px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .filters-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--subtext);
+      font-weight: 400;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+    .filter-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .filter-btn {
+      background: white;
+      border: 1.5px solid var(--lavender);
+      color: var(--violet);
+      font-size: .82rem;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .5px;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--violet);
+      border-color: var(--violet);
+      color: white;
+      box-shadow: 0 4px 12px rgba(107,33,168,.25);
+    }
+
+    /* ── GRID ── */
+    .grid-section {
+      padding: 36px 24px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-label h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--imperial);
+    }
+    .section-label .count {
+      background: var(--mist);
+      color: var(--orchid);
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(45,0,87,.07);
+      border: 1px solid rgba(192,132,252,.15);
+      transition: transform .25s, box-shadow .25s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(107,33,168,.18);
+    }
+    .card-img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.18) 100%);
+    }
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,.9);
+      color: var(--jade);
+      font-size: .7rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: .5px;
+      z-index: 2;
+      backdrop-filter: blur(4px);
+    }
+    .card-body { padding: 20px 22px 22px; }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .tag.veg   { background: #f0fdf4; color: #16a34a; }
+    .tag.chol  { background: #eff6ff; color: #2563eb; }
+    .tag.colon { background: #fdf4ff; color: #9333ea; }
+    .tag.tw    { background: #fff7ed; color: #c2410c; }
+    .tag.quick { background: #fefce8; color: #a16207; }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--imperial);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .card-zh {
+      font-family: 'Noto Serif TC', serif;
+      font-size: .9rem;
+      color: var(--subtext);
+      margin-bottom: 10px;
+    }
+    .card-desc {
+      font-size: .83rem;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .card-meta {
+      display: flex;
+      gap: 14px;
+      font-size: .78rem;
+      color: var(--subtext);
+      border-top: 1px solid var(--mist);
+      padding-top: 12px;
+    }
+    .meta-item { display: flex; align-items: center; gap: 5px; }
+    .meta-icon { font-size: .95rem; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,0,40,.6);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      padding: 24px;
+      overflow-y: auto;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 24px;
+      max-width: 680px;
+      width: 100%;
+      margin: auto;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(45,0,87,.35);
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.85);
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      color: var(--imperial);
+    }
+    .modal-body { padding: 28px 32px 36px; }
+    .modal-body .card-tags { margin-bottom: 14px; }
+    .modal-body h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: var(--imperial);
+      margin-bottom: 4px;
+    }
+    .modal-zh {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--subtext);
+      margin-bottom: 16px;
+    }
+    .modal-why {
+      background: var(--mist);
+      border-left: 3px solid var(--orchid);
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      font-size: .85rem;
+      color: var(--subtext);
+      line-height: 1.7;
+    }
+    .modal-why strong { color: var(--violet); }
+    .modal-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--violet);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--mist);
+      letter-spacing: .5px;
+    }
+    .ingredients-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 16px;
+      margin-bottom: 22px;
+    }
+    .ingredients-list li {
+      font-size: .85rem;
+      color: #444;
+      padding: 5px 0;
+      border-bottom: 1px dashed rgba(192,132,252,.2);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .ing-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orchid);
+      flex-shrink: 0;
+    }
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .steps-list li {
+      display: flex;
+      gap: 14px;
+      font-size: .85rem;
+      color: #444;
+      line-height: 1.65;
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--violet);
+      color: white;
+      font-size: .75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .nutrition-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+      background: var(--mist);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .nutr-item { text-align: center; }
+    .nutr-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--imperial);
+      font-family: 'Playfair Display', serif;
+    }
+    .nutr-lbl { font-size: .7rem; color: var(--subtext); margin-top: 2px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--imperial);
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      padding: 28px 24px;
+      font-size: .8rem;
+      letter-spacing: 1px;
+    }
+    footer span { color: var(--gold); }
+
+    /* hidden */
+    .card.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">台灣媽媽健康廚房</div>
+  <h1>Healthy <span>Recipes</span><br/>for Mom</h1>
+  <p class="hero-sub">媽媽的養生食譜 · 低糖降膽固醇</p>
+  <p class="hero-en">Pre-Diabetes · Lower Cholesterol · Colon Health</p>
+  <div class="hero-pills">
+    <span class="pill">🥦 Rich in Fiber</span>
+    <span class="pill jade">🌿 Low Glycemic</span>
+    <span class="pill">💜 Antioxidant-Rich</span>
+    <span class="pill">🫀 Heart Healthy</span>
+    <span class="pill jade">🇹🇼 Taiwan Flavors</span>
+  </div>
+  <div class="deco-line"></div>
+</section>
+
+<!-- BENEFITS BAR -->
+<div class="benefits">
+  <div class="benefit-item"><span class="benefit-icon">🩺</span> Manages Blood Sugar</div>
+  <div class="benefit-item"><span class="benefit-icon">💙</span> Lowers Cholesterol</div>
+  <div class="benefit-item"><span class="benefit-icon">🫁</span> Supports Colon Health</div>
+  <div class="benefit-item"><span class="benefit-icon">🥗</span> Vegetables First</div>
+  <div class="benefit-item"><span class="benefit-icon">🧄</span> Traditional Taiwanese Flavors</div>
+</div>
+
+<!-- FILTERS -->
+<section class="filters-section">
+  <h2>Filter by Health Goal</h2>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-filter="all">All Recipes</button>
+    <button class="filter-btn" data-filter="blood-sugar">🩸 Blood Sugar</button>
+    <button class="filter-btn" data-filter="cholesterol">💙 Cholesterol</button>
+    <button class="filter-btn" data-filter="colon">🌿 Colon Health</button>
+    <button class="filter-btn" data-filter="taiwanese">🇹🇼 Taiwanese Style</button>
+    <button class="filter-btn" data-filter="quick">⚡ Quick & Easy</button>
+  </div>
+</section>
+
+<!-- GRID -->
+<section class="grid-section">
+  <div class="section-label">
+    <h2>Today's Recipes</h2>
+    <span class="count" id="recipe-count">12 recipes</span>
+  </div>
+  <div class="recipe-grid" id="recipe-grid"></div>
+</section>
+
+<footer>
+  Made with <span>♥</span> for Mom · 愛護媽媽的健康 · 台灣味道
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+const RECIPES = [
+  {
+    id: 1,
+    emoji: "🥦",
+    gradient: "linear-gradient(135deg,#e0f2fe,#ddd6fe)",
+    name: "Broccoli & Mushroom Stir-Fry",
+    zh: "花椰菜炒香菇",
+    tags: ["blood-sugar","cholesterol","colon","taiwanese"],
+    tagLabels: [{c:"veg",l:"High Fiber"},{c:"chol",l:"Cholesterol ↓"},{c:"tw",l:"Taiwanese"}],
+    badge: "⭐ Staff Pick",
+    time: "15 min",
+    serves: "2–3",
+    difficulty: "Easy",
+    why: "<strong>Broccoli</strong> is a superstar for colon cancer prevention — rich in sulforaphane, fiber, and vitamins C & K. <strong>Shiitake mushrooms</strong> contain beta-glucans that actively lower LDL cholesterol. This classic Taiwanese combination is light, satisfying, and blood-sugar friendly.",
+    ingredients: [
+      "1 large head broccoli, cut into florets",
+      "200g fresh shiitake mushrooms, sliced",
+      "3 cloves garlic, minced",
+      "1 tbsp olive oil",
+      "2 tbsp low-sodium soy sauce",
+      "1 tsp sesame oil",
+      "½ tsp white pepper",
+      "1 tbsp Shaoxing wine (optional)",
+      "Salt to taste",
+      "Fresh ginger, 3 slices"
+    ],
+    steps: [
+      "Blanch broccoli florets in boiling water for 1 min, then drain and set aside.",
+      "Heat olive oil in wok over medium-high heat. Add garlic and ginger, stir 30 seconds until fragrant.",
+      "Add mushrooms, stir-fry 2–3 min until softened.",
+      "Add broccoli back, pour soy sauce and Shaoxing wine around the edges of the wok.",
+      "Toss everything for 2 min on high heat.",
+      "Finish with sesame oil and white pepper. Serve immediately over brown rice."
+    ],
+    nutrition: { cal: 120, fiber: "6g", protein: "7g", sugar: "3g" }
+  },
+  {
+    id: 2,
+    emoji: "🍠",
+    gradient: "linear-gradient(135deg,#fdf4ff,#fce7f3)",
+    name: "Purple Sweet Potato Congee",
+    zh: "紫地瓜粥",
+    tags: ["blood-sugar","colon"],
+    tagLabels: [{c:"colon",l:"Colon Health"},{c:"veg",l:"Low GI"},{c:"tw",l:"Taiwanese"}],
+    badge: "💜 Mom's Fav",
+    time: "35 min",
+    serves: "4",
+    difficulty: "Easy",
+    why: "<strong>Purple sweet potato</strong> contains anthocyanins — powerful antioxidants that protect colon cells and reduce inflammation. Its low glycemic index makes it perfect for pre-diabetes management. A comforting classic in Taiwan.",
+    ingredients: [
+      "1 cup short-grain brown rice",
+      "2 medium purple sweet potatoes, cubed",
+      "6 cups water or low-sodium vegetable broth",
+      "2 slices fresh ginger",
+      "1 tsp sesame oil",
+      "Chopped green onion for garnish",
+      "White pepper to taste",
+      "1 tsp salt (or to taste)"
+    ],
+    steps: [
+      "Wash brown rice and soak for 30 min (speeds cooking).",
+      "Peel and cube sweet potatoes into 2cm pieces.",
+      "Bring broth and ginger to a boil. Add rice.",
+      "Simmer on medium-low for 20 min, stirring occasionally.",
+      "Add sweet potato cubes and continue cooking 10–15 min until soft.",
+      "Season with salt, white pepper, and sesame oil.",
+      "Serve in bowls, topped with green onion."
+    ],
+    nutrition: { cal: 210, fiber: "5g", protein: "5g", sugar: "8g" }
+  },
+  {
+    id: 3,
+    emoji: "🥬",
+    gradient: "linear-gradient(135deg,#f0fdf4,#dcfce7)",
+    name: "Three-Cup Tofu with Greens",
+    zh: "三杯豆腐炒青菜",
+    tags: ["blood-sugar","cholesterol","taiwanese","quick"],
+    tagLabels: [{c:"tw",l:"Taiwanese"},{c:"chol",l:"Cholesterol ↓"},{c:"quick",l:"Quick"}],
+    badge: "🔥 Popular",
+    time: "20 min",
+    serves: "3–4",
+    difficulty: "Easy",
+    why: "<strong>Firm tofu</strong> is rich in plant protein and isoflavones that help lower LDL cholesterol. <strong>Basil</strong> and <strong>bok choy</strong> add fiber and folate — key for colon health. Three-cup sauce uses minimal sugar and oil compared to traditional versions.",
+    ingredients: [
+      "400g firm tofu, cubed and pan-fried",
+      "200g bok choy, halved",
+      "1 cup Thai basil leaves",
+      "5 cloves garlic, smashed",
+      "4 slices ginger",
+      "2 red chilies, sliced",
+      "1 tbsp sesame oil",
+      "1.5 tbsp low-sodium soy sauce",
+      "1 tbsp rice wine (米酒)",
+      "1 tsp coconut sugar (small amount)"
+    ],
+    steps: [
+      "Pan-fry tofu cubes in a dry non-stick pan until golden on all sides. Remove and set aside.",
+      "In a wok, heat sesame oil. Add garlic, ginger, and chilies — fry 1 min.",
+      "Add soy sauce, rice wine, and coconut sugar. Stir.",
+      "Add tofu back and toss to coat in sauce, 2 min.",
+      "Add bok choy, stir-fry until just wilted, 2 min.",
+      "Turn off heat, fold in fresh basil. Serve immediately."
+    ],
+    nutrition: { cal: 190, fiber: "4g", protein: "14g", sugar: "4g" }
+  },
+  {
+    id: 4,
+    emoji: "🍲",
+    gradient: "linear-gradient(135deg,#fff7ed,#fef3c7)",
+    name: "Miso Vegetable Hot Pot",
+    zh: "味噌蔬菜火鍋",
+    tags: ["cholesterol","colon","taiwanese"],
+    tagLabels: [{c:"colon",l:"Colon Health"},{c:"veg",l:"High Fiber"},{c:"chol",l:"Cholesterol ↓"}],
+    badge: "🍲 Warming",
+    time: "30 min",
+    serves: "4",
+    difficulty: "Easy",
+    why: "<strong>Miso</strong> is a fermented food that supports gut microbiome diversity, directly linked to lower colon cancer risk. This hot pot is loaded with fiber-rich vegetables — cabbage, carrots, mushrooms — each contributing to healthy digestion and stable blood sugar.",
+    ingredients: [
+      "3 tbsp white miso paste",
+      "6 cups low-sodium dashi or veggie broth",
+      "½ napa cabbage, sliced",
+      "2 carrots, sliced diagonally",
+      "200g enoki mushrooms",
+      "1 block soft tofu, cubed",
+      "100g spinach",
+      "2 green onions, chopped",
+      "1 sheet kombu (optional)",
+      "Goji berries for garnish (optional)"
+    ],
+    steps: [
+      "Bring dashi to a gentle simmer with kombu. Remove kombu after 10 min.",
+      "Dissolve miso paste in a ladle of broth, then stir back into pot.",
+      "Add carrots and cabbage first — simmer 5 min.",
+      "Add mushrooms and tofu — simmer 4 min.",
+      "Add spinach last, cook 1 min.",
+      "Garnish with green onion and serve in individual bowls."
+    ],
+    nutrition: { cal: 155, fiber: "7g", protein: "10g", sugar: "5g" }
+  },
+  {
+    id: 5,
+    emoji: "🥗",
+    gradient: "linear-gradient(135deg,#f5f3ff,#ede9fe)",
+    name: "Sesame Kale & Edamame Salad",
+    zh: "芝麻羽衣甘藍毛豆沙拉",
+    tags: ["blood-sugar","cholesterol","colon","quick"],
+    tagLabels: [{c:"veg",l:"High Fiber"},{c:"chol",l:"Cholesterol ↓"},{c:"quick",l:"15 min"}],
+    badge: "💪 Powerhouse",
+    time: "15 min",
+    serves: "2",
+    difficulty: "Easy",
+    why: "<strong>Kale</strong> is among the most nutrient-dense vegetables — high in fiber, vitamin K, and glucosinolates that protect against colon cancer. <strong>Edamame</strong> provides plant protein and phytosterols that block cholesterol absorption. Sesame dressing adds healthy fats.",
+    ingredients: [
+      "1 bunch kale, destemmed and massaged",
+      "1 cup shelled edamame (thawed)",
+      "½ cup shredded purple cabbage",
+      "1 carrot, julienned",
+      "2 tbsp sesame seeds, toasted",
+      "2 tbsp tahini (sesame paste)",
+      "1 tbsp rice vinegar",
+      "1 tbsp low-sodium soy sauce",
+      "1 tsp fresh ginger, grated",
+      "1 tsp honey or stevia",
+      "2 tbsp warm water"
+    ],
+    steps: [
+      "Massage kale with a pinch of salt for 2 min until softened.",
+      "Whisk together tahini, rice vinegar, soy sauce, ginger, sweetener, and warm water.",
+      "Combine kale, edamame, purple cabbage, and carrot in a large bowl.",
+      "Pour dressing over and toss well to coat.",
+      "Top with sesame seeds and serve immediately."
+    ],
+    nutrition: { cal: 280, fiber: "9g", protein: "16g", sugar: "6g" }
+  },
+  {
+    id: 6,
+    emoji: "🍄",
+    gradient: "linear-gradient(135deg,#fdf2f8,#fae8ff)",
+    name: "Steamed Garlic King Oyster Mushrooms",
+    zh: "蒜蓉蒸杏鮑菇",
+    tags: ["blood-sugar","cholesterol","taiwanese","quick"],
+    tagLabels: [{c:"tw",l:"Taiwanese"},{c:"chol",l:"Cholesterol ↓"},{c:"quick",l:"10 min"}],
+    badge: "🧄 Umami",
+    time: "10 min",
+    serves: "2–3",
+    difficulty: "Very Easy",
+    why: "<strong>King oyster mushrooms</strong> are exceptional — beta-glucans in them actively lower LDL cholesterol and stabilize blood sugar. Steaming preserves all nutrients with zero added fat. A simple, elegant dish that takes just 10 minutes.",
+    ingredients: [
+      "3 large king oyster mushrooms",
+      "4 cloves garlic, minced",
+      "2 tbsp low-sodium soy sauce",
+      "1 tbsp sesame oil",
+      "1 red chili, finely sliced",
+      "Green onion, for garnish",
+      "Handful of cilantro (optional)"
+    ],
+    steps: [
+      "Score mushrooms lengthwise with a fork or knife to create texture.",
+      "Place mushrooms on a steaming plate. Scatter minced garlic on top.",
+      "Steam over high heat for 8 minutes.",
+      "Mix soy sauce and sesame oil, pour over mushrooms.",
+      "Top with chili slices and green onion. Serve hot."
+    ],
+    nutrition: { cal: 75, fiber: "3g", protein: "5g", sugar: "2g" }
+  },
+  {
+    id: 7,
+    emoji: "🫛",
+    gradient: "linear-gradient(135deg,#f0fdf4,#d1fae5)",
+    name: "Snow Pea & Tofu Scramble",
+    zh: "荷蘭豆炒豆腐",
+    tags: ["blood-sugar","taiwanese","quick"],
+    tagLabels: [{c:"tw",l:"Taiwanese"},{c:"veg",l:"High Protein"},{c:"quick",l:"15 min"}],
+    badge: "🌱 Plant Protein",
+    time: "15 min",
+    serves: "2",
+    difficulty: "Easy",
+    why: "<strong>Snow peas</strong> are low in calories but rich in vitamin C, folate, and fiber — great for colon health. Combined with <strong>silken tofu</strong>, this dish provides complete plant protein with cholesterol-lowering isoflavones, all in a classic Taiwanese stir-fry style.",
+    ingredients: [
+      "200g snow peas, strings removed",
+      "300g firm tofu, crumbled",
+      "1 medium carrot, sliced thin",
+      "3 cloves garlic, minced",
+      "1 tbsp light soy sauce",
+      "1 tsp sesame oil",
+      "½ tsp turmeric (optional, for color)",
+      "White pepper to taste",
+      "1 tbsp olive oil"
+    ],
+    steps: [
+      "Heat oil in wok over high heat. Add garlic, cook 30 sec.",
+      "Add crumbled tofu with turmeric. Stir-fry 3–4 min until lightly golden.",
+      "Add carrot slices, toss for 2 min.",
+      "Add snow peas, stir-fry 2–3 min — keep them crisp.",
+      "Season with soy sauce, sesame oil, and white pepper.",
+      "Serve hot over brown rice or on its own."
+    ],
+    nutrition: { cal: 195, fiber: "5g", protein: "17g", sugar: "4g" }
+  },
+  {
+    id: 8,
+    emoji: "🥕",
+    gradient: "linear-gradient(135deg,#fff7ed,#ffedd5)",
+    name: "Rainbow Veggie Taiwan Stew",
+    zh: "彩虹蔬菜燉湯",
+    tags: ["blood-sugar","cholesterol","colon"],
+    tagLabels: [{c:"veg",l:"High Fiber"},{c:"colon",l:"Colon Health"},{c:"tw",l:"Taiwanese"}],
+    badge: "🌈 Rainbow",
+    time: "45 min",
+    serves: "5–6",
+    difficulty: "Medium",
+    why: "Eating a <strong>rainbow of vegetables</strong> provides diverse phytonutrients — each color fights disease differently. Orange (beta-carotene), purple (anthocyanins), green (chlorophyll & folate), white (allicin). Together they create a powerful anti-inflammatory, colon-protective meal.",
+    ingredients: [
+      "2 medium carrots, chunked",
+      "1 small purple sweet potato, cubed",
+      "1 medium daikon radish, chunked",
+      "200g winter squash (pumpkin), cubed",
+      "1 cup fresh corn kernels",
+      "100g green beans",
+      "1 large tomato, quartered",
+      "3 cloves garlic",
+      "1 tbsp miso paste",
+      "6 cups vegetable broth",
+      "1 tbsp low-sodium soy sauce"
+    ],
+    steps: [
+      "Sauté garlic in a large pot with a tiny bit of oil, 1 min.",
+      "Add carrots, daikon, and squash. Stir 2 min.",
+      "Pour in vegetable broth, bring to boil.",
+      "Add purple sweet potato. Simmer 15 min.",
+      "Add corn, green beans, and tomato. Cook 10 min.",
+      "Dissolve miso in a ladle of broth and stir back in.",
+      "Season with soy sauce. Serve as soup or over rice."
+    ],
+    nutrition: { cal: 175, fiber: "8g", protein: "6g", sugar: "10g" }
+  },
+  {
+    id: 9,
+    emoji: "🥒",
+    gradient: "linear-gradient(135deg,#f0fdf4,#ecfdf5)",
+    name: "Taiwanese Cold Cucumber Smash",
+    zh: "拍黃瓜",
+    tags: ["blood-sugar","taiwanese","quick"],
+    tagLabels: [{c:"tw",l:"Taiwanese Classic"},{c:"quick",l:"5 min"},{c:"veg",l:"Low Cal"}],
+    badge: "❄️ Refreshing",
+    time: "5 min",
+    serves: "2–3",
+    difficulty: "Very Easy",
+    why: "<strong>Cucumbers</strong> are 96% water — extremely low calorie and glycemic index near zero. The garlic and rice vinegar dressing has anti-inflammatory properties. This is a quintessential Taiwanese side dish that perfectly complements any meal without spiking blood sugar.",
+    ingredients: [
+      "2 large cucumbers",
+      "3 cloves garlic, finely minced",
+      "1 tbsp rice vinegar",
+      "1 tbsp low-sodium soy sauce",
+      "1 tsp sesame oil",
+      "½ tsp chili oil (optional)",
+      "1 tsp toasted sesame seeds",
+      "Fresh cilantro",
+      "Pinch of salt"
+    ],
+    steps: [
+      "Use the flat of a knife or rolling pin to smash cucumbers until they crack.",
+      "Cut into bite-sized pieces. Toss with a pinch of salt and let sit 5 min.",
+      "Drain excess water from cucumbers.",
+      "Mix garlic, rice vinegar, soy sauce, sesame oil, and chili oil.",
+      "Toss cucumbers in dressing.",
+      "Garnish with sesame seeds and cilantro. Serve immediately."
+    ],
+    nutrition: { cal: 45, fiber: "2g", protein: "2g", sugar: "3g" }
+  },
+  {
+    id: 10,
+    emoji: "🌽",
+    gradient: "linear-gradient(135deg,#fefce8,#fef9c3)",
+    name: "Corn & Burdock Root Soup",
+    zh: "玉米牛蒡湯",
+    tags: ["colon","cholesterol","taiwanese"],
+    tagLabels: [{c:"colon",l:"Colon Health"},{c:"chol",l:"Cholesterol ↓"},{c:"tw",l:"Taiwanese"}],
+    badge: "🌿 Traditional",
+    time: "50 min",
+    serves: "4–5",
+    difficulty: "Easy",
+    why: "<strong>Burdock root (牛蒡)</strong> is a prized ingredient in Taiwanese medicine — it contains inulin, a prebiotic fiber that feeds beneficial gut bacteria and has been studied for colon cancer prevention. <strong>Corn</strong> adds resistant starch which further supports gut health.",
+    ingredients: [
+      "2 ears of corn, cut into sections",
+      "200g burdock root (牛蒡), scrubbed and sliced",
+      "2 medium carrots, chunked",
+      "1 cup dried shiitake mushrooms, soaked",
+      "10 red dates (紅棗)",
+      "8 cups water",
+      "1 tsp salt",
+      "White pepper",
+      "Few drops sesame oil"
+    ],
+    steps: [
+      "Soak dried shiitake mushrooms 20 min in warm water. Reserve soaking liquid.",
+      "Scrub burdock root; slice at an angle into ½-inch pieces.",
+      "Combine water, mushroom soaking liquid, burdock, corn, and carrots in pot.",
+      "Bring to boil. Add red dates and mushrooms.",
+      "Reduce to low simmer for 35–40 min.",
+      "Season with salt, white pepper, and sesame oil.",
+      "Serve hot as a warming, nourishing soup."
+    ],
+    nutrition: { cal: 145, fiber: "6g", protein: "5g", sugar: "8g" }
+  },
+  {
+    id: 11,
+    emoji: "🫐",
+    gradient: "linear-gradient(135deg,#f5f3ff,#ede9fe)",
+    name: "Purple Grain & Veggie Bowl",
+    zh: "紫米蔬菜碗",
+    tags: ["blood-sugar","colon","cholesterol"],
+    tagLabels: [{c:"colon",l:"Colon Health"},{c:"veg",l:"Low GI"},{c:"chol",l:"Cholesterol ↓"}],
+    badge: "💜 Power Bowl",
+    time: "40 min",
+    serves: "2",
+    difficulty: "Medium",
+    why: "<strong>Black/purple rice</strong> has 6× more antioxidants than white rice and a lower glycemic index than brown rice. Topped with fiber-rich vegetables, this bowl is a comprehensive pre-diabetes and colon health meal in one beautiful, vibrant dish.",
+    ingredients: [
+      "½ cup black rice (紫米), cooked",
+      "½ cup brown rice, cooked",
+      "1 cup roasted broccolini",
+      "½ avocado, sliced",
+      "1 cup shredded purple cabbage",
+      "Handful of spinach",
+      "2 tbsp pumpkin seeds",
+      "2 tbsp tahini dressing",
+      "1 tbsp black sesame seeds",
+      "Pickled ginger (薑絲) for garnish"
+    ],
+    steps: [
+      "Cook black and brown rice together (black rice needs 5 extra min).",
+      "Roast broccolini with a little olive oil at 200°C for 15 min until crispy.",
+      "Make tahini dressing: tahini + lemon juice + garlic + water.",
+      "Assemble bowl: rice at base, then arrange vegetables in sections.",
+      "Top with pumpkin seeds, black sesame, and pickled ginger.",
+      "Drizzle tahini dressing over everything and serve."
+    ],
+    nutrition: { cal: 420, fiber: "11g", protein: "14g", sugar: "5g" }
+  },
+  {
+    id: 12,
+    emoji: "🌿",
+    gradient: "linear-gradient(135deg,#f0fdf4,#dcfce7)",
+    name: "Stir-Fried A-Choy with Garlic",
+    zh: "蒜炒A菜",
+    tags: ["blood-sugar","taiwanese","quick","colon"],
+    tagLabels: [{c:"tw",l:"Taiwanese"},{c:"quick",l:"8 min"},{c:"veg",l:"High Fiber"}],
+    badge: "🧄 Classic",
+    time: "8 min",
+    serves: "3",
+    difficulty: "Very Easy",
+    why: "<strong>A-choy (A菜 / stem lettuce)</strong> is a beloved Taiwanese vegetable — extremely high in fiber, folate, and chlorophyll. Folate is one of the most important nutrients for preventing colon cancer. This dish is as simple as it gets but packed with nutrition.",
+    ingredients: [
+      "2 large heads A-choy (A菜 / stem lettuce), chopped",
+      "5 cloves garlic, smashed and minced",
+      "1 tbsp olive oil",
+      "1 tbsp oyster sauce (or vegetarian oyster sauce)",
+      "Pinch of salt",
+      "White pepper",
+      "Splash of water"
+    ],
+    steps: [
+      "Wash A-choy well, drain, and chop into 3-inch pieces.",
+      "Heat oil in wok on high heat until shimmering.",
+      "Add garlic and fry 30 seconds until fragrant — do not burn.",
+      "Add A-choy all at once. Toss vigorously on high heat.",
+      "Add a splash of water to create steam. Cook 2–3 min until wilted but still bright green.",
+      "Season with oyster sauce, salt, and white pepper. Serve immediately."
+    ],
+    nutrition: { cal: 65, fiber: "4g", protein: "3g", sugar: "2g" }
+  }
+];
+
+function buildCard(r) {
+  return `
+  <article class="card" data-tags="${r.tags.join(' ')}" onclick="openModal(${r.id})">
+    <div class="card-img" style="background:${r.gradient}">
+      ${r.emoji}
+      <span class="card-badge">${r.badge}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        ${r.tagLabels.map(t => `<span class="tag ${t.c}">${t.l}</span>`).join('')}
+      </div>
+      <h3>${r.name}</h3>
+      <p class="card-zh">${r.zh}</p>
+      <p class="card-desc">${r.why.replace(/<[^>]+>/g,'').substring(0,100)}…</p>
+      <div class="card-meta">
+        <span class="meta-item"><span class="meta-icon">⏱</span>${r.time}</span>
+        <span class="meta-item"><span class="meta-icon">👥</span>Serves ${r.serves}</span>
+        <span class="meta-item"><span class="meta-icon">📊</span>${r.difficulty}</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+function buildModal(r) {
+  return `
+  <div class="modal-header" style="background:${r.gradient}">
+    ${r.emoji}
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="card-tags">${r.tagLabels.map(t=>`<span class="tag ${t.c}">${t.l}</span>`).join('')}</div>
+    <h2>${r.name}</h2>
+    <p class="modal-zh">${r.zh}</p>
+    <div class="modal-why">🩺 <strong>Why this is great for Mom:</strong><br/>${r.why}</div>
+    <p class="modal-section-title">🛒 Ingredients</p>
+    <ul class="ingredients-list">
+      ${r.ingredients.map(i=>`<li><span class="ing-dot"></span>${i}</li>`).join('')}
+    </ul>
+    <p class="modal-section-title">👨‍🍳 Instructions</p>
+    <ol class="steps-list">
+      ${r.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}
+    </ol>
+    <div class="nutrition-bar">
+      <div class="nutr-item"><div class="nutr-val">${r.nutrition.cal}</div><div class="nutr-lbl">Calories</div></div>
+      <div class="nutr-item"><div class="nutr-val">${r.nutrition.fiber}</div><div class="nutr-lbl">Fiber</div></div>
+      <div class="nutr-item"><div class="nutr-val">${r.nutrition.protein}</div><div class="nutr-lbl">Protein</div></div>
+      <div class="nutr-item"><div class="nutr-val">${r.nutrition.sugar}</div><div class="nutr-lbl">Sugar</div></div>
+    </div>
+  </div>`;
+}
+
+function openModal(id) {
+  const r = RECIPES.find(x=>x.id===id);
+  document.getElementById('modal-content').innerHTML = buildModal(r);
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// Render cards
+const grid = document.getElementById('recipe-grid');
+grid.innerHTML = RECIPES.map(buildCard).join('');
+
+// Filter
+let activeFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    let visible = 0;
+    document.querySelectorAll('.card').forEach(card => {
+      const tags = card.dataset.tags;
+      const show = activeFilter === 'all' || tags.includes(activeFilter);
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    document.getElementById('recipe-count').textContent = `${visible} recipe${visible!==1?'s':''}`;
+  });
+});
+</script>
+</body>
+</html>

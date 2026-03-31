@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Timer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a2e;
+      color: #eee;
+      transition: background 0.4s;
+    }
+
+    body.break {
+      background: #0f3460;
+    }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #aaa;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .mode-btn:hover {
+      border-color: rgba(255,255,255,0.5);
+      color: #eee;
+    }
+
+    .mode-btn.active {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+    }
+
+    .timer-display {
+      font-size: 7rem;
+      font-weight: 200;
+      letter-spacing: 0.05em;
+      color: #fff;
+      margin-bottom: 2.5rem;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 2.5rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #e05252;
+      color: #fff;
+    }
+
+    body.break .btn-primary {
+      background: #2ecc71;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #ccc;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    .pomodoro-count {
+      font-size: 0.9rem;
+      color: #888;
+      letter-spacing: 0.1em;
+    }
+
+    .pomodoro-count span {
+      color: #e05252;
+      font-weight: 600;
+    }
+
+    body.break .pomodoro-count span {
+      color: #2ecc71;
+    }
+
+    .dots {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      transition: background 0.3s;
+    }
+
+    .dot.filled {
+      background: #e05252;
+    }
+
+    body.break .dot.filled {
+      background: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pomodoro Timer</h1>
+
+    <div class="mode-buttons">
+      <button class="mode-btn active" data-mode="pomodoro">Pomodoro</button>
+      <button class="mode-btn" data-mode="short">Short Break</button>
+      <button class="mode-btn" data-mode="long">Long Break</button>
+    </div>
+
+    <div class="timer-display" id="display">25:00</div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="startPause">Start</button>
+      <button class="btn btn-secondary" id="reset">Reset</button>
+    </div>
+
+    <div class="pomodoro-count">
+      Pomodoros completed: <span id="count">0</span>
+    </div>
+    <div class="dots" id="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <script>
+    const MODES = {
+      pomodoro: 25 * 60,
+      short: 5 * 60,
+      long: 15 * 60,
+    };
+
+    let mode = 'pomodoro';
+    let timeLeft = MODES[mode];
+    let running = false;
+    let interval = null;
+    let pomodoroCount = 0;
+
+    const display = document.getElementById('display');
+    const startPauseBtn = document.getElementById('startPause');
+    const resetBtn = document.getElementById('reset');
+    const countEl = document.getElementById('count');
+    const dotsEl = document.getElementById('dots');
+    const modeButtons = document.querySelectorAll('.mode-btn');
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function render() {
+      display.textContent = formatTime(timeLeft);
+      startPauseBtn.textContent = running ? 'Pause' : 'Start';
+      countEl.textContent = pomodoroCount;
+      document.title = `${formatTime(timeLeft)} — Pomodoro`;
+
+      // update dots (4 dots, cycle of 4)
+      const filled = pomodoroCount % 4 === 0 && pomodoroCount > 0 ? 4 : pomodoroCount % 4;
+      dotsEl.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('filled', i < filled);
+      });
+
+      // body class for color theme
+      document.body.classList.toggle('break', mode !== 'pomodoro');
+    }
+
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.8);
+      } catch (e) {}
+    }
+
+    function tick() {
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        running = false;
+        playBeep();
+        if (mode === 'pomodoro') {
+          pomodoroCount++;
+          // auto-switch: every 4 pomodoros → long break, else short break
+          switchMode(pomodoroCount % 4 === 0 ? 'long' : 'short');
+        } else {
+          switchMode('pomodoro');
+        }
+        render();
+        return;
+      }
+      timeLeft--;
+      render();
+    }
+
+    function switchMode(newMode) {
+      mode = newMode;
+      timeLeft = MODES[mode];
+      running = false;
+      clearInterval(interval);
+      modeButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+    }
+
+    startPauseBtn.addEventListener('click', () => {
+      if (running) {
+        clearInterval(interval);
+        running = false;
+      } else {
+        running = true;
+        interval = setInterval(tick, 1000);
+      }
+      render();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearInterval(interval);
+      running = false;
+      timeLeft = MODES[mode];
+      render();
+    });
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchMode(btn.dataset.mode);
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Skincare &amp; Grooming | Money Muscle Mindset</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+    :root {
+      --gold:        #C9A84C;
+      --gold-l:      #E8C96D;
+      --gold-dim:    rgba(201,168,76,0.12);
+      --gold-mid:    rgba(201,168,76,0.25);
+      --bg:          #0b0b0b;
+      --s1:          #111111;
+      --s2:          #181818;
+      --s3:          #1e1e1e;
+      --border:      #252525;
+      --border-l:    #2e2e2e;
+      --text:        #e6e6e6;
+      --text-2:      #aaa;
+      --text-3:      #666;
+      --green:       #5cb85c;
+      --blue:        #5bc0de;
+      --radius:      12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      background: var(--s1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px 12px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      backdrop-filter: blur(8px);
+    }
+    .hdr-brand {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .hdr-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
+    .hdr-subtitle {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ── LAYOUT ── */
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 14px 100px;
+    }
+
+    /* ── DAY TABS ── */
+    .tabs-row {
+      display: flex;
+      gap: 6px;
+      padding: 14px 0 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tabs-row::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--s1);
+      color: var(--text-2);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+    }
+    .tab-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .tab-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #000;
+    }
+    .tab-btn.today-dot::after {
+      content: '';
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold-l);
+      border: 1.5px solid var(--bg);
+    }
+    .tab-btn.active.today-dot::after { background: #000; border-color: var(--gold); }
+
+    /* ── PROGRESS BAR ── */
+    .prog-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .prog-track {
+      flex: 1;
+      height: 3px;
+      background: var(--s3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-l));
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+    .prog-lbl {
+      font-size: 11px;
+      color: var(--text-2);
+      font-weight: 600;
+      white-space: nowrap;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    /* ── ALERT ── */
+    .alert {
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .alert-ico { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+    .alert-txt {
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--gold-l);
+      font-weight: 500;
+    }
+
+    /* ── ACTIONS ── */
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .btn-reset {
+      padding: 9px 14px;
+      border: 1px solid var(--border-l);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-3);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-reset:hover { border-color: var(--text-2); color: var(--text-2); }
+
+    /* ── SECTION CARD ── */
+    .card {
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--s1);
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .card-head:hover { background: var(--s2); }
+    .card-ico { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+    .card-meta { flex: 1; }
+    .card-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .badge-opt  { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+    .badge-look { background: rgba(91,192,222,0.12); color: var(--blue); border: 1px solid rgba(91,192,222,0.2); }
+    .card-sub {
+      font-size: 10px;
+      color: var(--text-3);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .card-chevron {
+      color: var(--text-3);
+      font-size: 10px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .card-head.open .card-chevron { transform: rotate(180deg); }
+
+    .card-body {
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+    .card-body.open { display: block; }
+
+    /* Sub-heading inside card */
+    .sub-heading {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 10px 16px 6px;
+      background: var(--s2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CHECKLIST ── */
+    .checklist { list-style: none; }
+    .chk-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 16px;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .chk-item:last-child { border-bottom: none; }
+    .chk-item:hover { background: var(--s2); }
+    .chk-item.done { opacity: 0.45; }
+    .chk-box {
+      width: 17px;
+      height: 17px;
+      border: 1.5px solid var(--border-l);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .chk-item.done .chk-box {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .chk-tick { display: none; color: #000; font-size: 10px; font-weight: 800; }
+    .chk-item.done .chk-tick { display: block; }
+    .chk-txt {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--text);
+      flex: 1;
+    }
+    .chk-item.done .chk-txt {
+      text-decoration: line-through;
+      color: var(--text-3);
+    }
+    .itag {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 7px;
+      vertical-align: middle;
+    }
+    .itag-s { background: rgba(201,168,76,0.18); color: var(--gold); }
+    .itag-l { background: rgba(92,184,92,0.15); color: #7dd87d; }
+    .itag-w { background: rgba(91,192,222,0.15); color: var(--blue); }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.7;
+      text-align: center;
+    }
+    .footer strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-brand">Money Muscle Mindset</div>
+  <div class="hdr-title">Skincare &amp; Grooming</div>
+  <div class="hdr-subtitle">Weekly Routine</div>
+</header>
+
+<div class="wrap">
+  <div class="tabs-row" id="tabsRow"></div>
+  <div id="dayView"></div>
+</div>
+
+<script>
+// ─── RAW DATA ─────────────────────────────────────────────────────────────────
+
+const DAYS_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+// S1 – Quick Morning Freshen Up (same every day)
+const S_QUICK = [
+  'Floss',
+  'Brush Teeth',
+  'Mouthwash',
+  'Rose Water',
+  'Hyaluronic Acid',
+  'Essence',
+  'Facial Moisturizer — Face & Neck',
+  'Sunscreen — Face & Neck',
+  'Lubriderm Lotion + Body Oil — Body',
+  'Sunscreen — Body',
+];
+
+// S2 – Full Freshen Up (optional look-good routine, same every day)
+const S_FULL = [
+  'Lumify Eye Drops + Sheet Mask',
+  'Floss',
+  'Brush Teeth',
+  'Tongue Scraper',
+  'Mouthwash',
+  'Rose Water',
+  'Hyaluronic Acid',
+  'Essence',
+  'Niacinamide Serum',
+  'Caffeine Eye Serum',
+  'Facial Moisturizer — Face & Neck',
+  'Sunscreen — Face & Neck',
+  'Contacts + Artificial Tears',
+  'Lubriderm Lotion + Body Oil — Body',
+  'Sunscreen — Body',
+  'Armpit Deodorant',
+  'Cologne',
+  '— Brush Eyebrows with Spoolie → Brow Gel',
+  '— Tinted BB Cream: Blend Under Eyes (Finger Tap)',
+  '— Translucent Setting Powder: Mini Triangle Puff',
+  '— Subtle Eyeliner: Outer Upper Lash Roots',
+  '— K-Beauty Water Tint Lip Stain',
+  '— Spoolie Lashes → Gently Curl Lashes',
+  '— Spoolie Lashes → Clear Mascara',
+  '— Cotton Pad Cleanup → Setting Spray',
+  'Sea Salt Spray + Comb Hair',
+  'Hair Oil',
+];
+
+// S3 – Ultimate Shower (day-specific grooming then shared shower steps)
+// Pre-shower grooming per day
+const PRE_SHOWER = {
+  0: [ // Mon
+    {t:'Manicure', tag:'s'},
+    'Tweezers — Face',
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+  ],
+  1: [ // Tue
+    'Tweezers — Face',
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+    {t:'Shave Pubic Area — Razor', tag:'s'},
+  ],
+  2: [ // Wed
+    'Tweezers — Face',
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+    {t:'Nair — Abdomen', tag:'s'},
+  ],
+  3: [ // Thu
+    {t:'Manicure', tag:'s'},
+    'Tweezers — Face',
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+  ],
+  4: [ // Fri
+    'Tweezers — Face',
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+    {t:'Shave Pubic Area — Razor', tag:'s'},
+  ],
+  5: [ // Sat
+    {t:'Pedicure', tag:'s'},
+    'Tweezers — Face',
+    {t:'Manscaped Razor — Back Neck Hairline + Trim Hair', tag:'s'},
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+  ],
+  6: [ // Sun
+    'Tweezers — Face',
+    {t:'Electric Trimmer — Nose', tag:'s'},
+    'Facial Razor',
+    'Electric Razor — Face',
+    'Manscaped Electric Razor — Body',
+  ],
+};
+
+// Day-specific shower inserts
+const SHOWER_EXTRAS = {
+  0: { ketoconazole: false, exfFace: false, exfBody: true  },
+  1: { ketoconazole: false, exfFace: true,  exfBody: false },
+  2: { ketoconazole: true,  exfFace: false, exfBody: false },
+  3: { ketoconazole: false, exfFace: false, exfBody: true  },
+  4: { ketoconazole: false, exfFace: true,  exfBody: false },
+  5: { ketoconazole: false, exfFace: false, exfBody: false },
+  6: { ketoconazole: true,  exfFace: false, exfBody: false },
+};
+
+function buildShower(dayIdx) {
+  const ex = SHOWER_EXTRAS[dayIdx];
+  const pre  = PRE_SHOWER[dayIdx];
+  const wash = [];
+
+  wash.push('Micellar Water (Cotton Pad) — Remove Makeup & Artificial Tears');
+  wash.push('Oil Cleanser → Gentle Cleanser — Face');
+  if (ex.ketoconazole) wash.push({t:'Ketoconazole Shampoo (medical)', tag:'s'});
+  wash.push('Normal Shampoo');
+  wash.push('Normal Conditioner');
+  wash.push('Normal Body Cleanser');
+  if (ex.exfFace) wash.push({t:'Exfoliate — Face', tag:'s'});
+  if (ex.exfBody) wash.push('Exfoliate — Body');
+
+  const post = [
+    'Special Serum',
+    'Eye Cream',
+    'Facial Moisturizer — Face & Neck',
+    "Lubriderm + Palmer's Cocoa Butter — Body",
+    'Leave-In Conditioner — Hair',
+  ];
+
+  const longevity = [
+    {t:'Longevity Protocol — Penile Skin (Alpha Arbutin Serum)', tag:'l'},
+    {t:'Longevity Protocol — Face (Retinoid)', tag:'l'},
+    {t:'Longevity Protocol — Eyelashes & Brows (Vaseline)', tag:'l'},
+    'Hygiene Wipe',
+  ];
+
+  return { pre, wash, post, longevity };
+}
+
+// S4 – Normal Shower (same every day)
+const S_NORMAL = [
+  'Normal Shower',
+  'Baby Wash — Hair',
+  'Baby Wash — Face',
+  'Baby Wash — Body',
+  'Facial Moisturizer — Face & Neck',
+  'Lubriderm Lotion — Body',
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const SK = 'mmm_groom_v2';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(SK)) || {}; } catch { return {}; }
+}
+function saveState(s) { localStorage.setItem(SK, JSON.stringify(s)); }
+
+let state = loadState();
+
+// Today: JS getDay() → 0=Sun; our index: 0=Mon … 6=Sun
+const todayIdx = (new Date().getDay() + 6) % 7;
+let activeDay  = todayIdx;
+
+// ─── KEY UTILS ────────────────────────────────────────────────────────────────
+function key(day, sec, idx) { return `d${day}_${sec}_${idx}`; }
+
+function itemsOf(dayIdx) {
+  const sh = buildShower(dayIdx);
+  return [
+    { sec:'quick',    items: S_QUICK },
+    { sec:'full',     items: S_FULL  },
+    { sec:'pre',      items: sh.pre  },
+    { sec:'wash',     items: sh.wash },
+    { sec:'post',     items: sh.post },
+    { sec:'long',     items: sh.longevity },
+    { sec:'normal',   items: S_NORMAL },
+  ];
+}
+
+function dayStats(dayIdx) {
+  let done = 0, total = 0;
+  itemsOf(dayIdx).forEach(({sec, items}) => {
+    items.forEach((_, i) => { total++; if (state[key(dayIdx, sec, i)]) done++; });
+  });
+  return { done, total };
+}
+
+function secStats(dayIdx, sec, items) {
+  let done = 0;
+  items.forEach((_, i) => { if (state[key(dayIdx, sec, i)]) done++; });
+  return { done, total: items.length };
+}
+
+// ─── HTML HELPERS ─────────────────────────────────────────────────────────────
+function itemObj(item) {
+  if (typeof item === 'string') return { t: item, tag: null };
+  return item;
+}
+
+function tagHTML(tag) {
+  if (!tag) return '';
+  const map = {
+    s: `<span class="itag itag-s">Special</span>`,
+    l: `<span class="itag itag-l">Longevity</span>`,
+    w: `<span class="itag itag-w">Weekly</span>`,
+  };
+  return map[tag] || '';
+}
+
+function buildChecklist(dayIdx, sec, items) {
+  return items.map((raw, i) => {
+    const {t, tag} = itemObj(raw);
+    const k   = key(dayIdx, sec, i);
+    const chk = state[k] ? 'done' : '';
+    return `
+      <li class="chk-item ${chk}" data-key="${k}">
+        <div class="chk-box"><span class="chk-tick">✓</span></div>
+        <span class="chk-txt">${t}${tagHTML(tag)}</span>
+      </li>`;
+  }).join('');
+}
+
+function buildCard(id, icon, title, badgeHTML, dayIdx, bodyHTML) {
+  const totalItems = id === 'shower'
+    ? 0 // shower is multi-section, handled separately
+    : 0;
+  return `
+    <div class="card" id="card_${id}">
+      <div class="card-head" data-card="${id}">
+        <div class="card-ico">${icon}</div>
+        <div class="card-meta">
+          <div class="card-title">${title} ${badgeHTML}</div>
+          <div class="card-sub" id="sub_${id}">—</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body" id="body_${id}">
+        ${bodyHTML}
+      </div>
+    </div>`;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderDay(dayIdx) {
+  const { done, total } = dayStats(dayIdx);
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const sh  = buildShower(dayIdx);
+
+  let html = `
+    <div class="prog-row">
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:${pct}%"></div></div>
+      <div class="prog-lbl" id="progLbl">${done} / ${total} done</div>
+    </div>
+    <div class="alert">
+      <div class="alert-ico">☀️</div>
+      <div class="alert-txt">Always apply sunscreen to all exposed skin before going outside. Pick nose and ears carefully with proper tools when needed.</div>
+    </div>
+    <div class="actions-row">
+      <button class="btn-reset" id="btnReset">↺ Reset This Day</button>
+    </div>
+  `;
+
+  // Card 1 – Quick
+  const q = secStats(dayIdx, 'quick', S_QUICK);
+  html += buildCard('quick','☀️','Morning Freshen Up','',dayIdx,
+    `<ul class="checklist">${buildChecklist(dayIdx,'quick',S_QUICK)}</ul>`
+  );
+
+  // Card 2 – Full Freshen Up
+  const f = secStats(dayIdx, 'full', S_FULL);
+  html += buildCard('full','✨','Full Freshen Up',
+    `<span class="badge badge-look">Look Your Best</span>`,
+    dayIdx,
+    `<ul class="checklist">${buildChecklist(dayIdx,'full',S_FULL)}</ul>`
+  );
+
+  // Card 3 – Ultimate Shower (multi-sub-section)
+  const showerBody = `
+    <div class="sub-heading">Pre-Shower Grooming</div>
+    <ul class="checklist">${buildChecklist(dayIdx,'pre', sh.pre)}</ul>
+
+    <div class="sub-heading">Wash &amp; Cleanse</div>
+    <ul class="checklist">${buildChecklist(dayIdx,'wash', sh.wash)}</ul>
+
+    <div class="sub-heading">Post-Shower Treatment</div>
+    <ul class="checklist">${buildChecklist(dayIdx,'post', sh.post)}</ul>
+
+    <div class="sub-heading">Longevity Protocols</div>
+    <ul class="checklist">${buildChecklist(dayIdx,'long', sh.longevity)}</ul>
+  `;
+  const allShowerItems = [...sh.pre, ...sh.wash, ...sh.post, ...sh.longevity];
+  const shSec = ['pre','wash','post','long'];
+  const shItems = [sh.pre, sh.wash, sh.post, sh.longevity];
+  let shDone = 0, shTotal = 0;
+  shSec.forEach((s,si) => {
+    const ss = secStats(dayIdx, s, shItems[si]);
+    shDone += ss.done; shTotal += ss.total;
+  });
+
+  html += `
+    <div class="card" id="card_shower">
+      <div class="card-head" data-card="shower">
+        <div class="card-ico">🚿</div>
+        <div class="card-meta">
+          <div class="card-title">Ultimate Shower Routine <span class="badge badge-opt">Optional</span></div>
+          <div class="card-sub" id="sub_shower">${shDone} of ${shTotal} done</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body" id="body_shower">
+        ${showerBody}
+      </div>
+    </div>`;
+
+  // Card 4 – Normal Shower
+  html += buildCard('normal','💧','Normal Shower','',dayIdx,
+    `<ul class="checklist">${buildChecklist(dayIdx,'normal',S_NORMAL)}</ul>`
+  );
+
+  // Footer
+  html += `
+    <div class="footer">
+      <strong>Pro Tip:</strong> The Freshen Up and Ultimate Shower are optional but worth it when you want to show up at 100%.
+      Consistency with the basics wins long-term.
+    </div>`;
+
+  document.getElementById('dayView').innerHTML = html;
+
+  // Wire section subtitles
+  updateSubtitles(dayIdx, sh);
+
+  // ── Wire card toggles
+  document.querySelectorAll('.card-head').forEach(hd => {
+    hd.addEventListener('click', () => {
+      const id   = hd.dataset.card;
+      const body = document.getElementById('body_' + id);
+      const open = body.classList.toggle('open');
+      hd.classList.toggle('open', open);
+    });
+  });
+
+  // ── Wire checkboxes
+  document.querySelectorAll('.chk-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const k   = item.dataset.key;
+      state[k]  = !state[k];
+      saveState(state);
+      item.classList.toggle('done', !!state[k]);
+      refreshProgress(dayIdx, sh);
+    });
+  });
+
+  // ── Reset
+  document.getElementById('btnReset').addEventListener('click', () => {
+    const prefix = `d${dayIdx}_`;
+    Object.keys(state).forEach(k => { if (k.startsWith(prefix)) delete state[k]; });
+    saveState(state);
+    renderDay(dayIdx);
+  });
+
+  // Auto-open Quick Freshen Up
+  const qHead = document.querySelector('[data-card="quick"]');
+  const qBody = document.getElementById('body_quick');
+  qHead.classList.add('open');
+  qBody.classList.add('open');
+}
+
+function updateSubtitles(dayIdx, sh) {
+  const sets = [
+    { id:'quick',  items: S_QUICK,         sec:'quick' },
+    { id:'full',   items: S_FULL,          sec:'full'  },
+    { id:'normal', items: S_NORMAL,        sec:'normal'},
+  ];
+  sets.forEach(({id, items, sec}) => {
+    const el = document.getElementById('sub_' + id);
+    if (!el) return;
+    const {done, total} = secStats(dayIdx, sec, items);
+    el.textContent = `${done} of ${total} done`;
+  });
+  const shSec  = ['pre','wash','post','long'];
+  const shItms = [sh.pre, sh.wash, sh.post, sh.longevity];
+  let shD = 0, shT = 0;
+  shSec.forEach((s,si) => { const r = secStats(dayIdx,s,shItms[si]); shD+=r.done; shT+=r.total; });
+  const shEl = document.getElementById('sub_shower');
+  if (shEl) shEl.textContent = `${shD} of ${shT} done`;
+}
+
+function refreshProgress(dayIdx, sh) {
+  const {done, total} = dayStats(dayIdx);
+  const pct = total ? Math.round((done/total)*100) : 0;
+  const fill = document.getElementById('progFill');
+  const lbl  = document.getElementById('progLbl');
+  if (fill) fill.style.width = pct + '%';
+  if (lbl)  lbl.textContent  = `${done} / ${total} done`;
+  updateSubtitles(dayIdx, sh);
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function renderTabs() {
+  const row = document.getElementById('tabsRow');
+  row.innerHTML = DAYS_SHORT.map((d,i) => {
+    const isCur   = i === activeDay;
+    const isToday = i === todayIdx;
+    return `<button class="tab-btn${isCur?' active':''}${isToday?' today-dot':''}" data-day="${i}">${d}</button>`;
+  }).join('');
+
+  row.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeDay = parseInt(btn.dataset.day);
+      renderTabs();
+      renderDay(activeDay);
+      // Scroll active tab into view
+      btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+    });
+  });
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+renderTabs();
+renderDay(activeDay);
+</script>
+</body>
+</html>

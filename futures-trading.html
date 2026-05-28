@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futures Trading Strategy — Apex Trader $100K</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --card2: #1a2332;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #00d084;
+    --green-dim: #003d25;
+    --red: #ff4757;
+    --red-dim: #3d0010;
+    --yellow: #f0b429;
+    --yellow-dim: #3d2d00;
+    --blue: #58a6ff;
+    --purple: #bc8cff;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ─── */
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 0;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--green), #00a86b);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; color: #000;
+  }
+  .logo-text { font-size: 17px; font-weight: 700; }
+  .logo-sub { font-size: 12px; color: var(--muted); }
+
+  .session-widget {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .session-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .session-badge.open {
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: var(--green);
+  }
+  .session-badge.closed {
+    background: #1a1a2e;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .session-badge.soon {
+    background: var(--yellow-dim);
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+  }
+  .session-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .clock { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .countdown-text { font-size: 12px; color: var(--muted); }
+
+  /* ─── Navigation ─── */
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 18px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+  .tab-emoji { font-size: 15px; }
+
+  /* ─── Main layout ─── */
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* ─── Section headers ─── */
+  .section-header {
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 680px;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title span { font-size: 15px; }
+
+  /* ─── Grid helpers ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media(max-width:720px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ─── Protocol / Checklist ─── */
+  .phase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .phase-title {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .phase-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .phase-badge.prep {
+    background: rgba(88,166,255,.15);
+    color: var(--blue);
+    border: 1px solid rgba(88,166,255,.3);
+  }
+  .phase-badge.plan {
+    background: rgba(0,208,132,.15);
+    color: var(--green);
+    border: 1px solid rgba(0,208,132,.3);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), #00a86b);
+    border-radius: 4px;
+    transition: width .3s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .checklist { list-style: none; }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid transparent;
+    transition: background .15s, border-color .15s;
+    cursor: pointer;
+  }
+  .checklist-item:hover { background: var(--card2); }
+  .checklist-item.checked {
+    background: rgba(0,208,132,.05);
+    border-color: rgba(0,208,132,.2);
+  }
+  .checklist-item.checked .item-text { color: var(--muted); text-decoration: line-through; }
+
+  .item-checkbox {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background .15s, border-color .15s;
+    font-size: 12px;
+  }
+  .checklist-item.checked .item-checkbox {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+
+  .item-number {
+    width: 22px; height: 22px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .item-body { flex: 1; }
+  .item-text { font-size: 14px; }
+  .item-platform {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .item-detail {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .checklist-controls {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card2);
+    color: var(--text);
+    transition: all .15s;
+  }
+  .btn:hover { border-color: var(--green); color: var(--green); }
+  .btn-danger:hover { border-color: var(--red); color: var(--red); }
+  .btn-primary {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn-primary:hover { background: var(--green); color: #000; }
+
+  /* ─── Invalidation banner ─── */
+  .invalidation-box {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .invalidation-box .icon { font-size: 18px; flex-shrink: 0; }
+
+  /* ─── Setup Flowcharts ─── */
+  .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:750px) { .setup-grid { grid-template-columns: 1fr; } }
+
+  .flowchart {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .flowchart-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .flowchart-title.long { color: var(--green); }
+  .flowchart-title.short { color: var(--red); }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .flow-box {
+    width: 100%;
+    max-width: 280px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid var(--border);
+    background: var(--card2);
+  }
+  .flow-box.trigger {
+    background: rgba(88,166,255,.1);
+    border-color: rgba(88,166,255,.4);
+    color: var(--blue);
+  }
+  .flow-box.entry-long {
+    background: rgba(0,208,132,.15);
+    border-color: var(--green);
+    color: var(--green);
+    font-size: 15px;
+  }
+  .flow-box.entry-short {
+    background: rgba(255,71,87,.15);
+    border-color: var(--red);
+    color: var(--red);
+    font-size: 15px;
+  }
+  .flow-box.exit {
+    background: rgba(240,180,41,.1);
+    border-color: rgba(240,180,41,.4);
+    color: var(--yellow);
+  }
+  .flow-box.invalid {
+    background: var(--red-dim);
+    border-color: var(--red);
+    color: var(--red);
+    font-size: 12px;
+    opacity: .85;
+  }
+  .flow-arrow {
+    font-size: 20px;
+    color: var(--muted);
+    margin: 2px 0;
+  }
+  .flow-branch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+  .flow-branch-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    opacity: .5;
+  }
+  .flow-invalid-label { font-size: 11px; color: var(--red); opacity:.7; }
+
+  /* ─── Confluences ─── */
+  .conf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .conf-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .conf-symbol {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .conf-corr {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .corr-pos { color: var(--green); font-weight: 600; }
+  .corr-inv { color: var(--red); font-weight: 600; }
+
+  .reset-banner {
+    background: var(--yellow-dim);
+    border: 1px solid var(--yellow);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--yellow);
+  }
+
+  /* ─── Account Dashboard ─── */
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: center;
+  }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing:.05em; margin-bottom: 8px; }
+  .stat-value { font-size: 26px; font-weight: 800; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.yellow { color: var(--yellow); }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .rule-list { list-style: none; }
+  .rule-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .rule-list li:last-child { border-bottom: none; }
+  .rule-label { color: var(--muted); }
+  .rule-value { font-weight: 700; }
+
+  .payout-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .payout-table th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .payout-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(48,54,61,.5);
+  }
+  .payout-table tr:last-child td { border-bottom: none; }
+  .payout-table tr:hover td { background: var(--card2); }
+  .td-green { color: var(--green); font-weight: 700; }
+  .td-red { color: var(--red); }
+
+  /* ─── Profit Plan ─── */
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:680px) { .calc-grid { grid-template-columns: 1fr; } }
+
+  .calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(48,54,61,.5);
+    font-size: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .calc-row:last-child { border-bottom: none; }
+  .calc-label { color: var(--muted); }
+  .calc-value { font-weight: 700; }
+
+  .slider-group { margin-bottom: 20px; }
+  .slider-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .slider-label strong { color: var(--text); font-size: 15px; }
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; height: 18px;
+    background: var(--green);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(0,208,132,.2);
+  }
+
+  .monthly-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .monthly-table th {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .monthly-table td { padding: 10px 14px; border-bottom: 1px solid rgba(48,54,61,.5); }
+  .monthly-table tr:last-child td { border-bottom: none; }
+  .monthly-table .total-row td { background: rgba(0,208,132,.05); font-weight: 700; border-top: 2px solid var(--green); }
+
+  .challenge-steps {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 0;
+  }
+  .ch-step {
+    flex: 1;
+    min-width: 120px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .ch-step-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+  .ch-step-val { font-size: 17px; font-weight: 800; }
+  .ch-arrow { font-size: 22px; color: var(--green); flex-shrink: 0; }
+
+  /* ─── Tooltip ─── */
+  .tooltip-trigger {
+    border-bottom: 1px dashed var(--blue);
+    color: var(--blue);
+    cursor: help;
+    position: relative;
+  }
+  .tooltip-popup {
+    display: none;
+    position: fixed;
+    background: #0d1f2d;
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    max-width: 260px;
+    z-index: 9999;
+    pointer-events: none;
+    line-height: 1.5;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  .tooltip-popup.visible { display: block; }
+
+  /* ─── Primary trades bar ─── */
+  .trades-bar {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:580px) { .trades-bar { grid-template-columns: 1fr; } }
+  .trade-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .trade-type { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing:.06em; margin-bottom: 6px; }
+  .trade-instrument { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .trade-detail { font-size: 12px; color: var(--muted); }
+
+  /* ─── Responsive misc ─── */
+  @media(max-width:480px) {
+    header { padding: 0 14px; }
+    main { padding: 20px 14px 50px; }
+    .tab-btn { padding: 12px 12px; font-size: 13px; }
+    .section-title { font-size: 18px; }
+  }
+
+  /* ─── Utility ─── */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-yellow { background: var(--yellow-dim); color: var(--yellow); }
+  .tag-blue { background: rgba(88,166,255,.12); color: var(--blue); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .tp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .tp-box {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .tp-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+  .tp-val { font-size: 15px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- Tooltip popup (singleton) -->
+<div class="tooltip-popup" id="tooltip-popup"></div>
+
+<!-- ─── Header ─── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">AT</div>
+    <div>
+      <div class="logo-text">Apex Trader $100K</div>
+      <div class="logo-sub">Futures Trading Strategy Guide</div>
+    </div>
+  </div>
+  <div class="session-widget">
+    <div id="session-badge" class="session-badge closed">
+      <div class="session-dot"></div>
+      <span id="session-label">Loading...</span>
+    </div>
+    <div>
+      <div class="clock" id="clock">--:-- --</div>
+      <div class="countdown-text" id="countdown-text">PT time</div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── Navigation ─── -->
+<nav id="nav">
+  <button class="tab-btn active" data-tab="protocol"><span class="tab-emoji">✅</span>Protocol</button>
+  <button class="tab-btn" data-tab="setup"><span class="tab-emoji">📊</span>Setup</button>
+  <button class="tab-btn" data-tab="confluences"><span class="tab-emoji">🔗</span>Confluences</button>
+  <button class="tab-btn" data-tab="account"><span class="tab-emoji">💼</span>Account</button>
+  <button class="tab-btn" data-tab="profit"><span class="tab-emoji">📈</span>Profit Plan</button>
+</nav>
+
+<!-- ─── Main ─── -->
+<main>
+
+  <!-- ════════════════════════════ PROTOCOL ════════════════════════════ -->
+  <section class="tab-section active" id="tab-protocol">
+    <div class="section-header">
+      <div class="section-title">Trading Protocol Checklist</div>
+      <div class="section-desc">Work through every step before each trade. Tap a step to mark it complete. Session window: <strong>7–9 AM PT</strong> (NY open).</div>
+    </div>
+
+    <div class="invalidation-box">
+      <div class="icon">⚠️</div>
+      <div>
+        <strong>Trade Thesis Invalidation Rule:</strong> When confluences change direction — <strong>reset your trade thesis and restart this checklist from Step 1.</strong>
+        Also: Long thesis is INVALID if price starts holding <em>below</em> VWAP. Short thesis is INVALID if price starts holding <em>above</em> VWAP.
+      </div>
+    </div>
+
+    <!-- Prep phase -->
+    <div class="card">
+      <div class="phase-header">
+        <div class="phase-title"><span>⏱</span> Trading Prep <span class="phase-badge prep">≤ 5 min</span></div>
+        <div id="prep-count" style="font-size:13px;color:var(--muted)"></div>
+      </div>
+      <div class="progress-label">
+        <span>Steps 1–5</span>
+        <span id="prep-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prep-bar" style="width:0%"></div></div>
+      <ul class="checklist" id="prep-checklist"></ul>
+    </div>
+
+    <!-- Plan phase -->
+    <div class="card">
+      <div class="phase-header">
+        <div class="phase-title"><span>📋</span> Trading Plan <span class="phase-badge plan">≤ 10 min before entry</span></div>
+        <div id="plan-count" style="font-size:13px;color:var(--muted)"></div>
+      </div>
+      <div class="progress-label">
+        <span>Steps 6–10</span>
+        <span id="plan-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="plan-bar" style="width:0%"></div></div>
+      <ul class="checklist" id="plan-checklist"></ul>
+    </div>
+
+    <div class="checklist-controls">
+      <button class="btn btn-primary" onclick="resetChecklist()">↺ Reset All Steps</button>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ SETUP ════════════════════════════ -->
+  <section class="tab-section" id="tab-setup">
+    <div class="section-header">
+      <div class="section-title">Primary Trade Setups</div>
+      <div class="section-desc">Your setup is based on <span class="tooltip-trigger" data-term="confluence">confluence</span> direction. Read the correct flowchart before entering any trade.</div>
+    </div>
+
+    <div class="trades-bar">
+      <div class="trade-card">
+        <div class="trade-type">Day Trading</div>
+        <div class="trade-instrument" style="color:var(--green)">Top Gainer</div>
+        <div class="trade-detail">2nd Most Volatile · Long Only · Full Position · Target: TP2</div>
+      </div>
+      <div class="trade-card">
+        <div class="trade-type">Futures Trading</div>
+        <div class="trade-instrument" style="color:var(--blue)">ES</div>
+        <div class="trade-detail">Long or Short · Target: TP1</div>
+      </div>
+      <div class="trade-card">
+        <div class="trade-type">Forex Trading</div>
+        <div class="trade-instrument" style="color:var(--yellow)">USDJPY</div>
+        <div class="trade-detail">Long or Short · Target: TP2</div>
+      </div>
+    </div>
+
+    <div class="setup-grid" id="setup-grid"></div>
+
+    <hr class="divider">
+
+    <div class="card">
+      <div class="card-title"><span>🎯</span> Exit Targets — NQ Futures (per contract)</div>
+      <div class="tp-grid">
+        <div class="tp-box">
+          <div class="tp-label">Stop Loss / Max Risk</div>
+          <div class="tp-val" style="color:var(--red)">−130 ticks</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750 loss</div>
+        </div>
+        <div class="tp-box">
+          <div class="tp-label">TP 1</div>
+          <div class="tp-val" style="color:var(--green)">+87 ticks</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$500</div>
+        </div>
+        <div class="tp-box">
+          <div class="tp-label">TP 2 (Target)</div>
+          <div class="tp-val" style="color:var(--green)">+130 ticks</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750</div>
+        </div>
+        <div class="tp-box">
+          <div class="tp-label">TP 3</div>
+          <div class="tp-val" style="color:var(--green)">+175 ticks</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750 (½ of TP3)</div>
+        </div>
+        <div class="tp-box">
+          <div class="tp-label">TP 3 Extended</div>
+          <div class="tp-val" style="color:var(--green)">+1.5× TP3</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Overextended move</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:14px">
+        Also valid: Exit around <strong>break even</strong> (when thesis weakens) or at <strong>auto max loss</strong> (daily drawdown limit triggered).
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ CONFLUENCES ════════════════════════════ -->
+  <section class="tab-section" id="tab-confluences">
+    <div class="section-header">
+      <div class="section-title">Confluence Charts</div>
+      <div class="section-desc">Check all of these instruments before every trade. <span class="tooltip-trigger" data-term="confluence">Confluences</span> confirm whether the market is trending up or down.</div>
+    </div>
+
+    <div class="reset-banner">
+      <span style="font-size:20px">🔄</span>
+      <span><strong>Key Rule:</strong> When ANY confluence changes direction — stop, reset your trade thesis completely, and restart the trading protocol from Step 1.</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="card-title" style="margin-bottom:14px"><span>📡</span> Instrument Correlations</div>
+    <div class="conf-grid" id="conf-grid"></div>
+
+    <div class="card" style="margin-top:4px">
+      <div class="card-title"><span>🔍</span> How to Read Confluences</div>
+      <div style="font-size:14px;line-height:1.8;color:var(--muted)">
+        <p>1. Open each confluence instrument on TradingView before trading.</p>
+        <p>2. Check if price is <strong style="color:var(--green)">above VWAP</strong> (bullish) or <strong style="color:var(--red)">below VWAP</strong> (bearish).</p>
+        <p>3. If <strong>most confluences are bullish</strong> → look for a <span class="tag tag-green">LONG</span> setup on your primary instrument.</p>
+        <p>4. If <strong>most confluences are bearish</strong> → look for a <span class="tag tag-red">SHORT</span> setup on your primary instrument.</p>
+        <p>5. Mixed signals = <strong style="color:var(--yellow)">no trade</strong>. Patience is a position.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ ACCOUNT ════════════════════════════ -->
+  <section class="tab-section" id="tab-account">
+    <div class="section-header">
+      <div class="section-title">Apex Trader $100K Account</div>
+      <div class="section-desc">Know your account rules cold. Breaking any rule on a funded account means losing the account.</div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:16px">
+      <div class="stat-card">
+        <div class="stat-label">Starting Balance</div>
+        <div class="stat-value">$100K</div>
+        <div class="stat-sub">Challenge / Funded</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">EOD Trailing Threshold</div>
+        <div class="stat-value red">−$3,000</div>
+        <div class="stat-sub">Max daily drawdown</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max Loss Limit</div>
+        <div class="stat-value yellow">$97,000</div>
+        <div class="stat-sub">Account disabled below this</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span>📏</span> Account Rules Reference</div>
+        <ul class="rule-list">
+          <li><span class="rule-label">Account Size</span><span class="rule-value">$100,000</span></li>
+          <li><span class="rule-label">Daily Trailing Drawdown</span><span class="rule-value" style="color:var(--red)">−$3,000</span></li>
+          <li><span class="rule-label">Max Account Drawdown</span><span class="rule-value" style="color:var(--red)">$97,000 floor</span></li>
+          <li><span class="rule-label">Challenge Fee</span><span class="rule-value" style="color:var(--red)">−$60</span></li>
+          <li><span class="rule-label">Activation Fee</span><span class="rule-value" style="color:var(--red)">−$140</span></li>
+          <li><span class="rule-label">Withdrawal Fee</span><span class="rule-value" style="color:var(--yellow)">4% (×0.96)</span></li>
+          <li><span class="rule-label">Challenge Week 1 Goal</span><span class="rule-value" style="color:var(--green)">$100K → $103K</span></li>
+          <li><span class="rule-label">Challenge Week 2 Goal</span><span class="rule-value" style="color:var(--green)">$103K → $106K</span></li>
+          <li><span class="rule-label">Position Size (Challenge)</span><span class="rule-value" style="color:var(--blue)">2× Normal</span></li>
+          <li><span class="rule-label">Max Accounts</span><span class="rule-value" style="color:var(--purple)">Up to 20</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>💸</span> Withdrawal Schedule</div>
+        <table class="payout-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Before</th><th>After</th><th>Payout</th>
+            </tr>
+          </thead>
+          <tbody id="payout-tbody"></tbody>
+        </table>
+        <div style="margin-top:14px;padding:12px;background:var(--card2);border-radius:8px;font-size:13px;color:var(--muted)">
+          Average <strong style="color:var(--text)">$2,000/withdrawal</strong> ·
+          2× per month = <strong style="color:var(--green)">$4,000/month gross</strong> ·
+          After 4% fee: <strong style="color:var(--green)">$3,840/month</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🏆</span> Challenge Path</div>
+      <div class="challenge-steps" id="challenge-steps"></div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ PROFIT PLAN ════════════════════════════ -->
+  <section class="tab-section" id="tab-profit">
+    <div class="section-header">
+      <div class="section-title">Profit Plan & Calculator</div>
+      <div class="section-desc">Based on 75% win rate, 1 trade/day, 4 days/week. Tax rate assumed at 40% (you keep 60%). Withdrawal fee: 4%.</div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="stat-card">
+        <div class="stat-label">Daily Target (Win)</div>
+        <div class="stat-value green">$750</div>
+        <div class="stat-sub">130–175 ticks, 1 contract</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Weekly Target</div>
+        <div class="stat-value green">$1,500</div>
+        <div class="stat-sub">3W − 1L @ $750</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Monthly Target</div>
+        <div class="stat-value green">$6,000</div>
+        <div class="stat-sub">4 weeks × $1,500</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🎚</span> Account Multiplier</div>
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Number of Apex $100K Accounts</span>
+          <strong id="acct-display">1 account</strong>
+        </div>
+        <input type="range" id="acct-slider" min="1" max="20" value="1" oninput="updateProfitCalc()">
+      </div>
+      <div class="grid-2" id="calc-outputs"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>📅</span> Monthly Profit Projection (Per Account, After Fees &amp; Tax)</div>
+      <table class="monthly-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Account Activity</th>
+            <th>Gross Payout</th>
+            <th>After 4% Fee</th>
+            <th>After 40% Tax</th>
+          </tr>
+        </thead>
+        <tbody id="monthly-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ─────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────
+const APEX = { withdrawFee: 0.96, taxKeep: 0.6 };
+const SESSION_START_H = 7, SESSION_END_H = 9; // PT hours
+
+// ─────────────────────────────────────────────
+// Checklist data
+// ─────────────────────────────────────────────
+const PREP_STEPS = [
+  {
+    platform: 'TradingView + ThinkOrSwim',
+    text: 'Clear unnecessary drawings from charts',
+    detail: 'Check the Economic Calendar for news events. Determine confluence VWAP direction and predicted behavior. Are most instruments above or below VWAP?'
+  },
+  {
+    platform: 'TradingView — 5-Minute Chart',
+    text: 'Determine your setup based on confluences',
+    detail: 'Identify 2 major SMC (Smart Money Concept) levels. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Draw the Area of Interest (AOI) box',
+    detail: 'Use a VWAP Band AND a Fibonacci level as the top/bottom of a rectangle. This rectangle is your Area of Interest — where you expect a trade setup to form.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Draw Risk/Reward predictions for both Long and Short',
+    detail: 'Using the AOI box, draw projected R/R lines for a potential Long trade AND a potential Short trade. This lets you be ready for either direction.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Set 1 price alert for price nearing Area of Interest — then wait',
+    detail: 'One alert only. Set it slightly outside your AOI so you get a heads-up before price arrives. Now wait patiently. Do NOT watch the chart obsessively.'
+  }
+];
+
+const PLAN_STEPS = [
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Price entered AOI — validate your trade thesis with candlesticks + volume',
+    detail: 'Look for reversal or continuation candle patterns (engulfing, pin bar, inside bar). Check if volume confirms the move. Is your original thesis still valid?'
+  },
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Re-check all confluence charts, candlestick patterns, and volume',
+    detail: 'Confirm the confluences have not changed direction. All indicators should agree. If they disagree, do NOT enter the trade.'
+  },
+  {
+    platform: 'Trading Platform (Apex/ThinkOrSwim)',
+    text: 'Enter trade — choose the entry with lowest risk of being stopped out',
+    detail: 'Set your Stop Loss immediately after entry. Pick the entry point that puts the least distance between price and a nearby support/resistance level.'
+  },
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Update R/R to reflect exact entry. Set 3 alerts + 2 horizontal rays',
+    detail: 'Delete the AOI entry alert. Set: Alert 1 = < halfway to max loss | Alert 2 = slightly above break even | Alert 3 = slightly below TP2. Ray 1 = ideal small-loss exit (near 5-min candle pattern). Ray 2 = bare minimum exit (near VWAP band or Fibonacci).'
+  },
+  {
+    platform: 'All Platforms',
+    text: 'Exit at TP1 / TP2 / TP3 / 1.5×TP3 / Break Even / Auto Max Loss. Delete all alerts.',
+    detail: 'Stick to your plan. TP1 = conservative, TP2 = standard, TP3/1.5×TP3 = extended move. If momentum dies or thesis is invalidated — exit near break even. Delete every alert when the trade is closed.'
+  }
+];
+
+// ─────────────────────────────────────────────
+// Render checklists
+// ─────────────────────────────────────────────
+const STORAGE_KEY = 'ftc_v1_checklist';
+
+function loadChecked() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveChecked(map) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+}
+
+let checked = loadChecked();
+
+function renderList(containerId, steps, startIndex) {
+  const ul = document.getElementById(containerId);
+  ul.innerHTML = '';
+  steps.forEach((step, i) => {
+    const n = startIndex + i;
+    const key = `step_${n}`;
+    const isChecked = !!checked[key];
+    const li = document.createElement('li');
+    li.className = `checklist-item${isChecked ? ' checked' : ''}`;
+    li.setAttribute('data-key', key);
+    li.onclick = () => toggleItem(key);
+    li.innerHTML = `
+      <div class="item-checkbox">${isChecked ? '✓' : ''}</div>
+      <div class="item-number">${n}</div>
+      <div class="item-body">
+        <div class="item-platform">${step.platform}</div>
+        <div class="item-text">${step.text}</div>
+        <div class="item-detail">${step.detail}</div>
+      </div>`;
+    ul.appendChild(li);
+  });
+  updateProgress();
+}
+
+function toggleItem(key) {
+  checked[key] = !checked[key];
+  saveChecked(checked);
+  renderList('prep-checklist', PREP_STEPS, 1);
+  renderList('plan-checklist', PLAN_STEPS, 6);
+}
+
+function updateProgress() {
+  const prepTotal = PREP_STEPS.length;
+  const planTotal = PLAN_STEPS.length;
+  const prepDone = PREP_STEPS.filter((_, i) => checked[`step_${i + 1}`]).length;
+  const planDone = PLAN_STEPS.filter((_, i) => checked[`step_${i + 6}`]).length;
+
+  const pPct = Math.round((prepDone / prepTotal) * 100);
+  const plPct = Math.round((planDone / planTotal) * 100);
+
+  document.getElementById('prep-bar').style.width = pPct + '%';
+  document.getElementById('plan-bar').style.width = plPct + '%';
+  document.getElementById('prep-pct').textContent = pPct + '%';
+  document.getElementById('plan-pct').textContent = plPct + '%';
+  document.getElementById('prep-count').textContent = `${prepDone} / ${prepTotal} done`;
+  document.getElementById('plan-count').textContent = `${planDone} / ${planTotal} done`;
+}
+
+function resetChecklist() {
+  checked = {};
+  saveChecked(checked);
+  renderList('prep-checklist', PREP_STEPS, 1);
+  renderList('plan-checklist', PLAN_STEPS, 6);
+}
+
+// ─────────────────────────────────────────────
+// Setup flowcharts
+// ─────────────────────────────────────────────
+function buildFlowchart(cfg) {
+  const isLong = cfg.direction === 'long';
+  const titleClass = isLong ? 'long' : 'short';
+  const entryClass = isLong ? 'entry-long' : 'entry-short';
+  const invalidMsg = isLong
+    ? '🚫 INVALID if price holds BELOW VWAP'
+    : '🚫 INVALID if price holds ABOVE VWAP';
+
+  return `<div class="flowchart">
+    <div class="flowchart-title ${titleClass}">${isLong ? '📈 LONG Setup' : '📉 SHORT Setup'} (VWAP Direction ${isLong ? '↑ Up' : '↓ Down'})</div>
+    ${cfg.steps.map((s, i) => `
+      <div class="flow-step">
+        <div class="flow-box ${s.cls}">${s.label}</div>
+        ${i < cfg.steps.length - 1 ? '<div class="flow-arrow">↓</div>' : ''}
+      </div>`).join('')}
+    <div style="margin-top:12px">
+      <div class="flow-box invalid">${invalidMsg}</div>
+    </div>
+  </div>`;
+}
+
+const longSteps = [
+  { label: '✅ Confluences: Most instruments ABOVE VWAP', cls: 'trigger' },
+  { label: '📉 Pullback Down toward VWAP / AOI', cls: '' },
+  { label: '⏸ Brief Consolidation (base forms)', cls: '' },
+  { label: '🟢 ENTER LONG — Confirmation candle', cls: 'entry-long' },
+  { label: '📈 Continuation Up', cls: '' },
+  { label: '🔥 Overextended Continuation Up', cls: '' },
+  { label: '🎯 EXIT at TP1 / TP2 / TP3', cls: 'exit' },
+];
+
+const shortSteps = [
+  { label: '✅ Confluences: Most instruments BELOW VWAP', cls: 'trigger' },
+  { label: '📈 Pullback Up toward VWAP / AOI', cls: '' },
+  { label: '⏸ Brief Consolidation (base forms)', cls: '' },
+  { label: '🔴 ENTER SHORT — Confirmation candle', cls: 'entry-short' },
+  { label: '📉 Continuation Down', cls: '' },
+  { label: '🔥 Overextended Continuation Down', cls: '' },
+  { label: '🎯 EXIT at TP1 / TP2 / TP3', cls: 'exit' },
+];
+
+document.getElementById('setup-grid').innerHTML =
+  buildFlowchart({ direction: 'long', steps: longSteps }) +
+  buildFlowchart({ direction: 'short', steps: shortSteps });
+
+// ─────────────────────────────────────────────
+// Confluences
+// ─────────────────────────────────────────────
+const CONFLUENCES = [
+  { symbol: 'SPX', desc: 'S&P 500 Index', corrs: [{ label: 'Top Gainers', type: 'pos' }] },
+  { symbol: 'ES', desc: 'S&P 500 Futures', corrs: [{ label: 'SPX', type: 'pos' }] },
+  { symbol: 'NQ', desc: 'Nasdaq-100 Futures', corrs: [{ label: 'ES', type: 'pos' }] },
+  { symbol: 'YM', desc: 'Dow Jones Futures', corrs: [{ label: 'ES', type: 'pos' }] },
+  { symbol: 'DXY', desc: 'US Dollar Index', corrs: [{ label: 'USDJPY', type: 'pos' }, { label: 'EUR/USD', type: 'inv' }, { label: 'GBP/USD', type: 'inv' }] },
+  { symbol: 'ZN', desc: '10-Year T-Note Futures', corrs: [{ label: 'USDJPY', type: 'inv' }] },
+  { symbol: 'USDJPY', desc: 'Dollar / Yen', corrs: [{ label: 'DXY', type: 'pos' }, { label: 'ZN', type: 'inv' }] },
+  { symbol: '6E', desc: 'Euro Futures', corrs: [{ label: 'EUR/USD', type: 'pos' }] },
+  { symbol: 'EURUSD', desc: 'Euro / Dollar', corrs: [{ label: 'DXY', type: 'inv' }, { label: '6E', type: 'pos' }] },
+  { symbol: 'GBPUSD', desc: 'Pound / Dollar', corrs: [{ label: 'DXY', type: 'inv' }, { label: '6E', type: 'pos' }] },
+];
+
+const confGrid = document.getElementById('conf-grid');
+CONFLUENCES.forEach(c => {
+  const corrHTML = c.corrs.map(r =>
+    r.type === 'pos'
+      ? `<span class="corr-pos">↑ ${r.label} (positive)</span>`
+      : `<span class="corr-inv">↓ ${r.label} (inverse)</span>`
+  ).join('<br>');
+  confGrid.innerHTML += `
+    <div class="conf-card">
+      <div class="conf-symbol">${c.symbol}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${c.desc}</div>
+      <div class="conf-corr">${corrHTML}</div>
+    </div>`;
+});
+
+// ─────────────────────────────────────────────
+// Account — Payout table
+// ─────────────────────────────────────────────
+const PAYOUTS = [
+  { before: 104500, after: 102500, gross: 2000 },
+  { before: 105500, after: 103000, gross: 2500 },
+  { before: 106000, after: 103500, gross: 2500 },
+  { before: 106500, after: 103500, gross: 3000 },
+  { before: 106500, after: 102500, gross: 4000 },
+  { before: 105500, after: 101500, gross: 4000 },
+];
+
+const payoutTbody = document.getElementById('payout-tbody');
+PAYOUTS.forEach((p, i) => {
+  const net = (p.gross * APEX.withdrawFee).toFixed(2);
+  payoutTbody.innerHTML += `
+    <tr>
+      <td><span class="tag tag-blue">${i + 1}</span></td>
+      <td>$${p.before.toLocaleString()}</td>
+      <td class="td-red">$${p.after.toLocaleString()}</td>
+      <td class="td-green">+$${p.gross.toLocaleString()} → $${parseFloat(net).toLocaleString()}</td>
+    </tr>`;
+});
+
+// ─────────────────────────────────────────────
+// Account — Challenge steps
+// ─────────────────────────────────────────────
+const challengeEl = document.getElementById('challenge-steps');
+[
+  { label: 'Challenge Fee', val: '−$60', color: 'var(--red)' },
+  null,
+  { label: 'Week 1', val: '$100K → $103K', color: 'var(--green)' },
+  null,
+  { label: 'Week 2', val: '$103K → $106K', color: 'var(--green)' },
+  null,
+  { label: 'Activation Fee', val: '−$140', color: 'var(--red)' },
+  null,
+  { label: 'PASS EVAL', val: '🎉 Funded!', color: 'var(--yellow)' },
+].forEach(item => {
+  if (item === null) {
+    challengeEl.innerHTML += '<div class="ch-arrow">→</div>';
+  } else {
+    challengeEl.innerHTML += `
+      <div class="ch-step">
+        <div class="ch-step-label">${item.label}</div>
+        <div class="ch-step-val" style="color:${item.color}">${item.val}</div>
+      </div>`;
+  }
+});
+
+// ─────────────────────────────────────────────
+// Profit plan calculator
+// ─────────────────────────────────────────────
+const MONTHLY_DATA = [
+  { month: 'July (Pass Month)', activity: '$100K → $106K eval pass', gross: 0 },
+  { month: 'August', activity: '$2,000 payout (1 withdrawal)', gross: 2000 },
+  { month: 'September', activity: '$2,500 × 2 payouts', gross: 5000 },
+  { month: 'October', activity: '$3,000 + $4,000 payouts', gross: 7000 },
+  { month: 'November', activity: '$4,000 payout', gross: 4000 },
+];
+
+function fmt(n) {
+  return '$' + parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function updateProfitCalc() {
+  const n = parseInt(document.getElementById('acct-slider').value, 10);
+  document.getElementById('acct-display').textContent = n + (n === 1 ? ' account' : ' accounts');
+
+  const weeklyGross = 1500 * n;
+  const monthlyGross = 6000 * n;
+  const afterFee = monthlyGross * APEX.withdrawFee;
+  const afterTax = afterFee * APEX.taxKeep;
+  const annualNet = afterTax * 12;
+
+  document.getElementById('calc-outputs').innerHTML = `
+    <div>
+      <div class="calc-row"><span class="calc-label">Weekly gross (${n} acct${n>1?'s':''})</span><span class="calc-value" style="color:var(--blue)">${fmt(weeklyGross)}</span></div>
+      <div class="calc-row"><span class="calc-label">Monthly gross</span><span class="calc-value" style="color:var(--blue)">${fmt(monthlyGross)}</span></div>
+      <div class="calc-row"><span class="calc-label">After 4% withdrawal fee</span><span class="calc-value">${fmt(afterFee)}</span></div>
+    </div>
+    <div>
+      <div class="calc-row"><span class="calc-label">After 40% tax (keep 60%)</span><span class="calc-value" style="color:var(--green)">${fmt(afterTax)}</span></div>
+      <div class="calc-row"><span class="calc-label">Annual net (12 months)</span><span class="calc-value" style="color:var(--green)">${fmt(annualNet)}</span></div>
+      <div class="calc-row"><span class="calc-label">Per account net/mo</span><span class="calc-value" style="color:var(--muted)">${fmt(afterTax / n)}</span></div>
+    </div>`;
+
+  const tbody = document.getElementById('monthly-tbody');
+  let cumulative = 0;
+  tbody.innerHTML = '';
+  MONTHLY_DATA.forEach(row => {
+    const gross = row.gross * n;
+    const afterF = gross * APEX.withdrawFee;
+    const afterT = afterF * APEX.taxKeep;
+    cumulative += afterT;
+    const isZero = gross === 0;
+    tbody.innerHTML += `
+      <tr>
+        <td>${row.month}</td>
+        <td style="color:var(--muted);font-size:12px">${row.activity}${n > 1 ? ` ×${n}` : ''}</td>
+        <td>${isZero ? '—' : fmt(gross)}</td>
+        <td>${isZero ? '—' : fmt(afterF)}</td>
+        <td style="color:var(--green)">${isZero ? '<span style="color:var(--muted)">$0</span>' : fmt(afterT)}</td>
+      </tr>`;
+  });
+  tbody.innerHTML += `
+    <tr class="total-row">
+      <td colspan="4">5-Month Cumulative (${n} account${n>1?'s':''})</td>
+      <td style="color:var(--green)">${fmt(cumulative)}</td>
+    </tr>`;
+}
+
+updateProfitCalc();
+
+// ─────────────────────────────────────────────
+// Tab switching
+// ─────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ─────────────────────────────────────────────
+// Session timer — uses Intl for DST-safe PT
+// ─────────────────────────────────────────────
+function getPTTime(date) {
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true
+  });
+  return fmt.format(date);
+}
+
+function getPTHour(date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    hour: 'numeric', minute: 'numeric', hour12: false
+  }).formatToParts(date);
+  const h = parseInt(parts.find(p => p.type === 'hour').value, 10);
+  const m = parseInt(parts.find(p => p.type === 'minute').value, 10);
+  return h + m / 60;
+}
+
+function getSessionState(date) {
+  const ptHour = getPTHour(date);
+  const untilOpen = SESSION_START_H - ptHour;
+  const untilClose = SESSION_END_H - ptHour;
+
+  if (ptHour >= SESSION_START_H && ptHour < SESSION_END_H) {
+    const minsLeft = Math.round(untilClose * 60);
+    return { status: 'open', label: 'SESSION OPEN', countdown: `${minsLeft}m remaining` };
+  } else if (ptHour < SESSION_START_H && untilOpen <= 0.5) {
+    const minsLeft = Math.round(untilOpen * 60);
+    return { status: 'soon', label: 'OPENS SOON', countdown: `Opens in ${minsLeft}m` };
+  } else if (ptHour < SESSION_START_H) {
+    const h = Math.floor(untilOpen);
+    const m = Math.round((untilOpen - h) * 60);
+    return { status: 'closed', label: 'SESSION CLOSED', countdown: `Opens in ${h}h ${m}m` };
+  } else {
+    return { status: 'closed', label: 'SESSION CLOSED', countdown: 'Next session: 7 AM PT' };
+  }
+}
+
+function updateClock() {
+  const now = new Date();
+  const state = getSessionState(now);
+  const badge = document.getElementById('session-badge');
+  badge.className = `session-badge ${state.status}`;
+  document.getElementById('session-label').textContent = state.label;
+  document.getElementById('clock').textContent = getPTTime(now) + ' PT';
+  document.getElementById('countdown-text').textContent = state.countdown;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+// ─────────────────────────────────────────────
+// Tooltips
+// ─────────────────────────────────────────────
+const GLOSSARY = {
+  'vwap': 'VWAP (Volume Weighted Average Price): The average price weighted by volume traded throughout the day. Acts as a "fair value" line — price above VWAP is bullish, below is bearish.',
+  'smc': 'SMC (Smart Money Concepts): A trading framework based on how institutional traders (banks, hedge funds) move the market. Key levels are Order Blocks, Fair Value Gaps, and Break of Structure points.',
+  'fibonacci': 'Fibonacci Retracement: A tool that draws horizontal lines at key % levels (23.6%, 38.2%, 50%, 61.8%) between two price points. These levels often act as support/resistance where price reverses.',
+  'confluence': 'Confluence: When multiple independent signals or indicators agree on the same direction. More confluences = higher probability trade. Example: Price above VWAP on ES, NQ, AND YM all at once.',
+  'aoi': 'Area of Interest (AOI): A rectangular price zone where you expect a trade setup to form — defined by a VWAP band and a Fibonacci level.',
+  'tp': 'Take Profit (TP): Your predetermined exit price where you lock in gains. TP1 = conservative, TP2 = standard, TP3 = extended. Always set before entering a trade.',
+  'trailing drawdown': 'Trailing Drawdown: Apex\'s risk rule where the max loss limit "trails" as your account balance grows. If your account peaks at $105,000, the max loss floor moves up with it.',
+};
+
+const tooltipEl = document.getElementById('tooltip-popup');
+
+document.body.addEventListener('mouseover', e => {
+  const el = e.target.closest('.tooltip-trigger');
+  if (!el) return;
+  const term = el.dataset.term?.toLowerCase();
+  const text = GLOSSARY[term] || GLOSSARY[Object.keys(GLOSSARY).find(k => term?.includes(k) || k.includes(term || ''))];
+  if (!text) return;
+  tooltipEl.textContent = text;
+  tooltipEl.classList.add('visible');
+});
+
+document.body.addEventListener('mousemove', e => {
+  if (tooltipEl.classList.contains('visible')) {
+    const x = Math.min(e.clientX + 14, window.innerWidth - 280);
+    const y = Math.min(e.clientY + 20, window.innerHeight - 140);
+    tooltipEl.style.left = x + 'px';
+    tooltipEl.style.top = y + 'px';
+  }
+});
+
+document.body.addEventListener('mouseout', e => {
+  if (e.target.closest('.tooltip-trigger')) {
+    tooltipEl.classList.remove('visible');
+  }
+});
+
+// ─────────────────────────────────────────────
+// Initial render
+// ─────────────────────────────────────────────
+renderList('prep-checklist', PREP_STEPS, 1);
+renderList('plan-checklist', PLAN_STEPS, 6);
+</script>
+</body>
+</html>

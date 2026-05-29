@@ -313,6 +313,88 @@
       .cards { grid-template-columns: 1fr; }
       .header-top h1 { font-size: 16px; }
     }
+
+    /* ── Decision Tree ── */
+    .dt-wrap { max-width: 540px; margin: 0 auto; padding-top: 4px; }
+
+    .dt-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      min-height: 22px;
+      margin-bottom: 12px;
+    }
+    .dt-crumb { font-size: 11px; color: var(--muted); }
+    .dt-sep   { font-size: 11px; color: #383838; }
+
+    .dt-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .dt-question {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .dt-opts { display: flex; flex-direction: column; gap: 7px; }
+
+    .dt-opt {
+      padding: 11px 15px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .dt-opt:hover  { background: #252525; border-color: #3a3a3a; }
+    .dt-opt:active { background: #2d2d2d; }
+
+    .dt-nav { display: flex; gap: 8px; margin-top: 16px; }
+
+    .dt-btn {
+      padding: 7px 14px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .dt-btn:hover { color: var(--text); border-color: #444; }
+
+    .dt-result-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .dt-result-tool {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+    .dt-result-use { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+
+    .result-card { padding: 20px 22px; }
   </style>
 </head>
 <body>
@@ -323,19 +405,26 @@
     <span class="subtitle">Quick Reference</span>
   </div>
   <nav class="tabs" role="tablist">
-    <button class="tab-btn active" data-tab="facts"   role="tab">Looking Up Facts</button>
+    <button class="tab-btn active" data-tab="decide"  role="tab">Quick Decide</button>
+    <button class="tab-btn"        data-tab="facts"   role="tab">Looking Up Facts</button>
     <button class="tab-btn"        data-tab="advice"  role="tab">Asking For Advice</button>
     <button class="tab-btn"        data-tab="work"    role="tab">Doing Work</button>
     <button class="tab-btn"        data-tab="content" role="tab">Creating Content</button>
     <button class="tab-btn"        data-tab="learn"   role="tab">Learning</button>
-    <button class="tab-btn"        data-tab="daily"   role="tab">Daily Assistance</button>
   </nav>
 </header>
 
 <main>
 
+  <!-- ══════════════ QUICK DECIDE ══════════════ -->
+  <div class="tab-panel active" id="panel-decide">
+    <div class="dt-wrap">
+      <div id="decision-container"></div>
+    </div>
+  </div>
+
   <!-- ══════════════ LOOKING UP FACTS ══════════════ -->
-  <div class="tab-panel active" id="panel-facts">
+  <div class="tab-panel" id="panel-facts">
     <div class="cards">
 
       <div class="card google">
@@ -526,18 +615,6 @@
           <li>Casual Prompting</li>
           <li>Save to Google Drive (Claude folder with Claude label)</li>
           <li>Custom Projects for ongoing context</li>
-        </ul>
-      </div>
-
-      <div class="card misc">
-        <div class="card-header">
-          <div class="card-title">Writing On Google Docs By Voice</div>
-          <span class="platform-badge">Misc</span>
-        </div>
-        <div class="tool-name">Wispr Flow</div>
-        <ul class="steps">
-          <li>Switch to Wispr Flow keyboard</li>
-          <li>Speak naturally → auto-transcribes on any app</li>
         </ul>
       </div>
 
@@ -747,108 +824,6 @@
     </div>
   </div>
 
-  <!-- ══════════════ DAILY ASSISTANCE ══════════════ -->
-  <div class="tab-panel" id="panel-daily">
-    <div class="cards">
-
-      <div class="card claude">
-        <div class="card-header">
-          <div class="card-title">Daily Debrief &amp; Complex Artifacts</div>
-          <span class="platform-badge">Claude</span>
-        </div>
-        <div class="tool-name">Claude Sonnet 4.6</div>
-        <ul class="steps">
-          <li>Casual Prompting → Custom Projects</li>
-          <li>Save to Google Drive (Claude folder)</li>
-        </ul>
-        <span class="note-badge">Daily Debrief</span>
-      </div>
-
-      <div class="card perp">
-        <div class="card-header">
-          <div class="card-title">Daily Reports &amp; News</div>
-          <span class="platform-badge">Perplexity</span>
-        </div>
-        <div class="tool-name">Perplexity</div>
-        <ul class="steps">
-          <li>Tasks → create daily/weekly custom report</li>
-          <li>Read report each morning</li>
-          <li>Perplexity Health for health-related questions</li>
-        </ul>
-        <span class="note-badge">Daily Debrief · AI Workflows News · Entertainment News</span>
-      </div>
-
-      <div class="card openai">
-        <div class="card-header">
-          <div class="card-title">Prep For The Day &amp; Quick Advice</div>
-          <span class="platform-badge">OpenAI</span>
-        </div>
-        <div class="tool-name">ChatGPT 5.5 Instant</div>
-        <ul class="steps">
-          <li>Casual Prompting for prep &amp; trading breakdowns</li>
-          <li>Voice Memos transcript → paste for context</li>
-          <li>Custom Projects for ongoing context</li>
-        </ul>
-        <span class="note-badge">Prep For Day · Trading · Answering Others' Questions</span>
-      </div>
-
-      <div class="card google">
-        <div class="card-header">
-          <div class="card-title">Quick Answers For Others</div>
-          <span class="platform-badge">Google</span>
-        </div>
-        <div class="tool-name">Google Chrome AI Mode</div>
-        <ul class="steps">
-          <li>Chrome → AI Mode → Casual Prompting</li>
-          <li>Google Finance for market/stock data</li>
-        </ul>
-        <span class="note-badge">Answering Other People's Simple Questions</span>
-      </div>
-
-      <div class="card google">
-        <div class="card-header">
-          <div class="card-title">Daily Language Practice</div>
-          <span class="platform-badge">Google</span>
-        </div>
-        <div class="tool-name">Google Translate</div>
-        <ul class="steps">
-          <li>Open Google Translate → Practice feature</li>
-          <li>Complete 3 daily activities tailored to your goals</li>
-        </ul>
-        <span class="note-badge">3 Daily Spanish Activities</span>
-      </div>
-
-      <div class="card google">
-        <div class="card-header">
-          <div class="card-title">AI Personal &amp; Relationship Therapy</div>
-          <span class="platform-badge">Google</span>
-        </div>
-        <div class="tool-name">Gemini 3.1 Pro</div>
-        <ul class="steps">
-          <li>Personal Intelligence ON → Custom Gems</li>
-          <li>Or use Storybook Gem → optimize prompt first</li>
-          <li>Label "(Date) Custom Gem (Topic)"</li>
-        </ul>
-        <span class="note-badge">AI Personal Therapy · Relationship Therapy</span>
-      </div>
-
-      <div class="card claude">
-        <div class="card-header">
-          <div class="card-title">Personal Assistant &amp; Live Tasks</div>
-          <span class="platform-badge">Claude</span>
-        </div>
-        <div class="tool-name">Claude Cowork Desktop</div>
-        <ul class="steps">
-          <li>Scheduled tasks → personal virtual assistant tasks</li>
-          <li>Live Artifacts → dynamic real-time information</li>
-          <li>Dispatch for autonomous multi-step prompts</li>
-          <li>Claude for Chrome → edit Google Docs in browser</li>
-        </ul>
-        <span class="note-badge">Prep For Day · Trading Live Artifact · Community PDFs</span>
-      </div>
-
-    </div>
-  </div>
 
   <!-- ══════════════ PROMPTING TIPS ══════════════ -->
   <div class="tips-section">
@@ -890,7 +865,7 @@
   // Tab switching
   const tabs = document.querySelectorAll('.tab-btn');
   const panels = document.querySelectorAll('.tab-panel');
-  const panelMap = { facts:'panel-facts', advice:'panel-advice', work:'panel-work', content:'panel-content', learn:'panel-learn', daily:'panel-daily' };
+  const panelMap = { decide:'panel-decide', facts:'panel-facts', advice:'panel-advice', work:'panel-work', content:'panel-content', learn:'panel-learn' };
 
   tabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -909,6 +884,147 @@
     tipsToggle.classList.toggle('open', open);
     tipsToggle.setAttribute('aria-expanded', open);
   });
+
+  // ── Decision Tree ─────────────────────────────────────────────
+  const PLATFORM = { google:'Google', perp:'Perplexity', openai:'OpenAI', claude:'Claude', misc:'Misc' };
+
+  const TREE = {
+    root: { q: 'What do you want to do right now?', opts: [
+      { l: 'Look something up',                    n: 'lookup'  },
+      { l: 'Get advice on something',              n: 'advice'  },
+      { l: 'Do work / create something',           n: 'work'    },
+      { l: 'Create content',                       n: 'content' },
+      { l: 'Study or learn',                       n: 'study'   }
+    ]},
+    lookup: { q: 'What kind of lookup?', opts: [
+      { l: 'Quick simple fact',                    n: 'r_chrome'       },
+      { l: 'Deep research / complex question',     n: 'r_perp'         },
+      { l: 'Fact-check / verify something',        n: 'r_council'      },
+      { l: 'Medical or health question',           n: 'r_openevidence' },
+      { l: 'Learn a whole new topic deeply',       n: 'r_notebooklm'   }
+    ]},
+    advice: { q: 'How complex is the advice you need?', opts: [
+      { l: 'Quick, simple personal advice',        n: 'r_chatgpt'   },
+      { l: 'Deep, complex personalized advice',    n: 'r_cowork'    }
+    ]},
+    work: { q: 'What are you creating or doing?', opts: [
+      { l: 'Brainstorm / simple artifact or website', n: 'r_flash'  },
+      { l: 'Complex document or artifact',            n: 'r_sonnet' },
+      { l: 'Complex website',                         n: 'r_code'   },
+      { l: 'Personal / therapy / relationship work',  n: 'r_gems'   },
+      { l: 'Format a doc aesthetically',              n: 'r_notion' }
+    ]},
+    content: { q: 'What type of content?', opts: [
+      { l: 'Tutorial video',                       n: 'r_loom'    },
+      { l: 'AI-generated music',                   n: 'r_suno'    },
+      { l: 'Voiceover audio',                      n: 'r_eleven'  },
+      { l: 'Thumbnail or short video',             n: 'r_gvideo'  },
+      { l: 'B-roll footage',                       n: 'r_kling'   }
+    ]},
+    study: { q: "What's your study goal?", opts: [
+      { l: 'Research the topic first',             n: 'r_perp'     },
+      { l: 'Flashcards, quiz, or practice questions', n: 'r_notebooklm' },
+      { l: 'Do an assignment or complex artifact', n: 'r_sonnet'   },
+      { l: 'Simulate an exam',                     n: 'r_brendan'  },
+      { l: 'Build a study website',                n: 'r_code'     }
+    ]},
+
+    r_chrome:       { r:1, p:'google', t:'Google Chrome AI Mode',          u:'Looking Up Simple Facts',              s:['Chrome → select AI Mode → Casual Prompting','Google Finance for market data'] },
+    r_perp:         { r:1, p:'perp',   t:'Perplexity',                     u:'Complex Research &amp; Daily Reports', s:['Casual Prompting → Create Files &amp; Apps if needed','Tasks → daily/weekly custom report','Perplexity Health for health questions'] },
+    r_council:      { r:1, p:'perp',   t:'Perplexity Model Council',       u:'Fact Checking',                        s:['Select Model Council mode','Casual Prompting','Label "(Date) Model Council (Topic)"'] },
+    r_openevidence: { r:1, p:'misc',   t:'OpenEvidence',                   u:'Researching Medical Facts',            s:['Optimize prompt with another AI first','Type "." → Dotflows for medical formatting','Click citations to go deeper'] },
+    r_notebooklm:   { r:1, p:'google', t:'Google NotebookLM',              u:'Deep Learning &amp; Study Resources',  s:['Add sources (PDFs, YouTube, audio, images)','Studio: Flashcards, Quiz, Audio Overview, Infographic','Join Audio Overview to ask live questions'] },
+    r_chatgpt:      { r:1, p:'openai', t:'ChatGPT 5.5 Instant',            u:'Quick Advice &amp; Daily Prep',        s:['Casual Prompting','Record Voice Memo → paste transcript for context','Custom Projects for ongoing context'] },
+    r_cowork:       { r:1, p:'claude', t:'Claude Cowork Desktop',          u:'Complex Advice &amp; Personal Assistant', s:['New Task / Projects / Scheduled / Live Artifacts','Dispatch for multi-step autonomous prompts','Claude for Chrome → edit Google Docs directly'] },
+    r_flash:        { r:1, p:'google', t:'Gemini 3.5 Flash',               u:'Brainstorming &amp; Simple Artifacts', s:['Personal Intelligence ON → "@" for Google Workspace','Canvas tool for vibe coding → share link','Schedule Actions for reports'] },
+    r_sonnet:       { r:1, p:'claude', t:'Claude Sonnet 4.6',              u:'Complex Artifacts &amp; Assignments',  s:['Casual Prompting','Custom Projects with instructions + files','Save to Google Drive (Claude folder)'] },
+    r_code:         { r:1, p:'claude', t:'Claude Code — Sonnet 4.6',       u:'Complex Websites',                     s:['Plan → Default env → GitHub repo → base branch','GitHub Pages → select branch → Save','Public link appears at top of Pages tab'] },
+    r_gems:         { r:1, p:'google', t:'Gemini 3.1 Pro — Custom Gems',   u:'Personalized Work &amp; Therapy',      s:['Personal Intelligence ON → Custom Gems','Or Storybook Gem → optimize prompt first','Label "(Date) Custom Gem (Topic)"'] },
+    r_notion:       { r:1, p:'misc',   t:'Notion',                         u:'Aesthetic Doc Formatting',             s:['Optimize prompt with another AI first','Notion AI → create → manual editing','Share &amp; Publish for public link'] },
+    r_loom:         { r:1, p:'misc',   t:'Loom + CapCut',                  u:'Educational Tutorials',                s:['Loom: record screen (+ face on laptop)','CapCut: edit → export → YouTube if desired'] },
+    r_suno:         { r:1, p:'misc',   t:'Suno',                           u:'AI Generated Music',                   s:['Advanced Mode (Lyrics, Styles, More Options)','AI Editing to refine → Generate','Save to playlist → export to Files'] },
+    r_eleven:       { r:1, p:'misc',   t:'ElevenLabs',                     u:'Voiceover Audio',                      s:['Voice: "Brendan Hwang" — Eleven v3 (alpha)','Speed 0.90 · Stability 45% · Similarity 55%','Download MP3 → ElevenLabs folder with date'] },
+    r_gvideo:       { r:1, p:'google', t:'Gemini 3.1 Pro',                 u:'Thumbnails &amp; Short Videos',        s:['Personal Intelligence ON','Images tool (Nano Banana 2) for thumbnails','Videos tool (Omni) for short clips'] },
+    r_kling:        { r:1, p:'misc',   t:'Kling AI — Video 3.0',           u:'B-Roll Footage',                       s:['Text to Video → Kling AI × Deepseek R1 for prompt optimization','Set Generation Parameters → Generate','Assets → Download without watermark'] },
+    r_brendan:      { r:1, p:'openai', t:'ChatGPT 5.5 Thinking — BrendanGPT', u:'Exam Simulation',                  s:['Open BrendanGPT CustomGPT','Casual Prompting','Label "(Date) Digital Clone (Topic)"'] }
+  };
+
+  let dtHistory = [];
+  let dtCurrent = 'root';
+
+  function dtRender() {
+    const node = TREE[dtCurrent];
+    const el   = document.getElementById('decision-container');
+
+    const crumbs = dtHistory.length
+      ? '<div class="dt-breadcrumb">' +
+        dtHistory.map((h, i) =>
+          (i > 0 ? '<span class="dt-sep">›</span>' : '') +
+          '<span class="dt-crumb">' + h.label + '</span>'
+        ).join('') +
+        '</div>'
+      : '';
+
+    const navBtns = dtHistory.length
+      ? '<div class="dt-nav">' +
+        '<button class="dt-btn" data-action="back">← Back</button>' +
+        '<button class="dt-btn" data-action="restart">Start Over</button>' +
+        '</div>'
+      : '';
+
+    if (node.r) {
+      el.innerHTML = crumbs +
+        '<div class="result-card card ' + node.p + '">' +
+          '<div class="card-header">' +
+            '<div>' +
+              '<div class="dt-result-label">Recommended Tool</div>' +
+              '<div class="dt-result-tool">' + node.t + '</div>' +
+              '<div class="dt-result-use">' + node.u + '</div>' +
+            '</div>' +
+            '<span class="platform-badge">' + PLATFORM[node.p] + '</span>' +
+          '</div>' +
+          '<ul class="steps">' + node.s.map(s => '<li>' + s + '</li>').join('') + '</ul>' +
+          '<div class="dt-nav">' +
+            (dtHistory.length > 0 ? '<button class="dt-btn" data-action="back">← Back</button>' : '') +
+            '<button class="dt-btn" data-action="restart">Start Over</button>' +
+          '</div>' +
+        '</div>';
+    } else {
+      el.innerHTML = crumbs +
+        '<div class="dt-card">' +
+          '<div class="dt-question">' + node.q + '</div>' +
+          '<div class="dt-opts">' +
+            node.opts.map(o =>
+              '<button class="dt-opt" data-action="choose" data-next="' + o.n + '">' + o.l + '</button>'
+            ).join('') +
+          '</div>' +
+          navBtns +
+        '</div>';
+    }
+  }
+
+  document.getElementById('decision-container').addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'choose') {
+      const nextId = btn.dataset.next;
+      const opt = TREE[dtCurrent].opts.find(o => o.n === nextId);
+      dtHistory.push({ nodeId: dtCurrent, label: opt.l });
+      dtCurrent = nextId;
+      dtRender();
+    } else if (action === 'back') {
+      const prev = dtHistory.pop();
+      dtCurrent = prev.nodeId;
+      dtRender();
+    } else if (action === 'restart') {
+      dtHistory = [];
+      dtCurrent = 'root';
+      dtRender();
+    }
+  });
+
+  dtRender();
 </script>
 
 </body>

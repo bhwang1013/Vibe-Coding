@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Workflows — Personal AI OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07071a;
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f8;
+      --muted: rgba(255,255,255,0.38);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Ambient background ── */
+    .bg-aurora {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .bg-aurora::before {
+      content: '';
+      position: absolute;
+      width: 900px; height: 700px;
+      top: -300px; left: -200px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.14) 0%, transparent 70%);
+      animation: drift1 24s ease-in-out infinite alternate;
+    }
+    .bg-aurora::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      bottom: -200px; right: -100px;
+      background: radial-gradient(ellipse, rgba(255,112,67,0.09) 0%, transparent 70%);
+      animation: drift2 30s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(120px,80px) scale(1.25); }
+    }
+    @keyframes drift2 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(-80px,-60px) scale(1.15); }
+    }
+
+    .dot-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    #app { position: relative; z-index: 1; }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(7,7,26,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .header-inner { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0 12px;
+      gap: 16px;
+    }
+
+    .logo-group { display: flex; align-items: center; gap: 12px; }
+
+    .logo-mark {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: white; letter-spacing: -0.5px;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.45);
+      flex-shrink: 0;
+    }
+
+    .logo-text h1 {
+      font-size: 19px; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.65) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1.1;
+    }
+    .logo-text .tagline {
+      font-size: 10px; color: var(--muted); font-weight: 500;
+      letter-spacing: 0.3px; margin-top: 2px;
+    }
+
+    .header-stats { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 14px; }
+    .stat-value { font-size: 17px; font-weight: 800; color: white; line-height: 1; letter-spacing: -0.5px; }
+    .stat-label { font-size: 9px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
+    .stat-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.1); }
+
+    /* ── Tabs ── */
+    .tabs-wrap { border-top: 1px solid rgba(255,255,255,0.04); }
+    .tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 11px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px; font-weight: 600;
+      color: var(--muted);
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: rgba(255,255,255,0.8); }
+    .tab-btn.active { color: white; border-bottom-color: #6366f1; }
+
+    /* ── Main ── */
+    main { max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px; }
+
+    /* ── Panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active {
+      display: block;
+      animation: panelIn 0.22s cubic-bezier(0.2,0,0,1);
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card grid ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 18px 20px;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.2,0,0,1), box-shadow 0.25s, border-color 0.25s;
+    }
+
+    /* Platform tokens */
+    .card.google { --pc: #4F9CF9; --pcg: rgba(79,156,249,0.16); }
+    .card.perp   { --pc: #00C9A7; --pcg: rgba(0,201,167,0.16); }
+    .card.openai { --pc: #6DC08A; --pcg: rgba(109,192,138,0.16); }
+    .card.claude { --pc: #FF7043; --pcg: rgba(255,112,67,0.16); }
+    .card.misc   { --pc: #B05CE6; --pcg: rgba(176,92,230,0.16); }
+
+    /* Top accent line */
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--pc) 0%, transparent 100%);
+      opacity: 0.75;
+    }
+    /* Corner glow */
+    .card::after {
+      content: '';
+      position: absolute; top: -40px; right: -30px;
+      width: 130px; height: 130px;
+      background: radial-gradient(circle, var(--pcg) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.13);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .card-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 10px;
+      margin-bottom: 8px; position: relative;
+    }
+    .card-title { font-size: 13.5px; font-weight: 700; color: white; line-height: 1.3; letter-spacing: -0.2px; }
+
+    .platform-badge {
+      flex-shrink: 0;
+      font-size: 9.5px; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      background: var(--pcg); color: var(--pc);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tool-name {
+      font-size: 10.5px; font-weight: 700;
+      color: var(--pc); opacity: 0.85;
+      margin-bottom: 10px;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      position: relative;
+    }
+
+    .steps { list-style: none; display: flex; flex-direction: column; gap: 5px; position: relative; }
+    .steps li {
+      font-size: 12px; color: rgba(255,255,255,0.62);
+      padding-left: 16px; position: relative; line-height: 1.45;
+    }
+    .steps li::before {
+      content: '→'; position: absolute; left: 0;
+      color: var(--pc); font-size: 11px; opacity: 0.7;
+    }
+
+    .note-badge {
+      display: inline-block; margin-top: 10px;
+      font-size: 10.5px; font-style: italic;
+      color: rgba(255,255,255,0.38);
+      background: rgba(255,255,255,0.05);
+      padding: 4px 10px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+    }
+
+    /* ── Tips ── */
+    .tips-section {
+      margin-top: 32px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; overflow: hidden;
+    }
+    .tips-toggle {
+      width: 100%; padding: 15px 20px;
+      background: rgba(255,255,255,0.04); border: none;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600; color: white; text-align: left;
+      transition: background 0.15s;
+    }
+    .tips-toggle:hover { background: rgba(255,255,255,0.07); }
+    .tips-label { display: flex; align-items: center; gap: 10px; }
+    .tips-icon {
+      width: 24px; height: 24px; border-radius: 6px;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; line-height: 1;
+    }
+    .tips-toggle .chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
+    .tips-toggle.open .chevron { transform: rotate(180deg); }
+    .tips-body { display: none; background: rgba(0,0,0,0.25); padding: 18px 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .tips-body.open { display: block; }
+    .tips-body ol { list-style: decimal; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .tips-body li { font-size: 13px; color: rgba(255,255,255,0.62); line-height: 1.55; }
+    .tips-body li strong { color: white; }
+
+    /* ── Footer ── */
+    footer { margin-top: 32px; padding: 20px 0 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .pricing-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+    .pricing-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .price-chip {
+      font-size: 11px; padding: 4px 11px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.42); background: rgba(255,255,255,0.04);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .price-chip:hover { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.2); }
+    .price-chip span { color: white; font-weight: 600; }
+    .total-row { margin-top: 14px; display: flex; align-items: baseline; gap: 6px; }
+    .total-label { font-size: 11px; color: var(--muted); }
+    .total-value { font-size: 20px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+    .total-period { font-size: 11px; color: var(--muted); }
+
+    /* ── Decision Tree ── */
+    .dt-wrap { max-width: 580px; margin: 8px auto 0; }
+
+    .dt-breadcrumb {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 6px; min-height: 28px; margin-bottom: 14px;
+    }
+    .dt-crumb {
+      font-size: 11px; color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 9px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .dt-sep { font-size: 11px; color: rgba(255,255,255,0.2); }
+
+    .dt-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 30px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    }
+
+    .dt-progress {
+      width: 100%; height: 3px;
+      background: rgba(255,255,255,0.06); border-radius: 3px;
+      margin-bottom: 22px; overflow: hidden;
+    }
+    .dt-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(0.2,0,0,1);
+    }
+
+    .dt-step {
+      font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: rgba(99,102,241,0.8); margin-bottom: 8px;
+    }
+
+    .dt-question {
+      font-size: 21px; font-weight: 800; line-height: 1.25;
+      color: white; margin-bottom: 22px; letter-spacing: -0.4px;
+    }
+
+    .dt-opts { display: flex; flex-direction: column; gap: 8px; }
+
+    .dt-opt {
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-left: 3px solid transparent;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.72);
+      font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 500;
+      cursor: pointer; text-align: left;
+      transition: all 0.15s cubic-bezier(0.2,0,0,1);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .dt-opt .arr { font-size: 14px; opacity: 0; transform: translateX(-5px); transition: all 0.15s; color: #6366f1; flex-shrink: 0; }
+    .dt-opt:hover {
+      background: rgba(99,102,241,0.12);
+      border-color: rgba(99,102,241,0.35);
+      border-left-color: #6366f1;
+      color: white; transform: translateX(2px);
+    }
+    .dt-opt:hover .arr { opacity: 1; transform: translateX(0); }
+    .dt-opt:active { transform: scale(0.99) translateX(2px); }
+
+    .dt-nav { display: flex; gap: 8px; margin-top: 20px; }
+    .dt-btn {
+      padding: 8px 16px; background: none;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      color: rgba(255,255,255,0.42); font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all 0.15s; letter-spacing: 0.1px;
+    }
+    .dt-btn:hover { color: white; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); }
+
+    /* Result card */
+    .result-card {
+      border-radius: 20px; padding: 28px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.6), 0 0 50px var(--pcg);
+      animation: resultIn 0.3s cubic-bezier(0.2,0,0,1);
+    }
+    @keyframes resultIn {
+      from { opacity: 0; transform: scale(0.97) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .result-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+    .result-check {
+      width: 46px; height: 46px; flex-shrink: 0;
+      border-radius: 50%; background: var(--pcg);
+      border: 2px solid var(--pc);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--pc);
+      margin-top: 2px;
+    }
+
+    .dt-result-label {
+      font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--pc); opacity: 0.75; margin-bottom: 4px;
+    }
+    .dt-result-tool {
+      font-size: 22px; font-weight: 800; color: white;
+      letter-spacing: -0.5px; margin-bottom: 3px; line-height: 1.15;
+    }
+    .dt-result-use { font-size: 12px; color: rgba(255,255,255,0.48); font-weight: 500; }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      main { padding: 16px 16px 40px; }
+      .cards { grid-template-columns: 1fr; }
+      .logo-text h1 { font-size: 17px; }
+      .header-stats { display: none; }
+      .dt-card { padding: 22px; }
+      .dt-question { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-aurora"></div>
+<div class="dot-grid"></div>
+
+<div id="app">
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo-group">
+        <div class="logo-mark">AI</div>
+        <div class="logo-text">
+          <h1>AI Workflows</h1>
+          <p class="tagline">Personal AI Operating System</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-value">19</span>
+          <span class="stat-label">Tools</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Categories</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <span class="stat-value">$847</span>
+          <span class="stat-label">/ month</span>
+        </div>
+      </div>
+    </div>
+    <div class="tabs-wrap">
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="decide"  role="tab">Quick Decide</button>
+        <button class="tab-btn"        data-tab="facts"   role="tab">Looking Up Facts</button>
+        <button class="tab-btn"        data-tab="advice"  role="tab">Asking For Advice</button>
+        <button class="tab-btn"        data-tab="work"    role="tab">Doing Work</button>
+        <button class="tab-btn"        data-tab="content" role="tab">Creating Content</button>
+        <button class="tab-btn"        data-tab="learn"   role="tab">Learning</button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- QUICK DECIDE -->
+  <div class="tab-panel active" id="panel-decide">
+    <div class="dt-wrap">
+      <div id="decision-container"></div>
+    </div>
+  </div>
+
+  <!-- LOOKING UP FACTS -->
+  <div class="tab-panel" id="panel-facts">
+    <div class="cards">
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Looking Up Simple Facts Quickly</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Google Chrome AI Mode</div>
+        <ul class="steps">
+          <li>Open Chrome → Select "AI Mode"</li>
+          <li>Casual Prompting for quick answers</li>
+          <li>Use Google Finance for market/stock data</li>
+        </ul>
+      </div>
+
+      <div class="card perp">
+        <div class="card-header">
+          <div class="card-title">Looking Up Complex Facts Quickly</div>
+          <span class="platform-badge">Perplexity</span>
+        </div>
+        <div class="tool-name">Perplexity</div>
+        <ul class="steps">
+          <li>Casual Prompting → "Create Files &amp; Apps" if needed</li>
+          <li>Save artifacts to Google Drive (Perplexity folder)</li>
+          <li>Use Perplexity Health for health-related questions</li>
+          <li>Tasks → daily/weekly custom report</li>
+        </ul>
+        <span class="note-badge">Daily Debrief · AI Workflows News</span>
+      </div>
+
+      <div class="card perp">
+        <div class="card-header">
+          <div class="card-title">Fact Checking</div>
+          <span class="platform-badge">Perplexity</span>
+        </div>
+        <div class="tool-name">Perplexity Model Council</div>
+        <ul class="steps">
+          <li>Select Model Council mode</li>
+          <li>Casual Prompting</li>
+          <li>Label chat "(Date) Model Council (Topic)"</li>
+        </ul>
+      </div>
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Teaching Yourself A New Topic</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Google NotebookLM</div>
+        <ul class="steps">
+          <li>Add sources: PDFs, audio, images, YouTube, websites</li>
+          <li>Select relevant files → Casual Prompting</li>
+          <li>Studio: Audio Overview, Flashcards, Quiz, Infographic, Slide Deck</li>
+          <li>Desktop extras: Mind Map, Reports, Data Table</li>
+        </ul>
+        <span class="note-badge">Practice Questions · Study Resources</span>
+      </div>
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Researching Medical Facts</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">OpenEvidence</div>
+        <ul class="steps">
+          <li>Optimize prompt with another AI first</li>
+          <li>Type "." → use Dotflows for formal medical formatting</li>
+          <li>Click citations to explore further</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ASKING FOR ADVICE -->
+  <div class="tab-panel" id="panel-advice">
+    <div class="cards">
+
+      <div class="card openai">
+        <div class="card-header">
+          <div class="card-title">Asking For Simple Personalized Advice Quickly</div>
+          <span class="platform-badge">OpenAI</span>
+        </div>
+        <div class="tool-name">ChatGPT 5.5 Instant</div>
+        <ul class="steps">
+          <li>Casual Prompting → Create Image tool if needed</li>
+          <li>Record Voice Memo → paste transcript for context</li>
+          <li>Custom Projects for ongoing personalized context</li>
+        </ul>
+        <span class="note-badge">Prep For The Day · Trading Breakdowns · Answering Others' Questions</span>
+      </div>
+
+      <div class="card claude">
+        <div class="card-header">
+          <div class="card-title">Asking For Complex Personalized Advice Quickly</div>
+          <span class="platform-badge">Claude</span>
+        </div>
+        <div class="tool-name">Claude Cowork Desktop</div>
+        <ul class="steps">
+          <li>New Task / Projects / Scheduled Tasks / Live Artifacts</li>
+          <li>Dispatch for multi-step autonomous prompts</li>
+          <li>Claude for Chrome → edit Google Docs directly</li>
+        </ul>
+        <span class="note-badge">Prep For Day · Trading Live Artifact · Community PDFs</span>
+      </div>
+
+      <div class="card perp">
+        <div class="card-header">
+          <div class="card-title">Creating A Simple Artifact</div>
+          <span class="platform-badge">Perplexity</span>
+        </div>
+        <div class="tool-name">Perplexity Computer</div>
+        <ul class="steps">
+          <li>Casual Prompting → create artifact</li>
+          <li>Label "(Date) Perplexity Computer (Topic)"</li>
+          <li>Rename → Manage Access → "Anyone with the link"</li>
+          <li>Tax help: ask Perplexity Computer for guided session</li>
+        </ul>
+      </div>
+
+      <div class="card openai">
+        <div class="card-header">
+          <div class="card-title">Creating The Most Useful Custom LLM</div>
+          <span class="platform-badge">OpenAI</span>
+        </div>
+        <div class="tool-name">OpenAI API</div>
+        <ul class="steps">
+          <li>Build your own custom fine-tuned LLM model</li>
+        </ul>
+        <span class="note-badge">Money · Muscle · Mindset</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DOING WORK -->
+  <div class="tab-panel" id="panel-work">
+    <div class="cards">
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Brainstorming &amp; Creating A Simple Artifact or Website</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Gemini 3.5 Flash</div>
+        <ul class="steps">
+          <li>Personal Intelligence ON → "@" for Google Workspace</li>
+          <li>Canvas tool for vibe coding → share/copy link</li>
+          <li>Export to Google Drive (Slides, Docs, etc.)</li>
+          <li>Schedule Actions for daily/weekly reports</li>
+        </ul>
+      </div>
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Doing Complex Personalized Work</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Gemini 3.1 Pro</div>
+        <ul class="steps">
+          <li>Personal Intelligence ON → Custom Gems (create in "Your Gems")</li>
+          <li>Storybook Gem → optimize prompt with another AI first</li>
+          <li>Label "(Date) Custom Gem (Topic)" or "(Date) Storybook (Topic)"</li>
+        </ul>
+        <span class="note-badge">AI Personal Therapy · Relationship Therapy</span>
+      </div>
+
+      <div class="card openai">
+        <div class="card-header">
+          <div class="card-title">Doing Simple Personalized Work</div>
+          <span class="platform-badge">OpenAI</span>
+        </div>
+        <div class="tool-name">ChatGPT 5.5 Thinking — BrendanGPT</div>
+        <ul class="steps">
+          <li>Open BrendanGPT CustomGPT</li>
+          <li>Casual Prompting</li>
+          <li>Label "(Date) Digital Clone (Topic)"</li>
+        </ul>
+      </div>
+
+      <div class="card claude">
+        <div class="card-header">
+          <div class="card-title">Creating A Complex Artifact</div>
+          <span class="platform-badge">Claude</span>
+        </div>
+        <div class="tool-name">Claude Sonnet 4.6</div>
+        <ul class="steps">
+          <li>Casual Prompting</li>
+          <li>Save to Google Drive (Claude folder with Claude label)</li>
+          <li>Custom Projects for ongoing context</li>
+        </ul>
+      </div>
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Converting A Doc To Aesthetic Format</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">Notion</div>
+        <ul class="steps">
+          <li>Optimize prompt with another AI first</li>
+          <li>Notion AI → create artifact → manual editing</li>
+          <li>Label "(Date) (Topic)" → Share &amp; Publish for public link</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CREATING CONTENT -->
+  <div class="tab-panel" id="panel-content">
+    <div class="cards">
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Creating Educational Tutorials</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">Loom + CapCut</div>
+        <ul class="steps">
+          <li>Phone: Loom → record screen → CapCut → export → YouTube</li>
+          <li>Laptop: Loom (screen + face) → CapCut Desktop → export</li>
+          <li>Label recordings "(Date)" in both apps</li>
+        </ul>
+      </div>
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Creating AI Generated Music</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">Suno</div>
+        <ul class="steps">
+          <li>New Song → Advanced Mode (Lyrics, Styles, More Options)</li>
+          <li>Prompt → AI Editing to improve → Generate</li>
+          <li>Save to playlist → export to "AI Generated Music" folder</li>
+        </ul>
+      </div>
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Creating Voiceover Audio</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">ElevenLabs</div>
+        <ul class="steps">
+          <li>Voice: "Brendan Hwang" — Eleven v3 (alpha)</li>
+          <li>Settings: Speed 0.90 · Stability 45% · Similarity 55%</li>
+          <li>Download → ElevenLabs folder with date</li>
+        </ul>
+      </div>
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Creating Thumbnails &amp; Short Videos</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Gemini 3.1 Pro</div>
+        <ul class="steps">
+          <li>Personal Intelligence ON</li>
+          <li>Images tool (Nano Banana 2) for thumbnails</li>
+          <li>Videos tool (Omni) for short videos</li>
+          <li>Download → Photos App → "AI Generated Videos" album</li>
+        </ul>
+      </div>
+
+      <div class="card misc">
+        <div class="card-header">
+          <div class="card-title">Creating B-Roll Footage</div>
+          <span class="platform-badge">Misc</span>
+        </div>
+        <div class="tool-name">Kling AI — Video 3.0</div>
+        <ul class="steps">
+          <li>Text to Video → paste prompt</li>
+          <li>Kling AI × Deepseek R1 → optimize prompt first</li>
+          <li>Set Generation Parameters → Generate</li>
+          <li>Assets → Download without watermark → "AI Generated Videos" album</li>
+        </ul>
+      </div>
+
+      <div class="card claude">
+        <div class="card-header">
+          <div class="card-title">Creating A Complex Website</div>
+          <span class="platform-badge">Claude</span>
+        </div>
+        <div class="tool-name">Claude Code — Sonnet 4.6</div>
+        <ul class="steps">
+          <li>Plan → Default env → your GitHub repo → base branch</li>
+          <li>Label "(Date) Claude Code (Topic)"</li>
+          <li>GitHub: Settings → Pages → select branch → Save</li>
+          <li>Public link appears at top of Pages tab</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEARNING -->
+  <div class="tab-panel" id="panel-learn">
+    <div class="cards">
+
+      <div class="card perp">
+        <div class="card-header">
+          <div class="card-title">Research The Topic</div>
+          <span class="platform-badge">Perplexity</span>
+        </div>
+        <div class="tool-name">Perplexity</div>
+        <ul class="steps">
+          <li>Casual Prompting → "Create Files &amp; Apps" if applicable</li>
+          <li>Save useful artifacts to Google Drive (Perplexity folder)</li>
+        </ul>
+        <span class="note-badge">Researching About The Topic</span>
+      </div>
+
+      <div class="card openai">
+        <div class="card-header">
+          <div class="card-title">Create Study Content From Voice Memos</div>
+          <span class="platform-badge">OpenAI</span>
+        </div>
+        <div class="tool-name">ChatGPT 5.5 Instant</div>
+        <ul class="steps">
+          <li>Record Voice Memo → paste transcript</li>
+          <li>Create studying content &amp; deep summaries</li>
+          <li>Custom Projects for ongoing context</li>
+        </ul>
+        <span class="note-badge">Deep Summaries From Voice Memos</span>
+      </div>
+
+      <div class="card claude">
+        <div class="card-header">
+          <div class="card-title">Do Assignments &amp; Complex Artifacts</div>
+          <span class="platform-badge">Claude</span>
+        </div>
+        <div class="tool-name">Claude Sonnet 4.6</div>
+        <ul class="steps">
+          <li>Casual Prompting</li>
+          <li>Custom Projects with instructions + relevant files</li>
+          <li>Save to Google Drive (Claude folder)</li>
+        </ul>
+        <span class="note-badge">Do Assignments</span>
+      </div>
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Create Study Websites (Simple)</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Gemini 3.5 Flash</div>
+        <ul class="steps">
+          <li>Personal Intelligence ON → Canvas tool for vibe coding</li>
+          <li>Share &amp; copy public link</li>
+        </ul>
+        <span class="note-badge">Create Study Websites</span>
+      </div>
+
+      <div class="card claude">
+        <div class="card-header">
+          <div class="card-title">Create Study Websites (Complex)</div>
+          <span class="platform-badge">Claude</span>
+        </div>
+        <div class="tool-name">Claude Code — Sonnet 4.6</div>
+        <ul class="steps">
+          <li>Plan → Default env → GitHub repo</li>
+          <li>GitHub Pages → public link published</li>
+          <li>Add "/(folder)/" to base URL for sub-projects</li>
+        </ul>
+        <span class="note-badge">Also Create Study Websites</span>
+      </div>
+
+      <div class="card google">
+        <div class="card-header">
+          <div class="card-title">Practice Questions &amp; Study Resources</div>
+          <span class="platform-badge">Google</span>
+        </div>
+        <div class="tool-name">Google NotebookLM</div>
+        <ul class="steps">
+          <li>Add study files as sources</li>
+          <li>Studio: Flashcards, Quiz, Infographic, Audio Overview</li>
+          <li>Join Audio Overview → ask questions live</li>
+        </ul>
+        <span class="note-badge">Practice Questions · Study Resources</span>
+      </div>
+
+      <div class="card openai">
+        <div class="card-header">
+          <div class="card-title">Exam Simulation</div>
+          <span class="platform-badge">OpenAI</span>
+        </div>
+        <div class="tool-name">ChatGPT 5.5 Thinking — BrendanGPT</div>
+        <ul class="steps">
+          <li>BrendanGPT CustomGPT → Casual Prompting</li>
+          <li>Label "(Date) Digital Clone (Topic)"</li>
+        </ul>
+        <span class="note-badge">Simulate Exam With Practice Questions</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips-section">
+    <button class="tips-toggle" id="tips-toggle" aria-expanded="false">
+      <span class="tips-label">
+        <span class="tips-icon">★</span>
+        Prompting Tips
+      </span>
+      <span class="chevron">▼</span>
+    </button>
+    <div class="tips-body" id="tips-body">
+      <ol>
+        <li><strong>Carry context forward:</strong> Find last relevant chat → create a summary → paste that summary into your new chat.</li>
+        <li><strong>Define the deliverable first:</strong> Mentally establish "I want a ___ by the end of this AI chat" before you start.</li>
+        <li><strong>Ask for an optimal prompt:</strong> Ask the AI how to write the best prompt for your specific outcome or deliverable.</li>
+        <li><strong>Speed over perfection:</strong> Follow optimal prompting guidelines, but prioritize momentum — avoid analysis paralysis.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="pricing-label">Monthly Investment</div>
+    <div class="pricing-grid">
+      <div class="price-chip"><span>Google Ultra</span> $200</div>
+      <div class="price-chip"><span>Perplexity Max</span> $200</div>
+      <div class="price-chip"><span>OpenAI Plus</span> $20</div>
+      <div class="price-chip"><span>OpenAI API</span> $100</div>
+      <div class="price-chip"><span>Anthropic Max 5×</span> $125</div>
+      <div class="price-chip"><span>Kling AI</span> $92</div>
+      <div class="price-chip"><span>Suno</span> $30</div>
+      <div class="price-chip"><span>Notion</span> $24</div>
+      <div class="price-chip"><span>Loom</span> $24</div>
+      <div class="price-chip"><span>CapCut</span> $10</div>
+      <div class="price-chip"><span>ElevenLabs</span> $22</div>
+    </div>
+    <div class="total-row">
+      <span class="total-label">Total</span>
+      <span class="total-value">$847</span>
+      <span class="total-period">/ month across 19 tools</span>
+    </div>
+  </footer>
+
+</main>
+</div><!-- #app -->
+
+<script>
+  // Tab switching
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  const panelMap = { decide:'panel-decide', facts:'panel-facts', advice:'panel-advice', work:'panel-work', content:'panel-content', learn:'panel-learn' };
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(panelMap[btn.dataset.tab]).classList.add('active');
+    });
+  });
+
+  // Tips toggle
+  const tipsToggle = document.getElementById('tips-toggle');
+  const tipsBody   = document.getElementById('tips-body');
+  tipsToggle.addEventListener('click', () => {
+    const open = tipsBody.classList.toggle('open');
+    tipsToggle.classList.toggle('open', open);
+    tipsToggle.setAttribute('aria-expanded', open);
+  });
+
+  // ── Decision Tree ──────────────────────────────────────────────
+  const PLATFORM = { google:'Google', perp:'Perplexity', openai:'OpenAI', claude:'Claude', misc:'Misc' };
+
+  const TREE = {
+    root: { q: 'What do you want to do right now?', opts: [
+      { l: 'Look something up',                    n: 'lookup'  },
+      { l: 'Get advice on something',              n: 'advice'  },
+      { l: 'Do work / create something',           n: 'work'    },
+      { l: 'Create content',                       n: 'content' },
+      { l: 'Study or learn',                       n: 'study'   }
+    ]},
+    lookup: { q: 'What kind of lookup?', opts: [
+      { l: 'Quick simple fact',                       n: 'r_chrome'       },
+      { l: 'Deep research / complex question',        n: 'r_perp'         },
+      { l: 'Fact-check / verify something',           n: 'r_council'      },
+      { l: 'Medical or health question',              n: 'r_openevidence' },
+      { l: 'Learn a whole new topic deeply',          n: 'r_notebooklm'   }
+    ]},
+    advice: { q: 'How complex is the advice you need?', opts: [
+      { l: 'Quick, simple personal advice',           n: 'r_chatgpt'  },
+      { l: 'Deep, complex personalized advice',       n: 'r_cowork'   }
+    ]},
+    work: { q: 'What are you creating or doing?', opts: [
+      { l: 'Brainstorm / simple artifact or website', n: 'r_flash'  },
+      { l: 'Complex document or artifact',            n: 'r_sonnet' },
+      { l: 'Complex website',                         n: 'r_code'   },
+      { l: 'Personal / therapy / relationship work',  n: 'r_gems'   },
+      { l: 'Format a doc aesthetically',              n: 'r_notion' }
+    ]},
+    content: { q: 'What type of content?', opts: [
+      { l: 'Tutorial video',                          n: 'r_loom'   },
+      { l: 'AI-generated music',                      n: 'r_suno'   },
+      { l: 'Voiceover audio',                         n: 'r_eleven' },
+      { l: 'Thumbnail or short video',                n: 'r_gvideo' },
+      { l: 'B-roll footage',                          n: 'r_kling'  }
+    ]},
+    study: { q: "What's your study goal?", opts: [
+      { l: 'Research the topic first',                n: 'r_perp'        },
+      { l: 'Flashcards, quiz, or practice questions', n: 'r_notebooklm'  },
+      { l: 'Do an assignment or complex artifact',    n: 'r_sonnet'      },
+      { l: 'Simulate an exam',                        n: 'r_brendan'     },
+      { l: 'Build a study website',                   n: 'r_code'        }
+    ]},
+
+    r_chrome:       { r:1, p:'google', t:'Google Chrome AI Mode',              u:'Looking Up Simple Facts',                s:['Chrome → select AI Mode → Casual Prompting','Google Finance for market data'] },
+    r_perp:         { r:1, p:'perp',   t:'Perplexity',                         u:'Complex Research &amp; Daily Reports',   s:['Casual Prompting → Create Files &amp; Apps if needed','Tasks → daily/weekly custom report','Perplexity Health for health questions'] },
+    r_council:      { r:1, p:'perp',   t:'Perplexity Model Council',           u:'Fact Checking',                          s:['Select Model Council mode','Casual Prompting','Label "(Date) Model Council (Topic)"'] },
+    r_openevidence: { r:1, p:'misc',   t:'OpenEvidence',                       u:'Researching Medical Facts',              s:['Optimize prompt with another AI first','Type "." → Dotflows for medical formatting','Click citations to go deeper'] },
+    r_notebooklm:   { r:1, p:'google', t:'Google NotebookLM',                  u:'Deep Learning &amp; Study Resources',    s:['Add sources (PDFs, YouTube, audio, images)','Studio: Flashcards, Quiz, Audio Overview, Infographic','Join Audio Overview to ask live questions'] },
+    r_chatgpt:      { r:1, p:'openai', t:'ChatGPT 5.5 Instant',                u:'Quick Advice &amp; Daily Prep',          s:['Casual Prompting','Record Voice Memo → paste transcript for context','Custom Projects for ongoing context'] },
+    r_cowork:       { r:1, p:'claude', t:'Claude Cowork Desktop',              u:'Complex Advice &amp; Personal Assistant', s:['New Task / Projects / Scheduled / Live Artifacts','Dispatch for multi-step autonomous prompts','Claude for Chrome → edit Google Docs directly'] },
+    r_flash:        { r:1, p:'google', t:'Gemini 3.5 Flash',                   u:'Brainstorming &amp; Simple Artifacts',   s:['Personal Intelligence ON → "@" for Google Workspace','Canvas tool for vibe coding → share link','Schedule Actions for reports'] },
+    r_sonnet:       { r:1, p:'claude', t:'Claude Sonnet 4.6',                  u:'Complex Artifacts &amp; Assignments',    s:['Casual Prompting','Custom Projects with instructions + files','Save to Google Drive (Claude folder)'] },
+    r_code:         { r:1, p:'claude', t:'Claude Code — Sonnet 4.6',           u:'Complex Websites',                       s:['Plan → Default env → GitHub repo → base branch','GitHub Pages → select branch → Save','Public link appears at top of Pages tab'] },
+    r_gems:         { r:1, p:'google', t:'Gemini 3.1 Pro — Custom Gems',       u:'Personalized Work &amp; Therapy',        s:['Personal Intelligence ON → Custom Gems','Or Storybook Gem → optimize prompt first','Label "(Date) Custom Gem (Topic)"'] },
+    r_notion:       { r:1, p:'misc',   t:'Notion',                             u:'Aesthetic Doc Formatting',               s:['Optimize prompt with another AI first','Notion AI → create → manual editing','Share &amp; Publish for public link'] },
+    r_loom:         { r:1, p:'misc',   t:'Loom + CapCut',                      u:'Educational Tutorials',                  s:['Loom: record screen (+ face on laptop)','CapCut: edit → export → YouTube if desired'] },
+    r_suno:         { r:1, p:'misc',   t:'Suno',                               u:'AI Generated Music',                     s:['Advanced Mode (Lyrics, Styles, More Options)','AI Editing to refine → Generate','Save to playlist → export to Files'] },
+    r_eleven:       { r:1, p:'misc',   t:'ElevenLabs',                         u:'Voiceover Audio',                        s:['Voice: "Brendan Hwang" — Eleven v3 (alpha)','Speed 0.90 · Stability 45% · Similarity 55%','Download MP3 → ElevenLabs folder with date'] },
+    r_gvideo:       { r:1, p:'google', t:'Gemini 3.1 Pro',                     u:'Thumbnails &amp; Short Videos',          s:['Personal Intelligence ON','Images tool (Nano Banana 2) for thumbnails','Videos tool (Omni) for short clips'] },
+    r_kling:        { r:1, p:'misc',   t:'Kling AI — Video 3.0',               u:'B-Roll Footage',                         s:['Text to Video → Kling AI × Deepseek R1 for prompt optimization','Set Generation Parameters → Generate','Assets → Download without watermark'] },
+    r_brendan:      { r:1, p:'openai', t:'ChatGPT 5.5 Thinking — BrendanGPT', u:'Exam Simulation',                        s:['Open BrendanGPT CustomGPT','Casual Prompting','Label "(Date) Digital Clone (Topic)"'] }
+  };
+
+  let dtHistory = [];
+  let dtCurrent = 'root';
+
+  function dtRender() {
+    const node = TREE[dtCurrent];
+    const el   = document.getElementById('decision-container');
+    const depth = dtHistory.length;
+
+    const crumbs = depth
+      ? '<div class="dt-breadcrumb">' +
+        dtHistory.map((h, i) =>
+          (i > 0 ? '<span class="dt-sep">›</span>' : '') +
+          '<span class="dt-crumb">' + h.label + '</span>'
+        ).join('') + '</div>'
+      : '';
+
+    const navBtns = depth
+      ? '<div class="dt-nav">' +
+        '<button class="dt-btn" data-action="back">← Back</button>' +
+        '<button class="dt-btn" data-action="restart">Start Over</button>' +
+        '</div>'
+      : '';
+
+    if (node.r) {
+      el.innerHTML = crumbs +
+        '<div class="result-card card ' + node.p + '">' +
+          '<div class="dt-progress"><div class="dt-progress-bar" style="width:100%"></div></div>' +
+          '<div class="result-header">' +
+            '<div class="result-check">✓</div>' +
+            '<div>' +
+              '<div class="dt-result-label">Recommended Tool</div>' +
+              '<div class="dt-result-tool">' + node.t + '</div>' +
+              '<div class="dt-result-use">' + node.u + '</div>' +
+            '</div>' +
+            '<span class="platform-badge" style="margin-left:auto">' + PLATFORM[node.p] + '</span>' +
+          '</div>' +
+          '<ul class="steps">' + node.s.map(s => '<li>' + s + '</li>').join('') + '</ul>' +
+          '<div class="dt-nav">' +
+            (depth > 0 ? '<button class="dt-btn" data-action="back">← Back</button>' : '') +
+            '<button class="dt-btn" data-action="restart">Start Over</button>' +
+          '</div>' +
+        '</div>';
+    } else {
+      const pct = depth === 0 ? 30 : 65;
+      const stepLabel = depth === 0 ? 'Step 1 — Choose a category' : 'Step 2 — Narrow it down';
+      el.innerHTML = crumbs +
+        '<div class="dt-card">' +
+          '<div class="dt-progress"><div class="dt-progress-bar" style="width:' + pct + '%"></div></div>' +
+          '<div class="dt-step">' + stepLabel + '</div>' +
+          '<div class="dt-question">' + node.q + '</div>' +
+          '<div class="dt-opts">' +
+            node.opts.map(o =>
+              '<button class="dt-opt" data-action="choose" data-next="' + o.n + '">' +
+                '<span>' + o.l + '</span>' +
+                '<span class="arr">→</span>' +
+              '</button>'
+            ).join('') +
+          '</div>' +
+          navBtns +
+        '</div>';
+    }
+  }
+
+  document.getElementById('decision-container').addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'choose') {
+      const nextId = btn.dataset.next;
+      const opt = TREE[dtCurrent].opts.find(o => o.n === nextId);
+      dtHistory.push({ nodeId: dtCurrent, label: opt.l });
+      dtCurrent = nextId;
+      dtRender();
+    } else if (action === 'back') {
+      const prev = dtHistory.pop();
+      dtCurrent = prev.nodeId;
+      dtRender();
+    } else if (action === 'restart') {
+      dtHistory = [];
+      dtCurrent = 'root';
+      dtRender();
+    }
+  });
+
+  dtRender();
+</script>
+
+</body>
+</html>

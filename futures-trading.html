@@ -924,59 +924,19 @@ const SESSION_START_H = 7, SESSION_END_H = 9; // PT hours
 // Checklist data
 // ─────────────────────────────────────────────
 const PREP_STEPS = [
-  {
-    platform: 'TradingView + ThinkOrSwim',
-    text: 'Clear unnecessary drawings from charts',
-    detail: 'Check the Economic Calendar for news events. Determine confluence VWAP direction and predicted behavior. Are most instruments above or below VWAP?'
-  },
-  {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Determine your setup based on confluences',
-    detail: 'Identify 2 major SMC (Smart Money Concept) levels. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
-  },
-  {
-    platform: 'TradingView — 1-Minute Chart',
-    text: 'Draw the Area of Interest (AOI) box',
-    detail: 'Use a VWAP Band AND a Fibonacci level as the top/bottom of a rectangle. This rectangle is your Area of Interest — where you expect a trade setup to form.'
-  },
-  {
-    platform: 'TradingView — 1-Minute Chart',
-    text: 'Draw Risk/Reward predictions for both Long and Short',
-    detail: 'Using the AOI box, draw projected R/R lines for a potential Long trade AND a potential Short trade. This lets you be ready for either direction.'
-  },
-  {
-    platform: 'TradingView — 1-Minute Chart',
-    text: 'Set 1 price alert for price nearing Area of Interest — then wait',
-    detail: 'One alert only. Set it slightly outside your AOI so you get a heads-up before price arrives. Now wait patiently. Do NOT watch the chart obsessively.'
-  }
+  'TRADINGVIEW AND THINKORSWIM Clear Any Unnecessary Drawings Off Of Chart AND Check TradingView Economic Calendar AND Determine Confluences VWAP Direction And Predicted Behavior',
+  'TRADINGVIEW 5 MINUTE CHART Determine Which Setup You Are Planning On Trading Based On Determined Confluences VWAP Direction And Predicted Behavior AND Use 2 Major SMC Levels To Draw Fibonacci Retracement',
+  'TRADINGVIEW 1 MINUTE CHART Use A VWAP Band And A Fibonacci Level To Draw A Rectangular Box Defining Area Of Interest',
+  'TRADINGVIEW 1 MINUTE CHART Use The Rectangular Box Defining Area Of Interest To Draw A Risk/Reward Prediction For Potential Long Trades And Potential Short Trades',
+  'TRADINGVIEW 1 MINUTE CHART 1 Alert Set For Price Nearing Area Of Interest Then Patiently Wait For Price To Actually Enter Area Of Interest',
 ];
 
 const PLAN_STEPS = [
-  {
-    platform: 'TradingView — 5-Min & 1-Min Charts',
-    text: 'Price entered AOI — validate your trade thesis with candlesticks + volume',
-    detail: 'Look for reversal or continuation candle patterns (engulfing, pin bar, inside bar). Check if volume confirms the move. Is your original thesis still valid?'
-  },
-  {
-    platform: 'TradingView — 5-Min & 1-Min Charts',
-    text: 'Re-check all confluence charts, candlestick patterns, and volume',
-    detail: 'Confirm the confluences have not changed direction. All indicators should agree. If they disagree, do NOT enter the trade.'
-  },
-  {
-    platform: 'Trading Platform (Apex/ThinkOrSwim)',
-    text: 'Enter trade — choose the entry with lowest risk of being stopped out',
-    detail: 'Set your Stop Loss immediately after entry. Pick the entry point that puts the least distance between price and a nearby support/resistance level.'
-  },
-  {
-    platform: 'TradingView — 5-Min & 1-Min Charts',
-    text: 'Update R/R to reflect exact entry. Set 3 alerts + 2 horizontal rays',
-    detail: 'Delete the AOI entry alert. Set: Alert 1 = < halfway to max loss | Alert 2 = slightly above break even | Alert 3 = slightly below TP2. Ray 1 = ideal small-loss exit (near 5-min candle pattern). Ray 2 = bare minimum exit (near VWAP band or Fibonacci).'
-  },
-  {
-    platform: 'All Platforms',
-    text: 'Exit at TP1 / TP2 / TP3 / 1.5×TP3 / Break Even / Auto Max Loss. Delete all alerts.',
-    detail: 'Stick to your plan. TP1 = conservative, TP2 = standard, TP3/1.5×TP3 = extended move. If momentum dies or thesis is invalidated — exit near break even. Delete every alert when the trade is closed.'
-  }
+  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Once Price Actually Enters Area Of Interest Use Candlestick Patterns And Volume Data To Help Determine If Your Trade Thesis Is Still Valid',
+  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Check Confluence Charts Candlestick Patterns And Volume Data To Help Determine If Your Trade Thesis Is Still Valid',
+  'TRADING PLATFORMS Actually Enter Trade (Choose Trade With Lowest Chance Of Stopping You Out To Minimize Risk) AND Set Up Stop Losses',
+  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Update Risk/Reward Prediction To Exactly Reflect Entry AND Delete Alert Set For Price Nearing Area Of Interest AND 1 Alert Set For Less Than Halfway To Auto Max Loss And 1 Alert Set For Slightly More Than Break Even And 1 Alert Set For Slightly Less Than TP 2 AND 1 Horizontal Ray For Ideal Small Loss (Using Price Level Near 5 Minute Candlestick Pattern) AND 1 Horizontal Ray For Bare Minimum Exit Level (Using Price Level Near VWAP Band Or Near Fibonacci Level)',
+  'TRADING PLATFORMS AND TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Exit At TP 1 Or TP 2 Or TP 3 Or 1.5x TP 3 Or Around Break Even Or Auto Max Loss AND Delete All Alerts Set',
 ];
 
 // ─────────────────────────────────────────────
@@ -1009,9 +969,7 @@ function renderList(containerId, steps, startIndex) {
       <div class="item-checkbox">${isChecked ? '✓' : ''}</div>
       <div class="item-number">${n}</div>
       <div class="item-body">
-        <div class="item-platform">${step.platform}</div>
-        <div class="item-text">${step.text}</div>
-        <div class="item-detail">${step.detail}</div>
+        <div class="item-text">${step}</div>
       </div>`;
     ul.appendChild(li);
   });

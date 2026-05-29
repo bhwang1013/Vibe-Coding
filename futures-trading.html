@@ -775,20 +775,6 @@
 
     <div class="setup-grid" id="setup-grid"></div>
 
-    <!-- ── Visual 1: VWAP Setup Diagram ── -->
-    <div class="card" style="margin-top:20px">
-      <div class="card-title"><span>📉</span> VWAP Setup Pattern — Visual Guide</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">This diagram shows what the ideal trade setup looks like on a 1-min chart. Toggle between Long and Short to see both patterns.</p>
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-primary" id="chart-long-btn" onclick="showChart('long')">📈 Long Setup</button>
-        <button class="btn" id="chart-short-btn" onclick="showChart('short')">📉 Short Setup</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <svg id="setup-chart" viewBox="0 0 700 300" width="100%" style="min-width:400px;display:block;border-radius:8px;background:#0d1117;border:1px solid #30363d;"></svg>
-      </div>
-      <div id="chart-legend" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;font-size:12px;"></div>
-    </div>
-
   </section>
 
   <!-- ════════════════════════════ CONFLUENCES ════════════════════════════ -->
@@ -804,31 +790,6 @@
     </div>
 
     <hr class="divider">
-
-    <!-- ── Visual 2: Live Confluence Signal Tracker ── -->
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-title"><span>🎛</span> Live Signal Tracker — Toggle Each Instrument</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Click each instrument to mark it as <strong style="color:var(--green)">Bullish ↑</strong> (above VWAP) or <strong style="color:var(--red)">Bearish ↓</strong> (below VWAP). The signal bar updates in real time.</p>
-      <div id="signal-buttons" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;"></div>
-      <div style="margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
-          <span style="color:var(--red)">◀ Bearish</span>
-          <span id="signal-label" style="font-weight:700;font-size:14px;color:var(--text)">Neutral — No Clear Edge</span>
-          <span style="color:var(--green)">Bullish ▶</span>
-        </div>
-        <div style="height:14px;background:var(--border);border-radius:7px;overflow:hidden;position:relative;">
-          <div id="signal-bar-fill" style="position:absolute;height:100%;border-radius:7px;transition:all .4s ease;"></div>
-          <div style="position:absolute;left:50%;top:0;width:2px;height:100%;background:#30363d;transform:translateX(-50%);"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px;">
-          <span id="bear-count">0 bearish</span>
-          <span id="bull-count">0 bullish</span>
-        </div>
-      </div>
-      <div id="signal-verdict" style="padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;margin-top:8px;background:var(--card2);border:1px solid var(--border);color:var(--muted);">
-        Toggle instruments above to see your trade direction
-      </div>
-    </div>
 
     <div class="card-title" style="margin-bottom:14px"><span>📡</span> Instrument Correlations</div>
     <div class="conf-grid" id="conf-grid"></div>
@@ -918,25 +879,66 @@
 // ─────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────
+const APEX = { withdrawFee: 0.96, taxKeep: 0.6 };
 const SESSION_START_H = 7, SESSION_END_H = 9; // PT hours
 
 // ─────────────────────────────────────────────
 // Checklist data
 // ─────────────────────────────────────────────
 const PREP_STEPS = [
-  'TRADINGVIEW AND THINKORSWIM Clear Any Unnecessary Drawings Off Of Chart AND Check TradingView Economic Calendar AND Determine Confluences VWAP Direction And Predicted Behavior',
-  'TRADINGVIEW 5 MINUTE CHART Determine Which Setup You Are Planning On Trading Based On Determined Confluences VWAP Direction And Predicted Behavior AND Use 2 Major SMC Levels To Draw Fibonacci Retracement',
-  'TRADINGVIEW 1 MINUTE CHART Use A VWAP Band And A Fibonacci Level To Draw A Rectangular Box Defining Area Of Interest',
-  'TRADINGVIEW 1 MINUTE CHART Use The Rectangular Box Defining Area Of Interest To Draw A Risk/Reward Prediction For Potential Long Trades And Potential Short Trades',
-  'TRADINGVIEW 1 MINUTE CHART 1 Alert Set For Price Nearing Area Of Interest Then Patiently Wait For Price To Actually Enter Area Of Interest',
+  {
+    platform: 'TradingView + ThinkOrSwim',
+    text: 'Clear unnecessary drawings from charts',
+    detail: 'Check the Economic Calendar for news events. Determine confluence VWAP direction and predicted behavior. Are most instruments above or below VWAP?'
+  },
+  {
+    platform: 'TradingView — 5-Minute Chart',
+    text: 'Determine your setup based on confluences',
+    detail: 'Identify 2 major SMC (Smart Money Concept) levels. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Draw the Area of Interest (AOI) box',
+    detail: 'Use a VWAP Band AND a Fibonacci level as the top/bottom of a rectangle. This rectangle is your Area of Interest — where you expect a trade setup to form.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Draw Risk/Reward predictions for both Long and Short',
+    detail: 'Using the AOI box, draw projected R/R lines for a potential Long trade AND a potential Short trade. This lets you be ready for either direction.'
+  },
+  {
+    platform: 'TradingView — 1-Minute Chart',
+    text: 'Set 1 price alert for price nearing Area of Interest — then wait',
+    detail: 'One alert only. Set it slightly outside your AOI so you get a heads-up before price arrives. Now wait patiently. Do NOT watch the chart obsessively.'
+  }
 ];
 
 const PLAN_STEPS = [
-  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Once Price Actually Enters Area Of Interest Use Candlestick Patterns And Volume Data To Help Determine If Your Trade Thesis Is Still Valid',
-  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Check Confluence Charts Candlestick Patterns And Volume Data To Help Determine If Your Trade Thesis Is Still Valid',
-  'TRADING PLATFORMS Actually Enter Trade (Choose Trade With Lowest Chance Of Stopping You Out To Minimize Risk) AND Set Up Stop Losses',
-  'TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Update Risk/Reward Prediction To Exactly Reflect Entry AND Delete Alert Set For Price Nearing Area Of Interest AND 1 Alert Set For Less Than Halfway To Auto Max Loss And 1 Alert Set For Slightly More Than Break Even And 1 Alert Set For Slightly Less Than TP 2 AND 1 Horizontal Ray For Ideal Small Loss (Using Price Level Near 5 Minute Candlestick Pattern) AND 1 Horizontal Ray For Bare Minimum Exit Level (Using Price Level Near VWAP Band Or Near Fibonacci Level)',
-  'TRADING PLATFORMS AND TRADINGVIEW 5 MINUTE CHART AND 1 MINUTE CHART Exit At TP 1 Or TP 2 Or TP 3 Or 1.5x TP 3 Or Around Break Even Or Auto Max Loss AND Delete All Alerts Set',
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Price entered AOI — validate your trade thesis with candlesticks + volume',
+    detail: 'Look for reversal or continuation candle patterns (engulfing, pin bar, inside bar). Check if volume confirms the move. Is your original thesis still valid?'
+  },
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Re-check all confluence charts, candlestick patterns, and volume',
+    detail: 'Confirm the confluences have not changed direction. All indicators should agree. If they disagree, do NOT enter the trade.'
+  },
+  {
+    platform: 'Trading Platform (Apex/ThinkOrSwim)',
+    text: 'Enter trade — choose the entry with lowest risk of being stopped out',
+    detail: 'Set your Stop Loss immediately after entry. Pick the entry point that puts the least distance between price and a nearby support/resistance level.'
+  },
+  {
+    platform: 'TradingView — 5-Min & 1-Min Charts',
+    text: 'Update R/R to reflect exact entry. Set 3 alerts + 2 horizontal rays',
+    detail: 'Delete the AOI entry alert. Set: Alert 1 = < halfway to max loss | Alert 2 = slightly above break even | Alert 3 = slightly below TP2. Ray 1 = ideal small-loss exit (near 5-min candle pattern). Ray 2 = bare minimum exit (near VWAP band or Fibonacci).'
+  },
+  {
+    platform: 'All Platforms',
+    text: 'Exit at TP1 / TP2 / TP3 / 1.5×TP3 / Break Even / Auto Max Loss. Delete all alerts.',
+    detail: 'Stick to your plan. TP1 = conservative, TP2 = standard, TP3/1.5×TP3 = extended move. If momentum dies or thesis is invalidated — exit near break even. Delete every alert when the trade is closed.'
+  }
 ];
 
 // ─────────────────────────────────────────────
@@ -969,7 +971,9 @@ function renderList(containerId, steps, startIndex) {
       <div class="item-checkbox">${isChecked ? '✓' : ''}</div>
       <div class="item-number">${n}</div>
       <div class="item-body">
-        <div class="item-text">${step}</div>
+        <div class="item-platform">${step.platform}</div>
+        <div class="item-text">${step.text}</div>
+        <div class="item-detail">${step.detail}</div>
       </div>`;
     ul.appendChild(li);
   });
@@ -1245,278 +1249,6 @@ document.body.addEventListener('mouseout', e => {
 
 // ─────────────────────────────────────────────
 // Initial render
-// ─────────────────────────────────────────────
-renderList('prep-checklist', PREP_STEPS, 1);
-renderList('plan-checklist', PLAN_STEPS, 6);
-
-// ─────────────────────────────────────────────
-// Visual 1 — VWAP Setup SVG Chart
-// ─────────────────────────────────────────────
-const CHART_THEMES = {
-  long: {
-    vwapY: 185,
-    // candlestick x positions and heights [x, openY, closeY, highY, lowY, isGreen]
-    candles: [
-      [60,  155, 145, 140, 162, true],
-      [90,  145, 150, 140, 158, false],
-      [120, 148, 140, 136, 152, true],
-      [150, 142, 152, 138, 156, false],   // pullback start
-      [180, 152, 165, 148, 170, false],   // pullback deepens
-      [210, 165, 175, 160, 180, false],   // hits near VWAP
-      [240, 175, 172, 169, 180, true],    // consolidation
-      [270, 172, 170, 167, 176, true],    // consolidation tight
-      [300, 170, 158, 155, 173, true],    // ENTRY — bounce
-      [330, 158, 145, 142, 162, true],
-      [360, 145, 130, 127, 148, true],
-      [390, 130, 115, 112, 133, true],
-      [420, 115, 100, 97,  118, true],    // TP zone
-      [450, 100, 88,  85,  103, true],    // extended
-    ],
-    entryX: 300,
-    entryY: 165,
-    tpY: 97,
-    slY: 195,
-    entryLabel: 'ENTER LONG',
-    tpLabel: 'EXIT / TP',
-    slLabel: 'Stop Loss',
-    areaColor: 'rgba(0,208,132,0.07)',
-    lineColor: '#00d084',
-  },
-  short: {
-    vwapY: 120,
-    candles: [
-      [60,  150, 160, 155, 165, false],
-      [90,  160, 155, 152, 163, true],
-      [120, 155, 163, 158, 168, false],
-      [150, 163, 152, 148, 165, true],    // pullback up start
-      [180, 152, 140, 136, 155, true],    // pullback deepens
-      [210, 140, 130, 126, 143, true],    // near VWAP
-      [240, 130, 133, 128, 137, false],   // consolidation
-      [270, 133, 135, 131, 138, false],   // consolidation tight
-      [300, 135, 148, 150, 133, false],   // ENTRY — rejection
-      [330, 148, 163, 165, 146, false],
-      [360, 163, 178, 180, 161, false],
-      [390, 178, 192, 195, 176, false],
-      [420, 192, 205, 208, 190, false],   // TP zone
-      [450, 205, 215, 218, 203, false],   // extended
-    ],
-    entryX: 300,
-    entryY: 135,
-    tpY: 215,
-    slY: 115,
-    entryLabel: 'ENTER SHORT',
-    tpLabel: 'EXIT / TP',
-    slLabel: 'Stop Loss',
-    areaColor: 'rgba(255,71,87,0.07)',
-    lineColor: '#ff4757',
-  }
-};
-
-function drawSetupChart(direction) {
-  const svg = document.getElementById('setup-chart');
-  const t = CHART_THEMES[direction];
-  const isLong = direction === 'long';
-  const W = 700, H = 300;
-  const pad = { l: 10, r: 60, t: 20, b: 20 };
-
-  // VWAP wavy path
-  const vwapPoints = [];
-  for (let x = pad.l; x <= W - pad.r; x += 5) {
-    const wave = Math.sin(x * 0.04) * 3;
-    vwapPoints.push(`${x},${t.vwapY + wave}`);
-  }
-  const vwapPath = 'M ' + vwapPoints.join(' L ');
-
-  // Entry zone shading (between entry candle and vwap)
-  const entryX = t.entryX;
-  const areaTop = Math.min(t.vwapY, t.entryY) - 5;
-  const areaBot = Math.max(t.vwapY, t.entryY) + 5;
-
-  // Candles
-  const candlesHTML = t.candles.map(([x, o, c, h, l, green]) => {
-    const color = green ? '#00d084' : '#ff4757';
-    const bodyTop = Math.min(o, c);
-    const bodyBot = Math.max(o, c);
-    const bodyH = Math.max(bodyBot - bodyTop, 2);
-    return `
-      <line x1="${x+12}" y1="${h}" x2="${x+12}" y2="${l}" stroke="${color}" stroke-width="1.5" opacity="0.7"/>
-      <rect x="${x+6}" y="${bodyTop}" width="12" height="${bodyH}" fill="${color}" rx="1" opacity="0.9"/>`;
-  }).join('');
-
-  // Annotations
-  const entryColor = isLong ? '#00d084' : '#ff4757';
-  const tpColor = '#f0b429';
-  const slColor = '#8b949e';
-
-  svg.innerHTML = `
-    <!-- Background grid lines -->
-    ${[60,120,180,240].map(y => `<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#1e2a38" stroke-width="1"/>`).join('')}
-
-    <!-- AOI shading -->
-    <rect x="${entryX - 45}" y="${areaTop}" width="95" height="${areaBot - areaTop}"
-      fill="${t.areaColor}" rx="4"/>
-    <text x="${entryX - 13}" y="${(areaTop + areaBot) / 2 + 4}"
-      font-size="9" fill="${isLong ? '#00d084' : '#ff4757'}" opacity="0.8" text-anchor="middle">AOI</text>
-
-    <!-- TP zone -->
-    <rect x="${pad.l}" y="${Math.min(t.tpY, t.entryY) - 12}" width="${W - pad.r - pad.l}" height="12"
-      fill="${isLong ? 'rgba(240,180,41,0.06)' : 'rgba(240,180,41,0.06)'}" />
-    <line x1="${pad.l}" y1="${t.tpY}" x2="${W - pad.r}" y2="${t.tpY}"
-      stroke="${tpColor}" stroke-width="1" stroke-dasharray="5,4" opacity="0.6"/>
-    <text x="${W - pad.r + 4}" y="${t.tpY + 4}" font-size="10" fill="${tpColor}" opacity="0.9">${t.tpLabel}</text>
-
-    <!-- Stop Loss line -->
-    <line x1="${pad.l}" y1="${t.slY}" x2="${W - pad.r}" y2="${t.slY}"
-      stroke="${slColor}" stroke-width="1" stroke-dasharray="3,5" opacity="0.5"/>
-    <text x="${W - pad.r + 4}" y="${t.slY + 4}" font-size="10" fill="${slColor}" opacity="0.7">${t.slLabel}</text>
-
-    <!-- Candles -->
-    ${candlesHTML}
-
-    <!-- VWAP line -->
-    <path d="${vwapPath}" stroke="#bc8cff" stroke-width="2" fill="none" opacity="0.85"/>
-    <text x="${W - pad.r + 4}" y="${t.vwapY + 4}" font-size="10" fill="#bc8cff" opacity="0.9">VWAP</text>
-
-    <!-- Entry arrow -->
-    ${isLong
-      ? `<polygon points="${entryX+12},${t.entryY + 22} ${entryX+6},${t.entryY + 34} ${entryX+18},${t.entryY + 34}"
-           fill="${entryColor}" opacity="0.95"/>`
-      : `<polygon points="${entryX+12},${t.entryY - 22} ${entryX+6},${t.entryY - 34} ${entryX+18},${t.entryY - 34}"
-           fill="${entryColor}" opacity="0.95"/>`
-    }
-
-    <!-- Entry label -->
-    <rect x="${entryX - 22}" y="${isLong ? t.entryY + 36 : t.entryY - 62}" width="68" height="20"
-      fill="${entryColor}" rx="4" opacity="0.95"/>
-    <text x="${entryX + 12}" y="${isLong ? t.entryY + 50 : t.entryY - 48}"
-      font-size="10" fill="#000" font-weight="700" text-anchor="middle">${t.entryLabel}</text>
-
-    <!-- Phase labels -->
-    <text x="105" y="16" font-size="9" fill="#8b949e" text-anchor="middle">Trend</text>
-    <text x="210" y="16" font-size="9" fill="#8b949e" text-anchor="middle">${isLong ? 'Pullback ↓' : 'Pullback ↑'}</text>
-    <text x="270" y="16" font-size="9" fill="#8b949e" text-anchor="middle">Consolidate</text>
-    <text x="390" y="16" font-size="9" fill="${entryColor}" text-anchor="middle" font-weight="700">Continuation ${isLong ? '↑' : '↓'}</text>
-  `;
-
-  // Legend
-  document.getElementById('chart-legend').innerHTML = `
-    <span style="display:flex;align-items:center;gap:5px;color:#bc8cff"><span style="display:inline-block;width:24px;height:2px;background:#bc8cff;border-radius:1px"></span> VWAP</span>
-    <span style="display:flex;align-items:center;gap:5px;color:${entryColor}"><span style="display:inline-block;width:24px;height:2px;background:${entryColor};border-radius:1px"></span> ${isLong ? 'Entry / Price' : 'Entry / Price'}</span>
-    <span style="display:flex;align-items:center;gap:5px;color:#f0b429"><span style="display:inline-block;width:24px;height:2px;background:#f0b429;border-radius:1px;border-top:1px dashed #f0b429"></span> Take Profit</span>
-    <span style="display:flex;align-items:center;gap:5px;color:#8b949e"><span style="display:inline-block;width:24px;height:2px;background:#8b949e;border-radius:1px"></span> Stop Loss</span>
-    <span style="display:flex;align-items:center;gap:5px;color:${isLong ? '#00d084' : '#ff4757'};background:${t.areaColor};padding:2px 7px;border-radius:4px;border:1px solid ${isLong ? '#00d08440' : '#ff475740'}">AOI = Area of Interest</span>
-  `;
-}
-
-function showChart(dir) {
-  drawSetupChart(dir);
-  document.getElementById('chart-long-btn').className = dir === 'long' ? 'btn btn-primary' : 'btn';
-  document.getElementById('chart-short-btn').className = dir === 'short' ? 'btn btn-primary' : 'btn';
-  document.getElementById('chart-short-btn').style.borderColor = dir === 'short' ? 'var(--red)' : '';
-  document.getElementById('chart-short-btn').style.color = dir === 'short' ? 'var(--red)' : '';
-}
-showChart('long');
-
-// ─────────────────────────────────────────────
-// Visual 2 — Confluence Signal Tracker
-// ─────────────────────────────────────────────
-const SIGNAL_INSTRUMENTS = ['ES','NQ','YM','USDJPY','EURUSD','GBPUSD','SPX','DXY'];
-const signalState = {}; // 'bull' | 'bear' | null
-
-function buildSignalButtons() {
-  const container = document.getElementById('signal-buttons');
-  SIGNAL_INSTRUMENTS.forEach(sym => {
-    signalState[sym] = null;
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
-    wrap.innerHTML = `
-      <span style="font-size:11px;color:var(--muted);font-weight:700">${sym}</span>
-      <div style="display:flex;gap:4px;">
-        <button onclick="setSignal('${sym}','bull',this)" data-sym="${sym}" data-dir="bull"
-          style="width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--card2);color:var(--muted);cursor:pointer;font-size:13px;transition:all .15s">↑</button>
-        <button onclick="setSignal('${sym}','bear',this)" data-sym="${sym}" data-dir="bear"
-          style="width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--card2);color:var(--muted);cursor:pointer;font-size:13px;transition:all .15s">↓</button>
-      </div>`;
-    container.appendChild(wrap);
-  });
-}
-
-function setSignal(sym, dir, btn) {
-  const prev = signalState[sym];
-  signalState[sym] = (prev === dir) ? null : dir;
-  // Update button styles for this symbol
-  document.querySelectorAll(`[data-sym="${sym}"]`).forEach(b => {
-    const isActive = signalState[sym] === b.dataset.dir;
-    const isBull = b.dataset.dir === 'bull';
-    b.style.background = isActive ? (isBull ? 'var(--green-dim)' : 'var(--red-dim)') : 'var(--card2)';
-    b.style.borderColor = isActive ? (isBull ? 'var(--green)' : 'var(--red)') : 'var(--border)';
-    b.style.color = isActive ? (isBull ? 'var(--green)' : 'var(--red)') : 'var(--muted)';
-  });
-  updateSignalBar();
-}
-
-function updateSignalBar() {
-  const bulls = SIGNAL_INSTRUMENTS.filter(s => signalState[s] === 'bull').length;
-  const bears = SIGNAL_INSTRUMENTS.filter(s => signalState[s] === 'bear').length;
-  const total = bulls + bears;
-  const bullPct = total === 0 ? 50 : (bulls / total) * 100;
-
-  const fill = document.getElementById('signal-bar-fill');
-  const label = document.getElementById('signal-label');
-  const verdict = document.getElementById('signal-verdict');
-  document.getElementById('bull-count').textContent = `${bulls} bullish`;
-  document.getElementById('bear-count').textContent = `${bears} bearish`;
-
-  if (total === 0) {
-    fill.style.cssText = 'width:0;left:50%;background:var(--border)';
-    label.textContent = 'Neutral — No Clear Edge';
-    label.style.color = 'var(--muted)';
-    verdict.style.cssText = 'padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;margin-top:8px;background:var(--card2);border:1px solid var(--border);color:var(--muted)';
-    verdict.textContent = 'Toggle instruments above to see your trade direction';
-    return;
-  }
-
-  if (bullPct > 50) {
-    const strength = bullPct - 50;
-    fill.style.cssText = `width:${strength}%;left:50%;background:linear-gradient(90deg,#00d084,#00a86b);border-radius:0 7px 7px 0;`;
-    const pct = Math.round(bullPct);
-    if (pct >= 80) {
-      label.textContent = `Strong Bullish Signal (${bulls}/${total})`;
-      label.style.color = 'var(--green)';
-      verdict.style.cssText = 'padding:14px 18px;border-radius:8px;font-size:15px;font-weight:700;text-align:center;margin-top:8px;background:var(--green-dim);border:2px solid var(--green);color:var(--green)';
-      verdict.textContent = '📈 LOOK FOR LONG — Strong confluence alignment';
-    } else {
-      label.textContent = `Bullish Lean (${bulls}/${total})`;
-      label.style.color = 'var(--green)';
-      verdict.style.cssText = 'padding:14px 18px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;margin-top:8px;background:rgba(0,208,132,0.05);border:1px solid rgba(0,208,132,0.3);color:var(--green)';
-      verdict.textContent = '📈 Slight edge LONG — wait for more confirmation';
-    }
-  } else if (bullPct < 50) {
-    const strength = 50 - bullPct;
-    fill.style.cssText = `width:${strength}%;right:${640 - 350}px;left:auto;right:50%;background:linear-gradient(90deg,#cc1a2e,#ff4757);border-radius:7px 0 0 7px;`;
-    const pct = Math.round(100 - bullPct);
-    if (pct >= 80) {
-      label.textContent = `Strong Bearish Signal (${bears}/${total})`;
-      label.style.color = 'var(--red)';
-      verdict.style.cssText = 'padding:14px 18px;border-radius:8px;font-size:15px;font-weight:700;text-align:center;margin-top:8px;background:var(--red-dim);border:2px solid var(--red);color:var(--red)';
-      verdict.textContent = '📉 LOOK FOR SHORT — Strong confluence alignment';
-    } else {
-      label.textContent = `Bearish Lean (${bears}/${total})`;
-      label.style.color = 'var(--red)';
-      verdict.style.cssText = 'padding:14px 18px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;margin-top:8px;background:rgba(255,71,87,0.05);border:1px solid rgba(255,71,87,0.3);color:var(--red)';
-      verdict.textContent = '📉 Slight edge SHORT — wait for more confirmation';
-    }
-  } else {
-    fill.style.cssText = 'width:0;left:50%;background:var(--border)';
-    label.textContent = `Neutral — Even Split (${bulls} bull / ${bears} bear)`;
-    label.style.color = 'var(--yellow)';
-    verdict.style.cssText = 'padding:14px 18px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;margin-top:8px;background:var(--yellow-dim);border:1px solid var(--yellow);color:var(--yellow)';
-    verdict.textContent = '⚠️ MIXED SIGNALS — No trade. Patience is a position.';
-  }
-}
-
-buildSignalButtons();
-
 // ─────────────────────────────────────────────
 renderList('prep-checklist', PREP_STEPS, 1);
 renderList('plan-checklist', PLAN_STEPS, 6);

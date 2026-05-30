@@ -20,7 +20,6 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -66,14 +65,9 @@
       background: linear-gradient(to bottom, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.1) 50%, rgba(8,8,8,0.9) 100%);
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      padding: 0 20px;
-    }
+    .hero-content { position: relative; z-index: 2; padding: 0 20px; }
 
     .hero-eyebrow {
-      font-family: 'Montserrat', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 6px;
@@ -87,15 +81,11 @@
       font-size: clamp(52px, 10vw, 110px);
       font-weight: 300;
       line-height: 1;
-      letter-spacing: -1px;
       margin-bottom: 24px;
       text-shadow: 0 2px 40px rgba(0,0,0,0.8);
     }
 
-    .hero h1 em {
-      font-style: italic;
-      color: var(--gold-light);
-    }
+    .hero h1 em { font-style: italic; color: var(--gold-light); }
 
     .hero-sub {
       font-size: 13px;
@@ -180,7 +170,6 @@
       gap: 6px;
       overflow-x: auto;
       scrollbar-width: none;
-      -ms-overflow-style: none;
       flex: 1;
       justify-content: flex-end;
     }
@@ -202,8 +191,7 @@
       border-radius: 2px;
     }
 
-    .filter-btn:hover,
-    .filter-btn.active {
+    .filter-btn:hover, .filter-btn.active {
       background: var(--gold-dim);
       border-color: var(--gold);
       color: var(--gold-light);
@@ -255,7 +243,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
       display: block;
     }
 
@@ -264,22 +252,12 @@
     .card-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(8,8,8,0.95) 0%,
-        rgba(8,8,8,0.5) 45%,
-        rgba(8,8,8,0.1) 100%
-      );
+      background: linear-gradient(to top, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0.5) 45%, rgba(8,8,8,0.1) 100%);
       transition: background 0.4s;
     }
 
     .card:hover .card-overlay {
-      background: linear-gradient(
-        to top,
-        rgba(8,8,8,0.98) 0%,
-        rgba(8,8,8,0.6) 55%,
-        rgba(8,8,8,0.2) 100%
-      );
+      background: linear-gradient(to top, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.6) 55%, rgba(8,8,8,0.2) 100%);
     }
 
     .card-body {
@@ -288,8 +266,6 @@
       left: 0;
       right: 0;
       padding: 28px 24px;
-      transform: translateY(0);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .card-num {
@@ -312,7 +288,6 @@
       font-weight: 500;
       letter-spacing: 1.5px;
       color: rgba(232,228,222,0.75);
-      margin-bottom: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -322,7 +297,6 @@
       font-size: 10px;
       letter-spacing: 1px;
       color: var(--gold);
-      margin-top: 12px;
       max-height: 0;
       overflow: hidden;
       opacity: 0;
@@ -332,7 +306,7 @@
     .card:hover .card-suite {
       max-height: 40px;
       opacity: 1;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .card-tag {
@@ -347,6 +321,16 @@
       text-transform: uppercase;
       padding: 4px 10px;
       backdrop-filter: blur(4px);
+    }
+
+    /* fallback gradient for broken images */
+    .card-img-fallback {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2015 50%, #1a1a1a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* ── MODAL ── */
@@ -365,10 +349,7 @@
       backdrop-filter: blur(10px);
     }
 
-    .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
 
     .modal {
       background: var(--dark2);
@@ -387,14 +368,12 @@
 
     .modal-img {
       width: 100%;
-      height: 400px;
+      height: 420px;
       object-fit: cover;
       display: block;
     }
 
-    .modal-body {
-      padding: 40px;
-    }
+    .modal-body { padding: 40px; }
 
     .modal-num {
       font-size: 10px;
@@ -412,18 +391,18 @@
     }
 
     .modal-hotel {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       letter-spacing: 2px;
       color: rgba(232,228,222,0.8);
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .modal-divider {
       width: 60px;
       height: 1px;
       background: linear-gradient(to right, var(--gold), transparent);
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .modal-suite-label {
@@ -440,6 +419,22 @@
       font-weight: 300;
       font-style: italic;
       color: var(--gold-light);
+      margin-bottom: 32px;
+    }
+
+    .modal-desc-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.6);
+      margin-bottom: 12px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      line-height: 1.85;
+      color: rgba(232,228,222,0.75);
+      font-weight: 300;
     }
 
     .modal-close {
@@ -461,7 +456,6 @@
     }
 
     .modal-close:hover { background: rgba(201,168,76,0.2); }
-
     .modal-wrapper { position: relative; }
 
     /* ── FOOTER ── */
@@ -484,27 +478,12 @@
       .modal-img { height: 260px; }
       .modal-body { padding: 24px; }
       .modal-location { font-size: 36px; }
-      .nav-inner { gap: 12px; }
     }
 
     @media (max-width: 480px) {
       .hotel-grid { grid-template-columns: 1fr 1fr; gap: 1px; }
-      .card-location { font-size: 20px; }
+      .card-location { font-size: 18px; }
       .card-hotel { display: none; }
-    }
-
-    /* Skeleton loading */
-    .card-img-skeleton {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--dark3) 25%, var(--dark4) 50%, var(--dark3) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
     }
   </style>
 </head>
@@ -558,6 +537,8 @@
         <div class="modal-divider"></div>
         <div class="modal-suite-label">Suite / Villa</div>
         <div class="modal-suite-name" id="modalSuite"></div>
+        <div class="modal-desc-label">About this stay</div>
+        <div class="modal-desc" id="modalDesc"></div>
       </div>
     </div>
     <button class="modal-close" id="modalClose">✕</button>
@@ -565,52 +546,250 @@
 </div>
 
 <!-- FOOTER -->
-<footer>
-  <span>40</span> Dreams &nbsp;·&nbsp; One List
-</footer>
+<footer><span>40</span> Dreams &nbsp;·&nbsp; One List</footer>
 
 <script>
 const hotels = [
-  { n:1,  location:"Sacramento",       hotel:"Kimpton Sawyer",                        suite:"Penthouse Suite",                              region:"usa",        img:"https://images.unsplash.com/photo-1551882547-ff40c63fe2e2?auto=format&fit=crop&w=800&q=80" },
-  { n:2,  location:"San Diego",         hotel:"Beach Village at The Del",              suite:"Oceanfront Fire-Pit Suite",                    region:"usa",        img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
-  { n:3,  location:"Las Vegas",         hotel:"Waldorf Astoria Las Vegas",             suite:"Panorama Strip View Suite",                    region:"usa",        img:"https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?auto=format&fit=crop&w=800&q=80" },
-  { n:4,  location:"Philadelphia",      hotel:"Four Seasons at Comcast Center",        suite:"Skyline Corner Suite",                         region:"usa",        img:"https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?auto=format&fit=crop&w=800&q=80" },
-  { n:5,  location:"New York",          hotel:"Mandarin Oriental New York",            suite:"Central Park View Suite",                      region:"usa",        img:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=800&q=80" },
-  { n:6,  location:"Maui",              hotel:"Hotel Wailea Relais & Châteaux",        suite:"Luxury Ocean View Suite",                      region:"usa",        img:"https://images.unsplash.com/photo-1542259009477-d625272157b7?auto=format&fit=crop&w=800&q=80" },
-  { n:7,  location:"Big Island",        hotel:"Four Seasons Hualalai",                 suite:"Oceanfront Suite",                             region:"usa",        img:"https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" },
-  { n:8,  location:"Puerto Vallarta",   hotel:"Naviva A Four Seasons Resort",          suite:"Tented Bungalow",                              region:"latam",      img:"https://images.unsplash.com/photo-1512813389649-acbd9ef5c3e6?auto=format&fit=crop&w=800&q=80" },
-  { n:9,  location:"Cabo",              hotel:"Las Ventanas al Paraíso Rosewood",      suite:"Oceanfront Rooftop Terrace Suite",             region:"latam",      img:"https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800&q=80" },
-  { n:10, location:"Los Angeles",       hotel:"Waldorf Astoria Beverly Hills",         suite:"Beverly Hills Suite with Terrace",             region:"usa",        img:"https://images.unsplash.com/photo-1580655653885-65763b2597d4?auto=format&fit=crop&w=800&q=80" },
-  { n:11, location:"Florianópolis",     hotel:"Fuso Concept Hotel",                    suite:"Suite with Private Pool",                      region:"latam",      img:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=800&q=80" },
-  { n:12, location:"São Paulo",         hotel:"Rosewood São Paulo",                    suite:"Penthouse Suite",                              region:"latam",      img:"https://images.unsplash.com/photo-1609159988498-6e25d0c5db9d?auto=format&fit=crop&w=800&q=80" },
-  { n:13, location:"Pleasanton",        hotel:"Four Seasons Silicon Valley",           suite:"Luxury Suite",                                 region:"usa",        img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" },
-  { n:14, location:"Nashville",         hotel:"Four Seasons Nashville",                suite:"Premier River-View Suite",                     region:"usa",        img:"https://images.unsplash.com/photo-1586004156782-d1e0d0e7d9b9?auto=format&fit=crop&w=800&q=80" },
-  { n:15, location:"Saudi Arabia",      hotel:"Shebara Resort",                        suite:"Two Bedroom Overwater Villa",                  region:"middleeast", img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=800&q=80" },
-  { n:16, location:"Utah",              hotel:"Amangiri",                              suite:"The Amangiri Suite",                           region:"usa",        img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80" },
-  { n:17, location:"Switzerland",       hotel:"Bürgenstock Hotel & Alpine Spa",        suite:"The Royal Suite",                              region:"europe",     img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" },
-  { n:18, location:"Egypt",             hotel:"Marriott Mena House",                   suite:"Winston Churchill Suite (Palace Wing)",         region:"africa",     img:"https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=800&q=80" },
-  { n:19, location:"Barcelona",         hotel:"Mandarin Oriental Barcelona",           suite:"The Barcelona Suite",                          region:"europe",     img:"https://images.unsplash.com/photo-1464790719320-516ecd75af6c?auto=format&fit=crop&w=800&q=80" },
-  { n:20, location:"Athens",            hotel:"Four Seasons Astir Palace",             suite:"Arion Riviera Suite",                          region:"europe",     img:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=800&q=80" },
-  { n:21, location:"Istanbul",          hotel:"Mandarin Oriental Bosphorus",           suite:"Naile Sultan Bosphorus Suite",                 region:"europe",     img:"https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=800&q=80" },
-  { n:22, location:"Bangkok",           hotel:"Capella Bangkok",                       suite:"Riverside Villa",                              region:"asia",       img:"https://images.unsplash.com/photo-1503917988258-f87a78e3c995?auto=format&fit=crop&w=800&q=80" },
-  { n:23, location:"Rome",              hotel:"The St. Regis Rome",                    suite:"Grand Suite",                                  region:"europe",     img:"https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80" },
-  { n:24, location:"Rio de Janeiro",    hotel:"Belmond Copacabana Palace",             suite:"Penthouse Suite",                              region:"latam",      img:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=800&q=80" },
-  { n:25, location:"Paris",             hotel:"Four Seasons Hotel George V",           suite:"The Penthouse",                                region:"europe",     img:"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80" },
-  { n:26, location:"Taipei",            hotel:"Mandarin Oriental Taipei",              suite:"Grand Suite",                                  region:"asia",       img:"https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=800&q=80" },
-  { n:27, location:"Tokyo",             hotel:"Aman Tokyo",                            suite:"Corner Suite",                                 region:"asia",       img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=800&q=80" },
-  { n:28, location:"Seoul",             hotel:"Park Hyatt Seoul",                      suite:"Diplomatic Suite",                             region:"asia",       img:"https://images.unsplash.com/photo-1508009603885-50cf7c8dd0d5?auto=format&fit=crop&w=800&q=80" },
-  { n:29, location:"Dubai",             hotel:"Atlantis The Royal",                    suite:"Sky Pool Villa",                               region:"middleeast", img:"https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=800&q=80" },
-  { n:30, location:"Bali",              hotel:"Bvlgari Resort Bali",                   suite:"Ocean View Pool Villa",                        region:"asia",       img:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80" },
-  { n:31, location:"Bora Bora",         hotel:"Four Seasons Bora Bora",                suite:"Otemanu Overwater Bungalow Suite",             region:"pacific",    img:"https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80" },
-  { n:32, location:"Sydney",            hotel:"Park Hyatt Sydney",                     suite:"Opera View Deluxe",                            region:"pacific",    img:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80" },
-  { n:33, location:"Santorini",         hotel:"Katikies",                              suite:"Caldera Suite with Private Pool",              region:"europe",     img:"https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80" },
-  { n:34, location:"Venice",            hotel:"Aman Venice",                           suite:"Alcova Tiepolo Suite",                         region:"europe",     img:"https://images.unsplash.com/photo-1555990793-da11153b2473?auto=format&fit=crop&w=800&q=80" },
-  { n:35, location:"Maldives",          hotel:"Cheval Blanc Randheli",                 suite:"Ocean Villa",                                  region:"asia",       img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=800&q=80" },
-  { n:36, location:"Amalfi Coast",      hotel:"Belmond Hotel Caruso",                  suite:"Caruso Suite",                                 region:"europe",     img:"https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80" },
-  { n:37, location:"Marrakech",         hotel:"Royal Mansour",                         suite:"Private Riad",                                 region:"africa",     img:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80" },
-  { n:38, location:"Kyoto",             hotel:"Six Senses Kyoto",                      suite:"Sanctuary Suite",                              region:"asia",       img:"https://images.unsplash.com/photo-1549693578-d683be217e58?auto=format&fit=crop&w=800&q=80" },
-  { n:39, location:"Cape Town",         hotel:"Ellerman House",                        suite:"Premier Suite",                                region:"africa",     img:"https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=800&q=80" },
-  { n:40, location:"Caribbean",         hotel:"Private Superyacht Charter",            suite:"Master Stateroom",                             region:"latam",      img:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=800&q=80" },
+  {
+    n:1, location:"Sacramento", hotel:"Kimpton Sawyer", suite:"Penthouse Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1551882547-ff40c63fe2e2?auto=format&fit=crop&w=900&q=80",
+    desc:"Steps from the Golden 1 Center in revitalized downtown Sacramento. The rooftop pool deck commands panoramic views of the Sacramento River and the iconic Tower Bridge. The Penthouse spans over 2,000 sq ft with floor-to-ceiling windows and a wraparound terrace above the state capital's increasingly sophisticated culinary scene."
+  },
+  {
+    n:2, location:"San Diego", hotel:"Beach Village at The Del", suite:"Oceanfront Fire-Pit Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
+    desc:"The Hotel del Coronado opened in 1888 and has hosted 13 US presidents. Marilyn Monroe filmed Some Like It Hot on this very beach. The Beach Village cottages are separate from the Victorian main building — private fire pits sit steps from the Pacific, and the suite looks directly over the same sand where Hollywood history was made."
+  },
+  {
+    n:3, location:"Las Vegas", hotel:"Waldorf Astoria Las Vegas", suite:"Panorama Strip View Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1581351721010-8cf859cb14a4?auto=format&fit=crop&w=900&q=80",
+    desc:"One of Las Vegas's only casino-free luxury hotels, the Waldorf sits inside CityCenter and offers complete smoke-free serenity. From 47 stories up, the Panorama Suite delivers the entire Strip in one frame — Stratosphere to the south, Bellagio fountains to the north, and the desert mountains glowing at dusk."
+  },
+  {
+    n:4, location:"Philadelphia", hotel:"Four Seasons at Comcast Center", suite:"Skyline Corner Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?auto=format&fit=crop&w=900&q=80",
+    desc:"Occupying the top 12 floors of Philadelphia's tallest building — the Comcast Technology Center — this is the only hotel in the city above the historic 'William Penn law' height limit. The Skyline Corner Suite wraps 270° around the tower with views stretching to the Delaware River and the New Jersey skyline."
+  },
+  {
+    n:5, location:"New York", hotel:"Mandarin Oriental New York", suite:"Central Park View Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=900&q=80",
+    desc:"Floors 35–54 of the Time Warner Center at Columbus Circle, overlooking 843 acres of Central Park. The spa is the only hotel spa in NYC with floor-to-ceiling views of the park canopy. The Park View Suites offer a perspective on the city that even most New Yorkers never experience — the park as it was always meant to be seen."
+  },
+  {
+    n:6, location:"Maui", hotel:"Hotel Wailea Relais & Châteaux", suite:"Luxury Ocean View Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1542259009477-d625272157b7?auto=format&fit=crop&w=900&q=80",
+    desc:"The only adults-only luxury resort on Maui — just 72 rooms on a hillside above Wailea with sweeping views to Molokini Crater and Kaho'olawe island. The Relais & Châteaux designation is among the world's most exclusive hospitality honors, held by fewer than 600 properties globally. Pure seclusion in the middle of the Pacific."
+  },
+  {
+    n:7, location:"Big Island", hotel:"Four Seasons Hualalai", suite:"Oceanfront Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1598935898639-81586f7d2129?auto=format&fit=crop&w=900&q=80",
+    desc:"Built into a 1,000-year-old lava field on the remote Kona-Kohala Coast. The resort's extraordinary feature: King's Pond — a natural lava-rock snorkel pool filled daily with reef fish, spotted eagle rays, and hawksbill sea turtles. Guests swim alongside them every morning without ever leaving the property grounds."
+  },
+  {
+    n:8, location:"Puerto Vallarta", hotel:"Naviva A Four Seasons Resort", suite:"Tented Bungalow",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1512813389649-acbd9ef5c3e6?auto=format&fit=crop&w=900&q=80",
+    desc:"Opened 2022 with only 15 bungalows — one of the most exclusive Four Seasons properties ever built. No phones, no TVs, no children. Guests sleep in canvas-and-hardwood tents suspended in jungle canopy above the Pacific coast. Daily mezcal ceremonies, private butlers, and silence. The antidote to every other resort."
+  },
+  {
+    n:9, location:"Cabo", hotel:"Las Ventanas al Paraíso Rosewood", suite:"Oceanfront Rooftop Terrace Suite",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=900&q=80",
+    desc:"'The Windows to Paradise' — and the name delivers. Every suite has a rooftop terrace and a personal telescope for Baja's star-dense skies. A private tequila sommelier is on call. The resort sits precisely where the Sea of Cortez meets the Pacific — a geographic meeting point that creates some of the best whale-watching waters in the world."
+  },
+  {
+    n:10, location:"Los Angeles", hotel:"Waldorf Astoria Beverly Hills", suite:"Beverly Hills Suite with Terrace",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1580655653885-65763b2597d4?auto=format&fit=crop&w=900&q=80",
+    desc:"The only hotel in Beverly Hills holding both Forbes Five Stars and AAA Five Diamonds simultaneously. Jean-Georges Vongerichten runs the signature restaurant. The rooftop pool bar delivers 360° views: Hollywood Hills, downtown LA, and on clear winter days, the Pacific Ocean glinting 12 miles away."
+  },
+  {
+    n:11, location:"Florianópolis", hotel:"Fuso Concept Hotel", suite:"Suite with Private Pool",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=900&q=80",
+    desc:"Brazil's 'Magic Island' packs 42 beaches onto a single island — world-class surf at Joaquina, freshwater lagoons at Lagoa da Conceição, and a farm-to-table restaurant culture that rivals anywhere in the country. Fuso brings boutique design-hotel sensibility to one of South America's most underrated luxury escapes."
+  },
+  {
+    n:12, location:"São Paulo", hotel:"Rosewood São Paulo", suite:"Penthouse Suite",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1561495376-dc9c7c5b8f3d?auto=format&fit=crop&w=900&q=80",
+    desc:"Rosewood's first Brazil property (2022), reimagining a heritage 1940s complex in the upscale Jardins neighborhood. The interiors are a manifesto of Brazilian modernism — Niemeyer-inspired curves, Burle Marx botanical motifs, and site-specific commissions from the country's most celebrated contemporary artists."
+  },
+  {
+    n:13, location:"Pleasanton", hotel:"Four Seasons Silicon Valley", suite:"Luxury Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=900&q=80",
+    desc:"The quiet address where Silicon Valley power stays when deals are being made. Tucked into the East Bay hills, the surrounding Livermore Valley wine country is 5 minutes away — California's oldest wine region, dating back to the 1880s, completely uncrowded and largely unknown outside the Bay Area."
+  },
+  {
+    n:14, location:"Nashville", hotel:"Four Seasons Nashville", suite:"Premier River-View Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1523217932984-ec494a18e0e6?auto=format&fit=crop&w=900&q=80",
+    desc:"Opened 2021 in Nashville's emerging SoBro district along the Cumberland River. The Premier River-View Suite looks out over the water toward Nissan Stadium with the city's neon skyline glowing in the background. Broadway's honky-tonk strip and the city's legendary live music scene are a short walk from the lobby."
+  },
+  {
+    n:15, location:"Saudi Arabia", hotel:"Shebara Resort", suite:"Two Bedroom Overwater Villa",
+    region:"middleeast",
+    img:"https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=900&q=80",
+    desc:"Part of NEOM's Red Sea Project — one of the world's most ambitious new tourism developments. Shebara opened 2023 on virtually pristine coral reefs. The Red Sea's unusually warm, low-salinity waters create underwater visibility that rivals the Maldives. Almost no one knows it yet — this is still genuinely undiscovered luxury."
+  },
+  {
+    n:16, location:"Utah", hotel:"Amangiri", suite:"The Amangiri Suite",
+    region:"usa",
+    img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=80",
+    desc:"Built into the red-rock landscape of Canyon Point, Utah — the main pool wraps around an actual exposed sandstone formation that rose through the pool deck. Zero light pollution puts billions of stars overhead. The Amangiri Suite is a private mesa-top retreat; nearby Horseshoe Bend and Antelope Canyon are accessible by private helicopter."
+  },
+  {
+    n:17, location:"Switzerland", hotel:"Bürgenstock Hotel & Alpine Spa", suite:"The Royal Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=900&q=80",
+    desc:"Perched 500 meters above Lake Lucerne on a private cliff plateau, accessible only by Europe's highest outdoor elevator — a Victorian-era engineering marvel built in 1905. Used as a venue for Ukraine peace talks in 2024. The Royal Suite terrace hovers directly above the Swiss Alps, the lake an electric blue far below."
+  },
+  {
+    n:18, location:"Egypt", hotel:"Marriott Mena House", suite:"Winston Churchill Suite (Palace Wing)",
+    region:"africa",
+    img:"https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=900&q=80",
+    desc:"Built in 1869 as a hunting lodge for Khedive Ismail. The Churchill Suite looks directly at the Great Pyramid of Giza — 450 feet of ancient stone unchanged for 4,500 years, visible from the bathtub. Anwar Sadat and Menachem Begin began their historic peace negotiations here before Camp David. History saturates every room."
+  },
+  {
+    n:19, location:"Barcelona", hotel:"Mandarin Oriental Barcelona", suite:"The Barcelona Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?auto=format&fit=crop&w=900&q=80",
+    desc:"On the Passeig de Gràcia — Barcelona's answer to the Champs-Élysées — with Gaudí's Casa Batlló and Casa Milà as literal next-door neighbors. The Barcelona Suite spans two floors with a private rooftop solarium. The hotel's Moments restaurant holds two Michelin stars under chef Raül Balam, son of legendary Catalan master Carme Ruscalleda."
+  },
+  {
+    n:20, location:"Athens", hotel:"Four Seasons Astir Palace", suite:"Arion Riviera Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80",
+    desc:"A legendary 1960s resort that hosted Aristotle Onassis, Frank Sinatra, and Jackie Kennedy on the Athenian Riviera. Reopened after a total restoration in 2019. The Arion Riviera Suite sits directly over the Aegean — private beach access, pine forest, and one of Europe's most storied coastlines just outside the door."
+  },
+  {
+    n:21, location:"Istanbul", hotel:"Mandarin Oriental Bosphorus", suite:"Naile Sultan Bosphorus Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=900&q=80",
+    desc:"On the European shore of the Bosphorus Strait — the waterway literally dividing two continents. Named after an Ottoman princess, the Naile Sultan Suite features hand-knotted Hereke silk carpets and a private terrace where you watch cargo ships, tankers, and dolphins crossing between Europe and Asia around the clock."
+  },
+  {
+    n:22, location:"Bangkok", hotel:"Capella Bangkok", suite:"Riverside Villa",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1503917988258-f87a78e3c995?auto=format&fit=crop&w=900&q=80",
+    desc:"Only 101 rooms on the Chao Phraya River — a rare chance to experience Bangkok from the water, entirely removed from the city's traffic chaos. The Riverside Villas have private plunge pools just above the river's edge. Wat Arun, the Temple of Dawn, glows directly across the water and is most spectacular at 5am, from your terrace."
+  },
+  {
+    n:23, location:"Rome", hotel:"The St. Regis Rome", suite:"Grand Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=900&q=80",
+    desc:"A 19th-century palazzo near the Via Veneto, steps from the Bernini fountain and the Borghese gardens. St. Regis invented white-glove butler service in 1904 — this Roman outpost continues the tradition with bespoke Italian grandeur. The Grand Suite looks over Rome's amber rooftops toward the Vatican dome at sunset."
+  },
+  {
+    n:24, location:"Rio de Janeiro", hotel:"Belmond Copacabana Palace", suite:"Penthouse Suite",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=900&q=80",
+    desc:"Rio's grande dame since 1923 — this white neo-classical palace on Copacabana has hosted the Rolling Stones, Princess Diana, and every Brazilian head of state. The Penthouse commands Sugar Loaf Mountain to the left and the full arc of Copacabana beach to the right. The pool is one of the most photographed in South America."
+  },
+  {
+    n:25, location:"Paris", hotel:"Four Seasons Hotel George V", suite:"The Penthouse",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1499856374279-57b82d5c51c0?auto=format&fit=crop&w=900&q=80",
+    desc:"Open since 1928, one block from the Champs-Élysées. Chief florist Jeff Leatham is a global celebrity — his monumental floral installations fill the lobby and are a destination in their own right. The Penthouse offers 150 sq meters of private rooftop terrace above the 8th arrondissement, with the Eiffel Tower glowing at night directly ahead."
+  },
+  {
+    n:26, location:"Taipei", hotel:"Mandarin Oriental Taipei", suite:"Grand Suite",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=900&q=80",
+    desc:"The benchmark of Taipei luxury since 2014 — legendary for its afternoon high tea, geothermal hot spring spa fed by Yangmingshan volcano, and exceptional Chinese fine dining. The Grand Suite looks across the Taipei Basin toward the volcanic mountains. Taiwan is consistently rated Asia's most underrated culinary destination."
+  },
+  {
+    n:27, location:"Tokyo", hotel:"Aman Tokyo", suite:"Corner Suite",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=80",
+    desc:"Aman's first urban hotel in Asia — floors 33–38 of the Otemachi Tower, beside the Imperial Palace grounds. The interiors dissolve the boundary between ancient and contemporary Japan: washi paper screens, hand-crafted hinoki cypress, and the Corner Suite's floor-to-ceiling windows looking directly into the Emperor's East Garden."
+  },
+  {
+    n:28, location:"Seoul", hotel:"Park Hyatt Seoul", suite:"Diplomatic Suite",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1508009603885-50cf7c8dd0d5?auto=format&fit=crop&w=900&q=80",
+    desc:"In the heart of Gangnam — Seoul's design and style capital. The basement pool is arguably the city's most atmospheric space: carved in dark volcanic stone with an otherworldly underwater light. The Diplomatic Suite has a dual-exposure view north and south across 25 million people arranged in one of the world's most dramatic skylines."
+  },
+  {
+    n:29, location:"Dubai", hotel:"Atlantis The Royal", suite:"Sky Pool Villa",
+    region:"middleeast",
+    img:"https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=900&q=80",
+    desc:"Opened New Year's Eve 2023 with a Beyoncé performance reportedly costing $24 million. The Sky Pool Villa features a glass-walled infinity pool suspended between the towers 90 meters above Palm Jumeirah — you swim above the Gulf. The hotel contains 17 restaurants, a Nobu, a Dinner by Heston Blumenthal, and 5 pools. Maximum Dubai."
+  },
+  {
+    n:30, location:"Bali", hotel:"Bvlgari Resort Bali", suite:"Ocean View Pool Villa",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=80",
+    desc:"On a dramatic clifftop in Uluwatu, 150 meters above the Indian Ocean. Every element was commissioned from Balinese craftspeople — local volcanic stone, hand-carved teak, Javanese furniture workshops. The infinity pool at sunset, with the Indian Ocean below and nothing but water to the horizon, is Bali's most spectacular single view."
+  },
+  {
+    n:31, location:"Bora Bora", hotel:"Four Seasons Bora Bora", suite:"Otemanu Overwater Bungalow Suite",
+    region:"pacific",
+    img:"https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=900&q=80",
+    desc:"The Otemanu Suite faces Bora Bora's ancient volcanic peak through a glass floor panel directly over the lagoon — widely considered the world's most vivid turquoise. Blacktip reef sharks patrol the bungalow stilts at low tide. Stingrays sleep in the shallows at night. Jacques Cousteau called this lagoon the world's greatest aquarium."
+  },
+  {
+    n:32, location:"Sydney", hotel:"Park Hyatt Sydney", suite:"Opera View Deluxe",
+    region:"pacific",
+    img:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=900&q=80",
+    desc:"A 19th-century heritage sandstone building on the waterfront directly opposite the Sydney Opera House and Harbour Bridge. Considered by many critics to be the world's best hotel-room view. Circular Quay ferries pass so close you could wave to passengers from your window — the whole harbour is your front yard."
+  },
+  {
+    n:33, location:"Santorini", hotel:"Katikies", suite:"Caldera Suite with Private Pool",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=900&q=80",
+    desc:"Carved into the volcanic caldera cliff at Oia — whitewashed stairways cascading to infinity pools that seem to flow into the Aegean. The Caldera Suite private pool looks directly into the submerged volcanic crater. The wine is volcanic-soil Assyrtiko, grown in sandy ash — a taste that exists nowhere else on earth."
+  },
+  {
+    n:34, location:"Venice", hotel:"Aman Venice", suite:"Alcova Tiepolo Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=900&q=80",
+    desc:"The 16th-century Palazzo Papadopoli on the Grand Canal. The Alcova Tiepolo Suite contains original intact frescoes by Giambattista Tiepolo, one of the 18th century's supreme masters. George Clooney and Amal Alamuddin held their 2014 wedding reception in the palazzo's frescoed ballroom — the most romanticized address in the world."
+  },
+  {
+    n:35, location:"Maldives", hotel:"Cheval Blanc Randheli", suite:"Ocean Villa",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=900&q=80",
+    desc:"LVMH's Maldives outpost in the remote Noonu Atoll — a 45-minute seaplane ride from Malé. Only 46 villas. The property brings a French Maison sensibility to the Indian Ocean: a certified sommelier manages a wine cellar among the finest in the region. The house reef is a UNESCO-protected biosphere reserve teeming with manta rays."
+  },
+  {
+    n:36, location:"Amalfi Coast", hotel:"Belmond Hotel Caruso", suite:"Caruso Suite",
+    region:"europe",
+    img:"https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=900&q=80",
+    desc:"An 11th-century palazzo in Ravello, 350 meters above the Mediterranean. Richard Wagner composed part of Parsifal in Ravello, finding inspiration in these exact clifftop views. Gore Vidal lived in the town for 30 years. The Caruso Suite terrace cantilevers over the cliff edge — the Tyrrhenian Sea stretches uninterrupted to Tunisia below."
+  },
+  {
+    n:37, location:"Marrakech", hotel:"Royal Mansour", suite:"Private Riad",
+    region:"africa",
+    img:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80",
+    desc:"Privately owned by King Mohammed VI of Morocco and not available to the general public through standard booking channels. The resort is a private medina: 53 standalone three-story riads, each with a rooftop and a personal butler. Master craftspeople from across Morocco were commissioned for years specifically to create the tilework, zellige, and carved stucco."
+  },
+  {
+    n:38, location:"Kyoto", hotel:"Six Senses Kyoto", suite:"Sanctuary Suite",
+    region:"asia",
+    img:"https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80",
+    desc:"Opened 2023 in Higashiyama — Kyoto's historically preserved district, steps from Kiyomizudera Temple. The Sanctuary Suite uses sukiya-zukuri architecture: the same refined aesthetic as traditional machiya townhouses and the imperial villa garden teahouses. Japan's newest ultra-luxury address, in the city that defines the concept of wabi-sabi."
+  },
+  {
+    n:39, location:"Cape Town", hotel:"Ellerman House", suite:"Premier Suite",
+    region:"africa",
+    img:"https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=900&q=80",
+    desc:"A 1912 Edwardian mansion above Bantry Bay with sweeping Atlantic panoramas and one of Africa's most significant private contemporary art collections — over 300 South African works. Only 13 rooms, so the property functions as a private estate rather than a hotel. The wine cellar alone is worth the trip: 7,500 bottles of South African fine wine."
+  },
+  {
+    n:40, location:"Caribbean", hotel:"Private Superyacht Charter", suite:"Master Stateroom",
+    region:"latam",
+    img:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=900&q=80",
+    desc:"A week in the British Virgin Islands aboard a private superyacht: anchor at Norman Island — the actual inspiration for Treasure Island — at dawn before anyone else arrives. Dive The Baths of Virgin Gorda at sunrise. End each evening at Jost Van Dyke's Soggy Dollar Bar, the beach bar that invented the Painkiller cocktail. From ~$100K/week for a world-class vessel and crew."
+  }
 ];
 
 const regionLabels = { usa:"USA", latam:"Latin America", europe:"Europe", middleeast:"Middle East", asia:"Asia", pacific:"Pacific", africa:"Africa" };
@@ -624,7 +803,14 @@ function buildCards() {
     card.className = 'card';
     card.dataset.region = h.region;
     card.innerHTML = `
-      <img class="card-img" src="${h.img}" alt="${h.location}" loading="lazy" onerror="this.style.background='#181818';this.style.display='block'"/>
+      <img
+        class="card-img"
+        src="${h.img}"
+        alt="${h.location}"
+        loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+      />
+      <div class="card-img-fallback" style="position:absolute;inset:0;display:none;"></div>
       <div class="card-overlay"></div>
       <div class="card-tag">${regionLabels[h.region]}</div>
       <div class="card-body">
@@ -654,19 +840,16 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 
 // Modal
 const backdrop = document.getElementById('modalBackdrop');
-const modalImg = document.getElementById('modalImg');
-const modalNum = document.getElementById('modalNum');
-const modalLoc = document.getElementById('modalLocation');
-const modalHotel = document.getElementById('modalHotel');
-const modalSuite = document.getElementById('modalSuite');
 
 function openModal(h) {
-  modalImg.src = h.img.replace('w=800', 'w=1200');
-  modalImg.alt = h.location;
-  modalNum.textContent = `No. ${String(h.n).padStart(2,'0')} · ${regionLabels[h.region]}`;
-  modalLoc.textContent = h.location;
-  modalHotel.textContent = h.hotel;
-  modalSuite.textContent = h.suite;
+  document.getElementById('modalImg').src = h.img.replace('w=900', 'w=1400');
+  document.getElementById('modalImg').alt = h.location;
+  document.getElementById('modalNum').textContent = `No. ${String(h.n).padStart(2,'0')} · ${regionLabels[h.region]}`;
+  document.getElementById('modalLocation').textContent = h.location;
+  document.getElementById('modalHotel').textContent = h.hotel;
+  document.getElementById('modalSuite').textContent = h.suite;
+  document.getElementById('modalDesc').textContent = h.desc;
+  document.getElementById('modal').scrollTop = 0;
   backdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
 }

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bucket List Hotels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c96d;
+      --gold-dim: rgba(201,168,76,0.15);
+      --dark: #080808;
+      --dark2: #111;
+      --dark3: #181818;
+      --dark4: #222;
+      --text: #e8e4de;
+      --muted: #888;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35);
+      transform: scale(1.05);
+      animation: slowZoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.12); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.1) 50%, rgba(8,8,8,0.9) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 10vw, 110px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.8);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: rgba(232,228,222,0.7);
+      margin-bottom: 48px;
+    }
+
+    .hero-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 14px 32px;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(232,228,222,0.5);
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── NAV ── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8,8,8,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 0 20px;
+    }
+
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      gap: 16px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--gold);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      flex: 1;
+      justify-content: flex-end;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: rgba(232,228,222,0.6);
+      padding: 6px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      border-radius: 2px;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* ── GRID ── */
+    .grid-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 80px 20px 120px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(201,168,76,0.4), transparent);
+    }
+
+    .hotel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 4/3;
+      background: var(--dark3);
+    }
+
+    .card.hidden { display: none; }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: block;
+    }
+
+    .card:hover .card-img { transform: scale(1.08); }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(8,8,8,0.95) 0%,
+        rgba(8,8,8,0.5) 45%,
+        rgba(8,8,8,0.1) 100%
+      );
+      transition: background 0.4s;
+    }
+
+    .card:hover .card-overlay {
+      background: linear-gradient(
+        to top,
+        rgba(8,8,8,0.98) 0%,
+        rgba(8,8,8,0.6) 55%,
+        rgba(8,8,8,0.2) 100%
+      );
+    }
+
+    .card-body {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 28px 24px;
+      transform: translateY(0);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .card-num {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .card-location {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .card-hotel {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      color: rgba(232,228,222,0.75);
+      margin-bottom: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-suite {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-top: 12px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s, opacity 0.4s, margin 0.4s;
+    }
+
+    .card:hover .card-suite {
+      max-height: 40px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(8,8,8,0.7);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,8,0.92);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--dark2);
+      border: 1px solid rgba(201,168,76,0.2);
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold) transparent;
+      transform: translateY(30px);
+      transition: transform 0.35s;
+    }
+
+    .modal-backdrop.open .modal { transform: translateY(0); }
+
+    .modal-img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 40px;
+    }
+
+    .modal-num {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .modal-location {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .modal-hotel {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: rgba(232,228,222,0.8);
+      margin-bottom: 24px;
+    }
+
+    .modal-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 24px;
+    }
+
+    .modal-suite-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .modal-suite-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(8,8,8,0.7);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover { background: rgba(201,168,76,0.2); }
+
+    .modal-wrapper { position: relative; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(201,168,76,0.1);
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    footer span { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: clamp(40px, 12vw, 80px); }
+      .hotel-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .modal-img { height: 260px; }
+      .modal-body { padding: 24px; }
+      .modal-location { font-size: 36px; }
+      .nav-inner { gap: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hotel-grid { grid-template-columns: 1fr 1fr; gap: 1px; }
+      .card-location { font-size: 20px; }
+      .card-hotel { display: none; }
+    }
+
+    /* Skeleton loading */
+    .card-img-skeleton {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--dark3) 25%, var(--dark4) 50%, var(--dark3) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">A Personal Collection</p>
+    <h1>Bucket List<br/><em>Hotels</em></h1>
+    <p class="hero-sub">The world's most extraordinary suites &amp; stays</p>
+    <div class="hero-count">40 Destinations &nbsp;·&nbsp; 6 Continents</div>
+  </div>
+  <div class="hero-scroll">Explore</div>
+</section>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <div class="nav-logo">BLH</div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="usa">USA</button>
+      <button class="filter-btn" data-filter="latam">Latin America</button>
+      <button class="filter-btn" data-filter="europe">Europe</button>
+      <button class="filter-btn" data-filter="middleeast">Middle East</button>
+      <button class="filter-btn" data-filter="asia">Asia</button>
+      <button class="filter-btn" data-filter="pacific">Pacific</button>
+      <button class="filter-btn" data-filter="africa">Africa</button>
+    </div>
+  </div>
+</nav>
+
+<!-- GRID -->
+<section class="grid-section">
+  <div class="section-label">The Collection</div>
+  <div class="hotel-grid" id="hotelGrid"></div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-wrapper">
+    <div class="modal" id="modal">
+      <img class="modal-img" id="modalImg" src="" alt=""/>
+      <div class="modal-body">
+        <div class="modal-num" id="modalNum"></div>
+        <div class="modal-location" id="modalLocation"></div>
+        <div class="modal-hotel" id="modalHotel"></div>
+        <div class="modal-divider"></div>
+        <div class="modal-suite-label">Suite / Villa</div>
+        <div class="modal-suite-name" id="modalSuite"></div>
+      </div>
+    </div>
+    <button class="modal-close" id="modalClose">✕</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>40</span> Dreams &nbsp;·&nbsp; One List
+</footer>
+
+<script>
+const hotels = [
+  { n:1,  location:"Sacramento",       hotel:"Kimpton Sawyer",                        suite:"Penthouse Suite",                              region:"usa",        img:"https://images.unsplash.com/photo-1551882547-ff40c63fe2e2?auto=format&fit=crop&w=800&q=80" },
+  { n:2,  location:"San Diego",         hotel:"Beach Village at The Del",              suite:"Oceanfront Fire-Pit Suite",                    region:"usa",        img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
+  { n:3,  location:"Las Vegas",         hotel:"Waldorf Astoria Las Vegas",             suite:"Panorama Strip View Suite",                    region:"usa",        img:"https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?auto=format&fit=crop&w=800&q=80" },
+  { n:4,  location:"Philadelphia",      hotel:"Four Seasons at Comcast Center",        suite:"Skyline Corner Suite",                         region:"usa",        img:"https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?auto=format&fit=crop&w=800&q=80" },
+  { n:5,  location:"New York",          hotel:"Mandarin Oriental New York",            suite:"Central Park View Suite",                      region:"usa",        img:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=800&q=80" },
+  { n:6,  location:"Maui",              hotel:"Hotel Wailea Relais & Châteaux",        suite:"Luxury Ocean View Suite",                      region:"usa",        img:"https://images.unsplash.com/photo-1542259009477-d625272157b7?auto=format&fit=crop&w=800&q=80" },
+  { n:7,  location:"Big Island",        hotel:"Four Seasons Hualalai",                 suite:"Oceanfront Suite",                             region:"usa",        img:"https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" },
+  { n:8,  location:"Puerto Vallarta",   hotel:"Naviva A Four Seasons Resort",          suite:"Tented Bungalow",                              region:"latam",      img:"https://images.unsplash.com/photo-1512813389649-acbd9ef5c3e6?auto=format&fit=crop&w=800&q=80" },
+  { n:9,  location:"Cabo",              hotel:"Las Ventanas al Paraíso Rosewood",      suite:"Oceanfront Rooftop Terrace Suite",             region:"latam",      img:"https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800&q=80" },
+  { n:10, location:"Los Angeles",       hotel:"Waldorf Astoria Beverly Hills",         suite:"Beverly Hills Suite with Terrace",             region:"usa",        img:"https://images.unsplash.com/photo-1580655653885-65763b2597d4?auto=format&fit=crop&w=800&q=80" },
+  { n:11, location:"Florianópolis",     hotel:"Fuso Concept Hotel",                    suite:"Suite with Private Pool",                      region:"latam",      img:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=800&q=80" },
+  { n:12, location:"São Paulo",         hotel:"Rosewood São Paulo",                    suite:"Penthouse Suite",                              region:"latam",      img:"https://images.unsplash.com/photo-1609159988498-6e25d0c5db9d?auto=format&fit=crop&w=800&q=80" },
+  { n:13, location:"Pleasanton",        hotel:"Four Seasons Silicon Valley",           suite:"Luxury Suite",                                 region:"usa",        img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" },
+  { n:14, location:"Nashville",         hotel:"Four Seasons Nashville",                suite:"Premier River-View Suite",                     region:"usa",        img:"https://images.unsplash.com/photo-1586004156782-d1e0d0e7d9b9?auto=format&fit=crop&w=800&q=80" },
+  { n:15, location:"Saudi Arabia",      hotel:"Shebara Resort",                        suite:"Two Bedroom Overwater Villa",                  region:"middleeast", img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=800&q=80" },
+  { n:16, location:"Utah",              hotel:"Amangiri",                              suite:"The Amangiri Suite",                           region:"usa",        img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80" },
+  { n:17, location:"Switzerland",       hotel:"Bürgenstock Hotel & Alpine Spa",        suite:"The Royal Suite",                              region:"europe",     img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" },
+  { n:18, location:"Egypt",             hotel:"Marriott Mena House",                   suite:"Winston Churchill Suite (Palace Wing)",         region:"africa",     img:"https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=800&q=80" },
+  { n:19, location:"Barcelona",         hotel:"Mandarin Oriental Barcelona",           suite:"The Barcelona Suite",                          region:"europe",     img:"https://images.unsplash.com/photo-1464790719320-516ecd75af6c?auto=format&fit=crop&w=800&q=80" },
+  { n:20, location:"Athens",            hotel:"Four Seasons Astir Palace",             suite:"Arion Riviera Suite",                          region:"europe",     img:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=800&q=80" },
+  { n:21, location:"Istanbul",          hotel:"Mandarin Oriental Bosphorus",           suite:"Naile Sultan Bosphorus Suite",                 region:"europe",     img:"https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=800&q=80" },
+  { n:22, location:"Bangkok",           hotel:"Capella Bangkok",                       suite:"Riverside Villa",                              region:"asia",       img:"https://images.unsplash.com/photo-1503917988258-f87a78e3c995?auto=format&fit=crop&w=800&q=80" },
+  { n:23, location:"Rome",              hotel:"The St. Regis Rome",                    suite:"Grand Suite",                                  region:"europe",     img:"https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80" },
+  { n:24, location:"Rio de Janeiro",    hotel:"Belmond Copacabana Palace",             suite:"Penthouse Suite",                              region:"latam",      img:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=800&q=80" },
+  { n:25, location:"Paris",             hotel:"Four Seasons Hotel George V",           suite:"The Penthouse",                                region:"europe",     img:"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80" },
+  { n:26, location:"Taipei",            hotel:"Mandarin Oriental Taipei",              suite:"Grand Suite",                                  region:"asia",       img:"https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=800&q=80" },
+  { n:27, location:"Tokyo",             hotel:"Aman Tokyo",                            suite:"Corner Suite",                                 region:"asia",       img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=800&q=80" },
+  { n:28, location:"Seoul",             hotel:"Park Hyatt Seoul",                      suite:"Diplomatic Suite",                             region:"asia",       img:"https://images.unsplash.com/photo-1508009603885-50cf7c8dd0d5?auto=format&fit=crop&w=800&q=80" },
+  { n:29, location:"Dubai",             hotel:"Atlantis The Royal",                    suite:"Sky Pool Villa",                               region:"middleeast", img:"https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=800&q=80" },
+  { n:30, location:"Bali",              hotel:"Bvlgari Resort Bali",                   suite:"Ocean View Pool Villa",                        region:"asia",       img:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80" },
+  { n:31, location:"Bora Bora",         hotel:"Four Seasons Bora Bora",                suite:"Otemanu Overwater Bungalow Suite",             region:"pacific",    img:"https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80" },
+  { n:32, location:"Sydney",            hotel:"Park Hyatt Sydney",                     suite:"Opera View Deluxe",                            region:"pacific",    img:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80" },
+  { n:33, location:"Santorini",         hotel:"Katikies",                              suite:"Caldera Suite with Private Pool",              region:"europe",     img:"https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80" },
+  { n:34, location:"Venice",            hotel:"Aman Venice",                           suite:"Alcova Tiepolo Suite",                         region:"europe",     img:"https://images.unsplash.com/photo-1555990793-da11153b2473?auto=format&fit=crop&w=800&q=80" },
+  { n:35, location:"Maldives",          hotel:"Cheval Blanc Randheli",                 suite:"Ocean Villa",                                  region:"asia",       img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=800&q=80" },
+  { n:36, location:"Amalfi Coast",      hotel:"Belmond Hotel Caruso",                  suite:"Caruso Suite",                                 region:"europe",     img:"https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80" },
+  { n:37, location:"Marrakech",         hotel:"Royal Mansour",                         suite:"Private Riad",                                 region:"africa",     img:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80" },
+  { n:38, location:"Kyoto",             hotel:"Six Senses Kyoto",                      suite:"Sanctuary Suite",                              region:"asia",       img:"https://images.unsplash.com/photo-1549693578-d683be217e58?auto=format&fit=crop&w=800&q=80" },
+  { n:39, location:"Cape Town",         hotel:"Ellerman House",                        suite:"Premier Suite",                                region:"africa",     img:"https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=800&q=80" },
+  { n:40, location:"Caribbean",         hotel:"Private Superyacht Charter",            suite:"Master Stateroom",                             region:"latam",      img:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=800&q=80" },
+];
+
+const regionLabels = { usa:"USA", latam:"Latin America", europe:"Europe", middleeast:"Middle East", asia:"Asia", pacific:"Pacific", africa:"Africa" };
+
+const grid = document.getElementById('hotelGrid');
+
+function buildCards() {
+  grid.innerHTML = '';
+  hotels.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.region = h.region;
+    card.innerHTML = `
+      <img class="card-img" src="${h.img}" alt="${h.location}" loading="lazy" onerror="this.style.background='#181818';this.style.display='block'"/>
+      <div class="card-overlay"></div>
+      <div class="card-tag">${regionLabels[h.region]}</div>
+      <div class="card-body">
+        <div class="card-num">${String(h.n).padStart(2,'0')}</div>
+        <div class="card-location">${h.location}</div>
+        <div class="card-hotel">${h.hotel}</div>
+        <div class="card-suite">${h.suite}</div>
+      </div>`;
+    card.addEventListener('click', () => openModal(h));
+    grid.appendChild(card);
+  });
+}
+
+buildCards();
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.card').forEach(c => {
+      c.classList.toggle('hidden', f !== 'all' && c.dataset.region !== f);
+    });
+  });
+});
+
+// Modal
+const backdrop = document.getElementById('modalBackdrop');
+const modalImg = document.getElementById('modalImg');
+const modalNum = document.getElementById('modalNum');
+const modalLoc = document.getElementById('modalLocation');
+const modalHotel = document.getElementById('modalHotel');
+const modalSuite = document.getElementById('modalSuite');
+
+function openModal(h) {
+  modalImg.src = h.img.replace('w=800', 'w=1200');
+  modalImg.alt = h.location;
+  modalNum.textContent = `No. ${String(h.n).padStart(2,'0')} · ${regionLabels[h.region]}`;
+  modalLoc.textContent = h.location;
+  modalHotel.textContent = h.hotel;
+  modalSuite.textContent = h.suite;
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  backdrop.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ on:
       - main
       - claude/batman-workout-timer-dAWkP
       - claude/premium-finance-dashboard-4i909c
+      - claude/greatest-mantras-website-2sx74h
   workflow_dispatch:
 
 permissions:

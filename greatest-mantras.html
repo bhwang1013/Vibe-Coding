@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sacred Sound — The Greatest Mantras of All Time</title>
+<meta name="description" content="The greatest mantras of all time for mantra meditation — meanings, pronunciation, traditions, and a built-in japa counter.">
+<style>
+  :root {
+    --bg: #0d0b14;
+    --bg-soft: #14111f;
+    --card: #1a1628;
+    --card-hover: #211c33;
+    --gold: #d4a849;
+    --gold-soft: #e8c87a;
+    --lavender: #a78bda;
+    --text: #ece7f4;
+    --text-dim: #9b93ad;
+    --border: rgba(212, 168, 73, 0.18);
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  .sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(167, 139, 218, 0.22), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 110%, rgba(212, 168, 73, 0.12), transparent 70%),
+      var(--bg);
+  }
+
+  .om-symbol {
+    font-size: 5.5rem;
+    color: var(--gold);
+    text-shadow: 0 0 60px rgba(212, 168, 73, 0.55), 0 0 120px rgba(212, 168, 73, 0.25);
+    animation: breathe 6s ease-in-out infinite;
+    line-height: 1;
+    margin-bottom: 28px;
+    user-select: none;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50%       { transform: scale(1.08); opacity: 1; }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    background: linear-gradient(120deg, var(--gold-soft), #fff6e0 50%, var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    color: var(--text-dim);
+    max-width: 640px;
+    font-style: italic;
+  }
+
+  .hero .scroll-hint {
+    margin-top: 48px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(8px); }
+  }
+
+  /* ---------- Nav pills ---------- */
+  .nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .nav-pills a {
+    color: var(--gold-soft);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    background: rgba(212, 168, 73, 0.05);
+  }
+
+  .nav-pills a:hover {
+    background: rgba(212, 168, 73, 0.15);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Sections ---------- */
+  section {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 70px 24px;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 400;
+    color: var(--gold-soft);
+    margin-bottom: 12px;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin: 0 auto 50px;
+    font-style: italic;
+  }
+
+  .divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 18px auto 50px;
+  }
+
+  /* ---------- Mantra cards ---------- */
+  .mantra-grid {
+    display: grid;
+    gap: 28px;
+  }
+
+  .mantra-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 38px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mantra-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .mantra-card::before {
+    content: attr(data-rank);
+    position: absolute;
+    top: 14px;
+    right: 24px;
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: rgba(212, 168, 73, 0.08);
+    line-height: 1;
+    font-family: Georgia, serif;
+  }
+
+  .mantra-tradition {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lavender);
+    border: 1px solid rgba(167, 139, 218, 0.35);
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .mantra-sanskrit {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    color: var(--gold-soft);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .mantra-name {
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .mantra-pron {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .mantra-meaning {
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .mantra-meaning strong { color: var(--gold-soft); font-weight: 400; }
+
+  .mantra-practice {
+    background: rgba(167, 139, 218, 0.07);
+    border-left: 2px solid var(--lavender);
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+  }
+
+  .mantra-practice b {
+    color: var(--lavender);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- How-to section ---------- */
+  .howto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 22px;
+  }
+
+  .howto-step {
+    background: var(--bg-soft);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+  }
+
+  .howto-step .step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.1rem;
+  }
+
+  .howto-step h3 {
+    font-weight: 400;
+    color: var(--gold-soft);
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+  }
+
+  .howto-step p {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+  }
+
+  /* ---------- Japa counter ---------- */
+  .practice-zone {
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 0%, rgba(167, 139, 218, 0.1), transparent 70%),
+      var(--bg-soft);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .japa-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .mantra-select {
+    background: var(--card);
+    color: var(--gold-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-family: Georgia, serif;
+    max-width: 100%;
+    cursor: pointer;
+  }
+
+  .current-mantra-display {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--gold-soft);
+    text-align: center;
+    min-height: 2.2em;
+    text-shadow: 0 0 40px rgba(212, 168, 73, 0.3);
+  }
+
+  .japa-circle {
+    --pct: 0;
+    width: min(280px, 70vw);
+    height: min(280px, 70vw);
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side, var(--bg-soft) 82%, transparent 83% 100%),
+      conic-gradient(var(--gold) calc(var(--pct) * 1%), rgba(255, 255, 255, 0.07) 0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .japa-circle:active { transform: scale(0.97); }
+
+  .japa-count {
+    font-size: 4rem;
+    color: var(--text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .japa-label {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  .japa-malas {
+    color: var(--lavender);
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
+
+  .japa-controls {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    font-family: Georgia, serif;
+    background: transparent;
+    color: var(--gold-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 26px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .btn:hover { background: rgba(212, 168, 73, 0.12); border-color: var(--gold); }
+
+  .btn.primary {
+    background: linear-gradient(120deg, var(--gold), #b8923e);
+    color: #1a1305;
+    border: none;
+  }
+
+  .btn.primary:hover { filter: brightness(1.1); }
+
+  .timer-display {
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.1em;
+  }
+
+  .japa-hint {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+    max-width: 420px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    padding: 50px 24px 60px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  footer .om-small { color: var(--gold); font-style: normal; font-size: 1.4rem; display: block; margin-bottom: 12px; }
+
+  @media (max-width: 600px) {
+    .mantra-card { padding: 28px 22px; }
+    section { padding: 50px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="om-symbol">ॐ</div>
+  <h1>The Greatest Mantras of All Time</h1>
+  <p class="subtitle">Sacred sounds repeated for thousands of years — to still the mind, open the heart, and awaken the spirit within.</p>
+  <nav class="nav-pills sans">
+    <a href="#mantras">The Mantras</a>
+    <a href="#howto">How to Practice</a>
+    <a href="#practice">Japa Counter</a>
+  </nav>
+  <div class="scroll-hint sans">↓ Begin</div>
+</header>
+
+<!-- ================= MANTRAS ================= -->
+<section id="mantras">
+  <h2 class="section-title">Ten Timeless Mantras</h2>
+  <div class="divider"></div>
+  <p class="section-sub">Each mantra below has been chanted by millions across centuries. Choose one that resonates — the best mantra is the one you return to daily.</p>
+
+  <div class="mantra-grid">
+
+    <article class="mantra-card" data-rank="1">
+      <span class="mantra-tradition sans">Vedic · Universal</span>
+      <div class="mantra-sanskrit">ॐ — Om (Aum)</div>
+      <p class="mantra-pron">Pronounced: <em>A-U-M</em> — three sounds flowing into silence</p>
+      <p class="mantra-meaning">The primordial sound. In Vedic tradition, <strong>Om</strong> is the vibration from which the universe arises — encompassing creation (A), preservation (U), dissolution (M), and the silence beyond.</p>
+      <div class="mantra-practice"><b>How to practice</b>Chant slowly on a long exhale, letting "A" rise from the belly, "U" fill the chest, and "M" hum in the head. Rest in the silence after each repetition.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="2">
+      <span class="mantra-tradition sans">Tibetan Buddhist</span>
+      <div class="mantra-sanskrit">ॐ मणि पद्मे हूँ — Om Mani Padme Hum</div>
+      <p class="mantra-pron">Pronounced: <em>ohm mah-nee pahd-may hoom</em></p>
+      <p class="mantra-meaning">"The jewel is in the lotus." The mantra of <strong>Avalokiteshvara</strong>, the bodhisattva of compassion. Each of its six syllables is said to purify one realm of suffering and cultivate boundless compassion.</p>
+      <div class="mantra-practice"><b>How to practice</b>Repeat softly or silently while visualizing warmth radiating from your heart to all beings. Traditionally counted in rounds of 108.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="3">
+      <span class="mantra-tradition sans">Vedic · Rig Veda</span>
+      <div class="mantra-sanskrit">Gayatri Mantra</div>
+      <p class="mantra-name">Om Bhur Bhuvah Svaha, Tat Savitur Varenyam, Bhargo Devasya Dhimahi, Dhiyo Yo Nah Prachodayat</p>
+      <p class="mantra-pron">Pronounced: <em>ohm bhoor bhoo-vah svah-hah, taht sah-vee-toor vah-rayn-yum, bhar-go day-vahs-yah dhee-mah-hee, dhee-yo yo nah prah-cho-dah-yaht</em></p>
+      <p class="mantra-meaning">"We meditate on the radiant light of the Divine; may it illuminate our minds." Over <strong>3,000 years old</strong>, the Gayatri is considered the most sacred verse of the Vedas — a prayer for awakened intelligence.</p>
+      <div class="mantra-practice"><b>How to practice</b>Traditionally chanted at sunrise. Learn the melody first by listening, then chant 3, 9, or 108 times facing the morning light.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="4">
+      <span class="mantra-tradition sans">Vedic · Breath Mantra</span>
+      <div class="mantra-sanskrit">सो ऽहम् — So Hum</div>
+      <p class="mantra-pron">Pronounced: <em>soh hum</em></p>
+      <p class="mantra-meaning">"I am That." A natural mantra said to ride on the breath itself — <strong>So</strong> on the inhale, <strong>Hum</strong> on the exhale. It affirms the unity of the individual self with the universal.</p>
+      <div class="mantra-practice"><b>How to practice</b>The easiest mantra for beginners. Silently think "So" as you breathe in and "Hum" as you breathe out. No counting needed — just follow the breath.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="5">
+      <span class="mantra-tradition sans">Shaivite Hindu</span>
+      <div class="mantra-sanskrit">ॐ नमः शिवाय — Om Namah Shivaya</div>
+      <p class="mantra-pron">Pronounced: <em>ohm nah-mah shee-vah-yah</em></p>
+      <p class="mantra-meaning">"I bow to Shiva" — the inner Self, the consciousness that dwells in all. Known as the <strong>five-syllable mantra</strong> (panchakshara), it is one of the most beloved mantras in all of Hinduism.</p>
+      <div class="mantra-practice"><b>How to practice</b>Chant aloud in a steady rhythm, then gradually let it become a silent inner repetition. Excellent for dissolving stress and ego-tension.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="6">
+      <span class="mantra-tradition sans">Vaishnava · Bhakti</span>
+      <div class="mantra-sanskrit">Maha Mantra (Hare Krishna)</div>
+      <p class="mantra-name">Hare Krishna Hare Krishna, Krishna Krishna Hare Hare, Hare Rama Hare Rama, Rama Rama Hare Hare</p>
+      <p class="mantra-pron">Pronounced: <em>hah-ray krish-nah · hah-ray rah-mah</em></p>
+      <p class="mantra-meaning">The "great mantra" of devotion. In Bhakti tradition, chanting the divine names is itself the meditation — the sound carries <strong>joy, surrender, and love</strong> directly into the heart.</p>
+      <div class="mantra-practice"><b>How to practice</b>Sing it, chant it, or repeat it silently — devotional mood matters more than technique. Often practiced with kirtan (call-and-response singing).</div>
+    </article>
+
+    <article class="mantra-card" data-rank="7">
+      <span class="mantra-tradition sans">Nichiren Buddhist</span>
+      <div class="mantra-sanskrit">南無妙法蓮華經 — Nam Myoho Renge Kyo</div>
+      <p class="mantra-pron">Pronounced: <em>nahm myoh-hoh ren-gay kyoh</em></p>
+      <p class="mantra-meaning">"Devotion to the Mystic Law of the Lotus Sutra." The core practice of Nichiren Buddhism — chanted to awaken one's <strong>innate Buddha nature</strong> and transform suffering into wisdom and courage.</p>
+      <div class="mantra-practice"><b>How to practice</b>Chant aloud in a steady, energetic rhythm — traditionally with eyes open, focused and determined, for anywhere from five minutes to an hour.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="8">
+      <span class="mantra-tradition sans">Kundalini · Sikh Tradition</span>
+      <div class="mantra-sanskrit">ਸਤਿ ਨਾਮੁ — Sat Nam</div>
+      <p class="mantra-pron">Pronounced: <em>saht nahm</em></p>
+      <p class="mantra-meaning">"Truth is my identity." A seed (bija) mantra central to Kundalini yoga — <strong>Sat</strong> (truth) on the inhale, <strong>Nam</strong> (name/identity) on the exhale, aligning you with your truest self.</p>
+      <div class="mantra-practice"><b>How to practice</b>Mentally vibrate "Sat" as you inhale and "Nam" as you exhale, or chant aloud with "Sat" long and "Nam" short: <em>Saaaaaat Nam</em>.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="9">
+      <span class="mantra-tradition sans">Heart Sutra · Mahayana Buddhist</span>
+      <div class="mantra-sanskrit">Gate Gate Paragate Parasamgate Bodhi Svaha</div>
+      <p class="mantra-pron">Pronounced: <em>gah-tay gah-tay pah-rah-gah-tay pah-rah-sahm-gah-tay boh-dee svah-hah</em></p>
+      <p class="mantra-meaning">"Gone, gone, gone beyond, gone utterly beyond — awakening, so be it!" The closing mantra of the <strong>Heart Sutra</strong>, celebrating the journey across the ocean of suffering to the shore of enlightenment.</p>
+      <div class="mantra-practice"><b>How to practice</b>Recite slowly and contemplatively, feeling each "gate" as a letting-go — of worry, of grasping, of the small self.</div>
+    </article>
+
+    <article class="mantra-card" data-rank="10">
+      <span class="mantra-tradition sans">Universal Peace Mantra</span>
+      <div class="mantra-sanskrit">ॐ शान्तिः शान्तिः शान्तिः — Om Shanti Shanti Shanti</div>
+      <p class="mantra-pron">Pronounced: <em>ohm shahn-tee shahn-tee shahn-tee</em></p>
+      <p class="mantra-meaning">"Om, peace, peace, peace." The threefold repetition invokes peace in <strong>body, mind, and spirit</strong> — or peace from the world, from others, and from within oneself.</p>
+      <div class="mantra-practice"><b>How to practice</b>Perfect for closing any meditation. Chant once, letting each "shanti" be softer than the last, until the third dissolves into silence.</div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================= HOW TO ================= -->
+<section id="howto">
+  <h2 class="section-title">How to Practice Mantra Meditation</h2>
+  <div class="divider"></div>
+  <div class="howto-grid sans">
+    <div class="howto-step">
+      <div class="step-num">1</div>
+      <h3>Choose One Mantra</h3>
+      <p>Pick a single mantra and stay with it for at least 40 days. Depth comes from repetition, not variety.</p>
+    </div>
+    <div class="howto-step">
+      <div class="step-num">2</div>
+      <h3>Sit Comfortably</h3>
+      <p>Sit with a tall, relaxed spine — on a cushion, chair, or floor. Close your eyes and take three slow breaths.</p>
+    </div>
+    <div class="howto-step">
+      <div class="step-num">3</div>
+      <h3>Repeat &amp; Return</h3>
+      <p>Chant aloud, whisper, or repeat silently. When the mind wanders (it will), gently return to the sound.</p>
+    </div>
+    <div class="howto-step">
+      <div class="step-num">4</div>
+      <h3>Count 108</h3>
+      <p>Tradition counts repetitions on a 108-bead mala. One full round is one "mala." Use the counter below.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JAPA COUNTER ================= -->
+<div class="practice-zone">
+  <section id="practice">
+    <h2 class="section-title">Practice Now — Japa Counter</h2>
+    <div class="divider"></div>
+    <div class="japa-wrap">
+      <select class="mantra-select" id="mantraSelect" aria-label="Choose your mantra">
+        <option>Om (Aum)</option>
+        <option>Om Mani Padme Hum</option>
+        <option>Gayatri Mantra</option>
+        <option>So Hum</option>
+        <option>Om Namah Shivaya</option>
+        <option>Hare Krishna Maha Mantra</option>
+        <option>Nam Myoho Renge Kyo</option>
+        <option>Sat Nam</option>
+        <option>Gate Gate Paragate</option>
+        <option>Om Shanti Shanti Shanti</option>
+      </select>
+
+      <div class="current-mantra-display" id="mantraDisplay">Om (Aum)</div>
+
+      <div class="japa-circle" id="japaCircle" role="button" aria-label="Tap to count one repetition" tabindex="0">
+        <div class="japa-count" id="japaCount">0</div>
+        <div class="japa-label sans">of 108</div>
+        <div class="japa-malas sans" id="malaCount">0 malas completed</div>
+      </div>
+
+      <div class="timer-display sans" id="timerDisplay">00:00</div>
+
+      <div class="japa-controls sans">
+        <button class="btn primary" id="timerBtn">Start Session</button>
+        <button class="btn" id="resetBtn">Reset Count</button>
+      </div>
+
+      <p class="japa-hint">Tap the circle (or press the spacebar) once per repetition. At 108, a mala is complete and the count begins anew. Your progress is saved on this device.</p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span class="om-small">ॐ</span>
+  "The mantra becomes one's staff of life and carries one through every ordeal." — Mahatma Gandhi
+</footer>
+
+<script>
+(function () {
+  var count = 0, malas = 0;
+  var timerRunning = false, seconds = 0, timerInterval = null;
+
+  var circle = document.getElementById('japaCircle');
+  var countEl = document.getElementById('japaCount');
+  var malaEl = document.getElementById('malaCount');
+  var timerEl = document.getElementById('timerDisplay');
+  var timerBtn = document.getElementById('timerBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var select = document.getElementById('mantraSelect');
+  var display = document.getElementById('mantraDisplay');
+
+  // Restore saved progress
+  try {
+    var saved = JSON.parse(localStorage.getItem('japa') || '{}');
+    if (typeof saved.count === 'number') count = saved.count;
+    if (typeof saved.malas === 'number') malas = saved.malas;
+    if (saved.mantra) { select.value = saved.mantra; display.textContent = saved.mantra; }
+  } catch (e) { /* fresh start */ }
+
+  function save() {
+    try {
+      localStorage.setItem('japa', JSON.stringify({ count: count, malas: malas, mantra: select.value }));
+    } catch (e) { /* private mode */ }
+  }
+
+  function render() {
+    countEl.textContent = count;
+    malaEl.textContent = malas + (malas === 1 ? ' mala completed' : ' malas completed');
+    circle.style.setProperty('--pct', (count / 108) * 100);
+  }
+
+  function chime() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.frequency.value = 432;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 2.5);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 2.5);
+    } catch (e) { /* audio unavailable */ }
+  }
+
+  function tap() {
+    count++;
+    if (count >= 108) {
+      count = 0;
+      malas++;
+      chime();
+    }
+    if (navigator.vibrate) navigator.vibrate(15);
+    render();
+    save();
+  }
+
+  circle.addEventListener('click', tap);
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space' && document.activeElement.tagName !== 'SELECT' && document.activeElement.tagName !== 'BUTTON') {
+      e.preventDefault();
+      tap();
+    }
+  });
+
+  resetBtn.addEventListener('click', function () {
+    count = 0; malas = 0;
+    render();
+    save();
+  });
+
+  select.addEventListener('change', function () {
+    display.textContent = select.value;
+    save();
+  });
+
+  function fmt(s) {
+    var m = Math.floor(s / 60), r = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  timerBtn.addEventListener('click', function () {
+    timerRunning = !timerRunning;
+    if (timerRunning) {
+      timerBtn.textContent = 'Pause Session';
+      timerInterval = setInterval(function () {
+        seconds++;
+        timerEl.textContent = fmt(seconds);
+      }, 1000);
+    } else {
+      timerBtn.textContent = 'Resume Session';
+      clearInterval(timerInterval);
+    }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>

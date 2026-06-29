@@ -43,6 +43,7 @@ jobs:
         run: |
           mkdir -p _site/dashboard
           cp *.html _site/ 2>/dev/null || true
+          cp -r ai-workflows _site/ai-workflows
           cp -r finance-dashboard/out/. _site/dashboard/
 
       - uses: actions/configure-pages@v5

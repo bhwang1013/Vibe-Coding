@@ -1,0 +1,797 @@
+{
+  "profile": {
+    "appName": "Apex Wealth OS",
+    "ownerLabel": "Private Wealth Terminal",
+    "currentLevelId": 0,
+    "currentNetWorth": 150000,
+    "currentEmergencyFund": 90000,
+    "financialFreedomTarget": 10000000,
+    "assumedAnnualReturn": 0.05
+  },
+  "milestones": [
+    { "label": "$100K", "value": 100000 },
+    { "label": "$250K", "value": 250000 },
+    { "label": "$500K", "value": 500000 },
+    { "label": "$1M", "value": 1000000 },
+    { "label": "$3M", "value": 3000000 },
+    { "label": "$5M", "value": 5000000 },
+    { "label": "$10M", "value": 10000000 }
+  ],
+  "expenseProfiles": [
+    {
+      "id": "baseline",
+      "label": "Baseline Operating Stack (~$25K / mo)",
+      "groups": [
+        {
+          "id": "essential",
+          "label": "Essential Expenses",
+          "items": [
+            { "name": "2-Bedroom Luxury Rental", "amount": 6500, "tag": "essential" },
+            { "name": "Studio Backup Housing", "amount": 3000, "tag": "essential" },
+            { "name": "Night Game", "amount": 2000, "tag": "luxury" },
+            { "name": "Food Prep", "amount": 1250, "tag": "essential" },
+            { "name": "Girls", "amount": 1000, "tag": "luxury" },
+            { "name": "Subscriptions", "amount": 1000, "tag": "essential" },
+            { "name": "Maid", "amount": 600, "tag": "essential" },
+            { "name": "Car Storage", "amount": 500, "tag": "essential" },
+            { "name": "Online Game", "amount": 500, "tag": "luxury" },
+            { "name": "1-Night Luxury Getaway", "amount": 500, "tag": "travel" },
+            { "name": "Health Insurance", "amount": 400, "tag": "essential" },
+            { "name": "Groceries", "amount": 350, "tag": "essential" },
+            { "name": "Car Insurance", "amount": 250, "tag": "essential" },
+            { "name": "Car Detailing", "amount": 230, "tag": "essential" },
+            { "name": "Day Game", "amount": 165, "tag": "luxury" },
+            { "name": "Car Maintenance", "amount": 150, "tag": "essential" },
+            { "name": "Gas", "amount": 150, "tag": "essential" },
+            { "name": "Laundry", "amount": 125, "tag": "essential" },
+            { "name": "Phone Bill", "amount": 100, "tag": "essential" },
+            { "name": "Other Insurances", "amount": 100, "tag": "essential" },
+            { "name": "Haircut", "amount": 90, "tag": "essential" },
+            { "name": "Eyebrow Threading", "amount": 40, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "extra",
+          "label": "Extra Expenses",
+          "items": [
+            { "name": "2-Night Travel", "amount": 3000, "tag": "travel" },
+            { "name": "Longevity Protocol", "amount": 500, "tag": "luxury" },
+            { "name": "Amazon", "amount": 500, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "special",
+          "label": "Special Expenses",
+          "items": [
+            { "name": "Apex Trader $100K Futures Prop Firm Activations", "amount": 1200, "tag": "business" },
+            { "name": "Apex Trader $100K Futures Prop Firm Challenges", "amount": 600, "tag": "business" },
+            { "name": "Emergencies", "amount": 200, "tag": "special" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "accelerated",
+      "label": "Accelerated Operating Stack (~$45K / mo)",
+      "groups": [
+        {
+          "id": "essential",
+          "label": "Essential Expenses",
+          "items": [
+            { "name": "2-Bedroom Luxury Rental", "amount": 8000, "tag": "essential" },
+            { "name": "Night Game", "amount": 4000, "tag": "luxury" },
+            { "name": "1-Bedroom Backup Housing", "amount": 3500, "tag": "essential" },
+            { "name": "Food Prep", "amount": 1500, "tag": "essential" },
+            { "name": "1-Night Luxury Getaway", "amount": 1500, "tag": "travel" },
+            { "name": "Girls", "amount": 1500, "tag": "luxury" },
+            { "name": "Subscriptions", "amount": 1100, "tag": "essential" },
+            { "name": "Maid", "amount": 800, "tag": "essential" },
+            { "name": "Car Storage", "amount": 800, "tag": "essential" },
+            { "name": "Online Game", "amount": 500, "tag": "luxury" },
+            { "name": "Day Game", "amount": 500, "tag": "luxury" },
+            { "name": "Health Insurance", "amount": 500, "tag": "essential" },
+            { "name": "Groceries", "amount": 400, "tag": "essential" },
+            { "name": "Car Insurance", "amount": 300, "tag": "essential" },
+            { "name": "Car Detailing", "amount": 300, "tag": "essential" },
+            { "name": "Car Maintenance", "amount": 250, "tag": "essential" },
+            { "name": "Gas", "amount": 200, "tag": "essential" },
+            { "name": "Laundry", "amount": 150, "tag": "essential" },
+            { "name": "Phone Bill", "amount": 120, "tag": "essential" },
+            { "name": "Other Insurances", "amount": 120, "tag": "essential" },
+            { "name": "Haircut", "amount": 120, "tag": "essential" },
+            { "name": "Eyebrow Threading", "amount": 40, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "extra",
+          "label": "Extra Expenses",
+          "items": [
+            { "name": "3-Night Travel", "amount": 7000, "tag": "travel" },
+            { "name": "Strip Club", "amount": 2000, "tag": "luxury" },
+            { "name": "Longevity Protocol", "amount": 1500, "tag": "luxury" },
+            { "name": "Amazon", "amount": 1000, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "charity",
+          "label": "Charity",
+          "items": [
+            { "name": "Personal Charity Foundation", "amount": 2000, "tag": "charity" },
+            { "name": "In Person", "amount": 1000, "tag": "charity" }
+          ]
+        },
+        {
+          "id": "special",
+          "label": "Special Expenses",
+          "items": [
+            { "name": "Coaching", "amount": 1500, "tag": "business" },
+            { "name": "Apex Trader $100K Futures Prop Firm Activations", "amount": 1200, "tag": "business" },
+            { "name": "Apex Trader $100K Futures Prop Firm Challenges", "amount": 600, "tag": "business" },
+            { "name": "Emergencies", "amount": 500, "tag": "special" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elite",
+      "label": "Elite Operating Stack (~$82.5K / mo)",
+      "groups": [
+        {
+          "id": "essential",
+          "label": "Essential Expenses",
+          "items": [
+            { "name": "2-Bedroom Luxury Rental", "amount": 10000, "tag": "essential" },
+            { "name": "Night Game", "amount": 10000, "tag": "luxury" },
+            { "name": "1-Bedroom Backup Housing", "amount": 4000, "tag": "essential" },
+            { "name": "1-Night Luxury Getaway", "amount": 3000, "tag": "travel" },
+            { "name": "Girls", "amount": 2000, "tag": "luxury" },
+            { "name": "Food Prep", "amount": 2000, "tag": "essential" },
+            { "name": "Car Storage", "amount": 1500, "tag": "essential" },
+            { "name": "Subscriptions", "amount": 1200, "tag": "essential" },
+            { "name": "Maid", "amount": 1000, "tag": "essential" },
+            { "name": "Day Game", "amount": 1000, "tag": "luxury" },
+            { "name": "Health Insurance", "amount": 800, "tag": "essential" },
+            { "name": "Online Game", "amount": 500, "tag": "luxury" },
+            { "name": "Groceries", "amount": 500, "tag": "essential" },
+            { "name": "Car Insurance", "amount": 500, "tag": "essential" },
+            { "name": "Car Detailing", "amount": 500, "tag": "essential" },
+            { "name": "Car Maintenance", "amount": 500, "tag": "essential" },
+            { "name": "Gas", "amount": 250, "tag": "essential" },
+            { "name": "Laundry", "amount": 250, "tag": "essential" },
+            { "name": "Phone Bill", "amount": 150, "tag": "essential" },
+            { "name": "Other Insurances", "amount": 150, "tag": "essential" },
+            { "name": "Haircut", "amount": 150, "tag": "essential" },
+            { "name": "Eyebrow Threading", "amount": 50, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "extra",
+          "label": "Extra Expenses",
+          "items": [
+            { "name": "4-Night Travel", "amount": 13000, "tag": "travel" },
+            { "name": "Strip Club", "amount": 9000, "tag": "luxury" },
+            { "name": "Longevity Protocol", "amount": 4000, "tag": "luxury" },
+            { "name": "Amazon", "amount": 1500, "tag": "essential" }
+          ]
+        },
+        {
+          "id": "charity",
+          "label": "Charity",
+          "items": [
+            { "name": "Personal Charity Foundation", "amount": 6000, "tag": "charity" },
+            { "name": "In Person", "amount": 4000, "tag": "charity" }
+          ]
+        },
+        {
+          "id": "special",
+          "label": "Special Expenses",
+          "items": [
+            { "name": "Coaching", "amount": 2200, "tag": "business" },
+            { "name": "Apex Trader $100K Futures Prop Firm Activations", "amount": 1200, "tag": "business" },
+            { "name": "Emergencies", "amount": 1000, "tag": "special" },
+            { "name": "Apex Trader $100K Futures Prop Firm Challenges", "amount": 600, "tag": "business" }
+          ]
+        }
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "name": "Level 0",
+      "codename": "Ignition",
+      "tagline": "Prove the engine. Stack the first reserves.",
+      "approxIncomeLabel": "About $30K / month",
+      "approxExpenseLabel": "About $25K / month",
+      "lifestyle": "Luxury two-bedroom base with studio backup housing, full social calendar, food prep and maid service. Lean but already premium — every dollar above the baseline gets banked toward the $300K reserve.",
+      "expenseProfileId": "baseline",
+      "emergencyFundTarget": 300000,
+      "incomeSources": [
+        {
+          "id": "l0-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 90000,
+          "gross": 18000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$45K each account · 16 days of trading"
+        },
+        {
+          "id": "l0-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "100% of income comes from active trading — zero passive floor",
+        "Prop firm accounts can be lost on a single bad drawdown week",
+        "No meaningful emergency reserve yet relative to the $25K burn rate",
+        "One extended losing streak forces lifestyle cuts immediately"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $90K per account",
+        "Keep all 10 Apex $100K live accounts funded and in good standing",
+        "Bank at least $300K — 12 months of expenses in reserve",
+        "Hold a 60%+ payout retention discipline for 6 consecutive months"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Level 1",
+      "codename": "Momentum",
+      "tagline": "Double the personal accounts. Same burn rate.",
+      "approxIncomeLabel": "About $40K / month",
+      "approxExpenseLabel": "About $25K / month",
+      "lifestyle": "Identical operating stack to Level 0 — the discipline play. Income jumps ~33% while expenses stay flat, pushing the savings rate toward 45% and accelerating the reserve build.",
+      "expenseProfileId": "baseline",
+      "emergencyFundTarget": 300000,
+      "incomeSources": [
+        {
+          "id": "l1-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 180000,
+          "gross": 36000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$90K each account · 16 days of trading"
+        },
+        {
+          "id": "l1-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "Still 100% active-trading income — one engine, no redundancy",
+        "Larger personal accounts mean larger absolute drawdowns",
+        "Prop firm dependency unchanged at ~53% of total income",
+        "Lifestyle inflation temptation as income crosses $40K/mo"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $120K per account",
+        "Open and fund Oanda + Forex.com at $25K each",
+        "Open Tradovate + NinjaTrader $25K account",
+        "Complete the $300K reserve if not already done"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Level 2",
+      "codename": "Expansion",
+      "tagline": "Diversify the trading stack across asset classes.",
+      "approxIncomeLabel": "About $50K / month",
+      "approxExpenseLabel": "About $25K / month",
+      "lifestyle": "Same baseline stack while the engine diversifies into forex and futures. Savings rate crosses 50% — over $30K/month banked toward the next capital tier.",
+      "expenseProfileId": "baseline",
+      "emergencyFundTarget": 300000,
+      "incomeSources": [
+        {
+          "id": "l2-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 240000,
+          "gross": 48000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$120K each account · 16 days of trading"
+        },
+        {
+          "id": "l2-oanda-forex",
+          "name": "Oanda + Forex.com",
+          "platform": "Oanda / Forex.com",
+          "category": "trading",
+          "capital": 50000,
+          "gross": 10500,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$25K each account · 16 days of trading"
+        },
+        {
+          "id": "l2-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        },
+        {
+          "id": "l2-tradovate-ninja",
+          "name": "Tradovate + NinjaTrader",
+          "platform": "Tradovate / NinjaTrader",
+          "category": "trading",
+          "capital": 25000,
+          "gross": 3000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$25K account · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "Income still entirely trading-driven — no business or passive layer",
+        "Higher tax drag kicks in on the main accounts (0.86 efficiency)",
+        "Managing four platforms increases operational complexity",
+        "Prop firm payouts still ~41% of total income"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $250K per account",
+        "Scale Oanda + Forex.com to $50K each, futures account to $100K",
+        "Launch Money Muscle Mindset membership — first 200 low-tier members",
+        "Begin building the $550K reserve for the accelerated lifestyle tier"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Level 3",
+      "codename": "Acceleration",
+      "tagline": "First business income. The machine gets a second engine.",
+      "approxIncomeLabel": "About $85K / month",
+      "approxExpenseLabel": "About $45K / month",
+      "lifestyle": "Upgraded rental, bigger social and travel budget, first charity allocation, and a coach in the corner. The membership launches — income stops being 100% trading for the first time.",
+      "expenseProfileId": "accelerated",
+      "emergencyFundTarget": 550000,
+      "incomeSources": [
+        {
+          "id": "l3-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 500000,
+          "gross": 75000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$250K each account · 16 days of trading"
+        },
+        {
+          "id": "l3-oanda-forex",
+          "name": "Oanda + Forex.com",
+          "platform": "Oanda / Forex.com",
+          "category": "trading",
+          "capital": 100000,
+          "gross": 21000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$50K each account · 16 days of trading"
+        },
+        {
+          "id": "l3-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        },
+        {
+          "id": "l3-tradovate-ninja",
+          "name": "Tradovate + NinjaTrader",
+          "platform": "Tradovate / NinjaTrader",
+          "category": "trading",
+          "capital": 100000,
+          "gross": 12000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$100K account · 16 days of trading"
+        },
+        {
+          "id": "l3-mmm",
+          "name": "Money Muscle Mindset Membership",
+          "platform": "Money Muscle Mindset",
+          "category": "business",
+          "capital": 0,
+          "gross": 7800,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "200 members · $39/mo low tier · weekly drops + live calls"
+        }
+      ],
+      "risks": [
+        "Lifestyle inflation jumps burn rate 80% — reserve target nearly doubles",
+        "New business demands content cadence on top of full trading schedule",
+        "Membership churn risk while the brand is young",
+        "Drawdown on the now-$500K personal stack hits much harder in dollars"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $350K per account",
+        "Open Fidelity + Interactive Brokers at $1M each",
+        "Scale membership to 500 low-tier + 50 high-tier members",
+        "Bank the $550K reserve and start the $1M reserve build"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Level 4",
+      "codename": "Altitude",
+      "tagline": "Institutional-size accounts. Elite lifestyle unlocked.",
+      "approxIncomeLabel": "About $130K / month",
+      "approxExpenseLabel": "About $82.5K / month",
+      "lifestyle": "The elite stack: $10K rental, $10K night game, four-night luxury travel, $4K longevity protocol, and a $10K/month charity allocation. Funded by a now genuinely diversified income machine.",
+      "expenseProfileId": "elite",
+      "emergencyFundTarget": 1000000,
+      "incomeSources": [
+        {
+          "id": "l4-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 700000,
+          "gross": 90000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$350K each account · 16 days of trading"
+        },
+        {
+          "id": "l4-fidelity-ibkr",
+          "name": "Fidelity + Interactive Brokers",
+          "platform": "Fidelity / Interactive Brokers",
+          "category": "trading",
+          "capital": 2000000,
+          "gross": 40000,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$1M each account · 16 days of trading"
+        },
+        {
+          "id": "l4-oanda-forex",
+          "name": "Oanda + Forex.com",
+          "platform": "Oanda / Forex.com",
+          "category": "trading",
+          "capital": 150000,
+          "gross": 31500,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$75K each account · 16 days of trading"
+        },
+        {
+          "id": "l4-tradovate-ninja",
+          "name": "Tradovate + NinjaTrader",
+          "platform": "Tradovate / NinjaTrader",
+          "category": "trading",
+          "capital": 200000,
+          "gross": 24000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$200K account · 16 days of trading"
+        },
+        {
+          "id": "l4-mmm",
+          "name": "Money Muscle Mindset Membership",
+          "platform": "Money Muscle Mindset",
+          "category": "business",
+          "capital": 0,
+          "gross": 27950,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "500 low-tier + 50 high-tier members · paid ads live"
+        },
+        {
+          "id": "l4-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "Burn rate of $82.5K/mo makes the $1M reserve non-negotiable",
+        "Elite lifestyle is hard to walk back if income compresses",
+        "Paid ads introduce customer-acquisition cost volatility to the business",
+        "Two-thirds of capital now sits in two brokers — concentration risk"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $450K per account",
+        "Scale Fidelity + Interactive Brokers to $1.75M each",
+        "Open Coinbase + Kraken at $500K each",
+        "Stand up the HYSA + ETF passive layer",
+        "Complete the $1M emergency reserve"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Level 5",
+      "codename": "Sovereign",
+      "tagline": "Passive layer online. Crypto desk live. Income passes $190K.",
+      "approxIncomeLabel": "About $195K / month",
+      "approxExpenseLabel": "About $82.5K / month",
+      "lifestyle": "Same elite operating stack as Level 4, but now banking over $110K/month. The passive layer and crypto desk mean money is being made while sleeping for the first time at scale.",
+      "expenseProfileId": "elite",
+      "emergencyFundTarget": 1000000,
+      "incomeSources": [
+        {
+          "id": "l5-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 900000,
+          "gross": 110000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$450K each account · 16 days of trading"
+        },
+        {
+          "id": "l5-fidelity-ibkr",
+          "name": "Fidelity + Interactive Brokers",
+          "platform": "Fidelity / Interactive Brokers",
+          "category": "trading",
+          "capital": 3500000,
+          "gross": 70000,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$1.75M each account · 16 days of trading"
+        },
+        {
+          "id": "l5-oanda-forex",
+          "name": "Oanda + Forex.com",
+          "platform": "Oanda / Forex.com",
+          "category": "trading",
+          "capital": 200000,
+          "gross": 42000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$100K each account · 16 days of trading"
+        },
+        {
+          "id": "l5-tradovate-ninja",
+          "name": "Tradovate + NinjaTrader",
+          "platform": "Tradovate / NinjaTrader",
+          "category": "trading",
+          "capital": 350000,
+          "gross": 42000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$350K account · 16 days of trading"
+        },
+        {
+          "id": "l5-mmm",
+          "name": "Money Muscle Mindset Membership",
+          "platform": "Money Muscle Mindset",
+          "category": "business",
+          "capital": 0,
+          "gross": 41925,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "750 low-tier + 75 high-tier members · VA on support"
+        },
+        {
+          "id": "l5-crypto",
+          "name": "Coinbase + Kraken",
+          "platform": "Coinbase / Kraken",
+          "category": "trading",
+          "capital": 1000000,
+          "gross": 20000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$500K each account · 16 days of trading"
+        },
+        {
+          "id": "l5-passive",
+          "name": "HYSA + ETF Passive Layer",
+          "platform": "HYSAs / Vanguard / Merrill Edge",
+          "category": "passive",
+          "capital": 2000000,
+          "gross": 8000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "Once-a-week check on everything"
+        },
+        {
+          "id": "l5-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "Crypto desk adds a materially more volatile asset class",
+        "Eight income streams now compete for the same 16 trading days",
+        "Business at 750+ members needs real systems, not founder hustle",
+        "Tax complexity across brokers, prop firms, business and crypto"
+      ],
+      "milestoneRequirements": [
+        "Grow Schwab + E*Trade to $500K per account",
+        "Scale Fidelity + Interactive Brokers to $2.5M each",
+        "Scale crypto desk to $1M per exchange",
+        "Build the passive layer to $8M (12 HYSAs/ETFs + Vanguard + Merrill)",
+        "Scale membership to 1,000 low-tier + 100 high-tier members"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Level 6",
+      "codename": "Empire",
+      "tagline": "A quarter million a month. The machine runs itself.",
+      "approxIncomeLabel": "About $250K / month",
+      "approxExpenseLabel": "About $82.5K / month",
+      "lifestyle": "Full elite stack with over $170K/month of surplus. Nearly $17M of deployed capital across nine income streams, a thousand-member business, and a passive layer that alone covers the essentials.",
+      "expenseProfileId": "elite",
+      "emergencyFundTarget": 1000000,
+      "incomeSources": [
+        {
+          "id": "l6-schwab-etrade",
+          "name": "Charles Schwab + E*Trade",
+          "platform": "Charles Schwab / E*Trade",
+          "category": "trading",
+          "capital": 1000000,
+          "gross": 120000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$500K each account · 16 days of trading"
+        },
+        {
+          "id": "l6-fidelity-ibkr",
+          "name": "Fidelity + Interactive Brokers",
+          "platform": "Fidelity / Interactive Brokers",
+          "category": "trading",
+          "capital": 5000000,
+          "gross": 100000,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$2.5M each account · 16 days of trading"
+        },
+        {
+          "id": "l6-oanda-forex",
+          "name": "Oanda + Forex.com",
+          "platform": "Oanda / Forex.com",
+          "category": "trading",
+          "capital": 300000,
+          "gross": 63000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$150K each account · 16 days of trading"
+        },
+        {
+          "id": "l6-tradovate-ninja",
+          "name": "Tradovate + NinjaTrader",
+          "platform": "Tradovate / NinjaTrader",
+          "category": "trading",
+          "capital": 500000,
+          "gross": 60000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$500K account · 16 days of trading"
+        },
+        {
+          "id": "l6-mmm",
+          "name": "Money Muscle Mindset Membership",
+          "platform": "Money Muscle Mindset",
+          "category": "business",
+          "capital": 0,
+          "gross": 55000,
+          "efficiency": 0.76,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "1,000 × $39 low tier + 100 × $169 high tier · full ads engine + VA"
+        },
+        {
+          "id": "l6-crypto",
+          "name": "Coinbase + Kraken",
+          "platform": "Coinbase / Kraken",
+          "category": "trading",
+          "capital": 2000000,
+          "gross": 40000,
+          "efficiency": 0.86,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "$1M each account · 16 days of trading"
+        },
+        {
+          "id": "l6-passive",
+          "name": "HYSA + ETF Passive Layer",
+          "platform": "12 HYSAs/ETFs · Vanguard · Merrill Edge",
+          "category": "passive",
+          "capital": 8000000,
+          "gross": 16500,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 1,
+          "cadence": "12 × $500K accounts + $1M Vanguard + $1M Merrill · weekly check"
+        },
+        {
+          "id": "l6-apex",
+          "name": "Apex Trader $100K Live Accounts",
+          "platform": "Apex Trader Funding",
+          "category": "trading",
+          "capital": 0,
+          "gross": 4000,
+          "efficiency": 0.96,
+          "retention": 0.6,
+          "count": 10,
+          "cadence": "10 × $100K live accounts · 16 days of trading"
+        }
+      ],
+      "risks": [
+        "Key-person risk: the entire machine still routes through one operator",
+        "Market regime change could compress trading returns across all desks",
+        "Estate, tax and entity structuring become first-order problems",
+        "Complacency — at $250K/month the discipline that built this gets tested"
+      ],
+      "milestoneRequirements": [
+        "Maintain $10M+ liquid net worth across the stack",
+        "Passive layer alone covers 100% of essential expenses",
+        "Document and systematize every income engine for continuity",
+        "Decide the legacy play: fund, foundation, or family office"
+      ]
+    }
+  ]
+}

@@ -695,7 +695,6 @@
   <button class="tab-btn" data-tab="setup"><span class="tab-emoji">📊</span>Setup</button>
   <button class="tab-btn" data-tab="confluences"><span class="tab-emoji">🔗</span>Confluences</button>
   <button class="tab-btn" data-tab="account"><span class="tab-emoji">💼</span>Account</button>
-  <button class="tab-btn" data-tab="profit"><span class="tab-emoji">📈</span>Profit Plan</button>
 </nav>
 
 <!-- ─── Main ─── -->
@@ -776,41 +775,6 @@
 
     <div class="setup-grid" id="setup-grid"></div>
 
-    <hr class="divider">
-
-    <div class="card">
-      <div class="card-title"><span>🎯</span> Exit Targets — NQ Futures (per contract)</div>
-      <div class="tp-grid">
-        <div class="tp-box">
-          <div class="tp-label">Stop Loss / Max Risk</div>
-          <div class="tp-val" style="color:var(--red)">−130 ticks</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750 loss</div>
-        </div>
-        <div class="tp-box">
-          <div class="tp-label">TP 1</div>
-          <div class="tp-val" style="color:var(--green)">+87 ticks</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$500</div>
-        </div>
-        <div class="tp-box">
-          <div class="tp-label">TP 2 (Target)</div>
-          <div class="tp-val" style="color:var(--green)">+130 ticks</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750</div>
-        </div>
-        <div class="tp-box">
-          <div class="tp-label">TP 3</div>
-          <div class="tp-val" style="color:var(--green)">+175 ticks</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">~$750 (½ of TP3)</div>
-        </div>
-        <div class="tp-box">
-          <div class="tp-label">TP 3 Extended</div>
-          <div class="tp-val" style="color:var(--green)">+1.5× TP3</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Overextended move</div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:14px">
-        Also valid: Exit around <strong>break even</strong> (when thesis weakens) or at <strong>auto max loss</strong> (daily drawdown limit triggered).
-      </div>
-    </div>
   </section>
 
   <!-- ════════════════════════════ CONFLUENCES ════════════════════════════ -->
@@ -908,59 +872,6 @@
     </div>
   </section>
 
-  <!-- ════════════════════════════ PROFIT PLAN ════════════════════════════ -->
-  <section class="tab-section" id="tab-profit">
-    <div class="section-header">
-      <div class="section-title">Profit Plan & Calculator</div>
-      <div class="section-desc">Based on 75% win rate, 1 trade/day, 4 days/week. Tax rate assumed at 40% (you keep 60%). Withdrawal fee: 4%.</div>
-    </div>
-
-    <div class="grid-3" style="margin-bottom:20px">
-      <div class="stat-card">
-        <div class="stat-label">Daily Target (Win)</div>
-        <div class="stat-value green">$750</div>
-        <div class="stat-sub">130–175 ticks, 1 contract</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Weekly Target</div>
-        <div class="stat-value green">$1,500</div>
-        <div class="stat-sub">3W − 1L @ $750</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Monthly Target</div>
-        <div class="stat-value green">$6,000</div>
-        <div class="stat-sub">4 weeks × $1,500</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>🎚</span> Account Multiplier</div>
-      <div class="slider-group">
-        <div class="slider-label">
-          <span>Number of Apex $100K Accounts</span>
-          <strong id="acct-display">1 account</strong>
-        </div>
-        <input type="range" id="acct-slider" min="1" max="20" value="1" oninput="updateProfitCalc()">
-      </div>
-      <div class="grid-2" id="calc-outputs"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>📅</span> Monthly Profit Projection (Per Account, After Fees &amp; Tax)</div>
-      <table class="monthly-table">
-        <thead>
-          <tr>
-            <th>Month</th>
-            <th>Account Activity</th>
-            <th>Gross Payout</th>
-            <th>After 4% Fee</th>
-            <th>After 40% Tax</th>
-          </tr>
-        </thead>
-        <tbody id="monthly-tbody"></tbody>
-      </table>
-    </div>
-  </section>
 
 </main>
 
@@ -1229,69 +1140,6 @@ const challengeEl = document.getElementById('challenge-steps');
   }
 });
 
-// ─────────────────────────────────────────────
-// Profit plan calculator
-// ─────────────────────────────────────────────
-const MONTHLY_DATA = [
-  { month: 'July (Pass Month)', activity: '$100K → $106K eval pass', gross: 0 },
-  { month: 'August', activity: '$2,000 payout (1 withdrawal)', gross: 2000 },
-  { month: 'September', activity: '$2,500 × 2 payouts', gross: 5000 },
-  { month: 'October', activity: '$3,000 + $4,000 payouts', gross: 7000 },
-  { month: 'November', activity: '$4,000 payout', gross: 4000 },
-];
-
-function fmt(n) {
-  return '$' + parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-function updateProfitCalc() {
-  const n = parseInt(document.getElementById('acct-slider').value, 10);
-  document.getElementById('acct-display').textContent = n + (n === 1 ? ' account' : ' accounts');
-
-  const weeklyGross = 1500 * n;
-  const monthlyGross = 6000 * n;
-  const afterFee = monthlyGross * APEX.withdrawFee;
-  const afterTax = afterFee * APEX.taxKeep;
-  const annualNet = afterTax * 12;
-
-  document.getElementById('calc-outputs').innerHTML = `
-    <div>
-      <div class="calc-row"><span class="calc-label">Weekly gross (${n} acct${n>1?'s':''})</span><span class="calc-value" style="color:var(--blue)">${fmt(weeklyGross)}</span></div>
-      <div class="calc-row"><span class="calc-label">Monthly gross</span><span class="calc-value" style="color:var(--blue)">${fmt(monthlyGross)}</span></div>
-      <div class="calc-row"><span class="calc-label">After 4% withdrawal fee</span><span class="calc-value">${fmt(afterFee)}</span></div>
-    </div>
-    <div>
-      <div class="calc-row"><span class="calc-label">After 40% tax (keep 60%)</span><span class="calc-value" style="color:var(--green)">${fmt(afterTax)}</span></div>
-      <div class="calc-row"><span class="calc-label">Annual net (12 months)</span><span class="calc-value" style="color:var(--green)">${fmt(annualNet)}</span></div>
-      <div class="calc-row"><span class="calc-label">Per account net/mo</span><span class="calc-value" style="color:var(--muted)">${fmt(afterTax / n)}</span></div>
-    </div>`;
-
-  const tbody = document.getElementById('monthly-tbody');
-  let cumulative = 0;
-  tbody.innerHTML = '';
-  MONTHLY_DATA.forEach(row => {
-    const gross = row.gross * n;
-    const afterF = gross * APEX.withdrawFee;
-    const afterT = afterF * APEX.taxKeep;
-    cumulative += afterT;
-    const isZero = gross === 0;
-    tbody.innerHTML += `
-      <tr>
-        <td>${row.month}</td>
-        <td style="color:var(--muted);font-size:12px">${row.activity}${n > 1 ? ` ×${n}` : ''}</td>
-        <td>${isZero ? '—' : fmt(gross)}</td>
-        <td>${isZero ? '—' : fmt(afterF)}</td>
-        <td style="color:var(--green)">${isZero ? '<span style="color:var(--muted)">$0</span>' : fmt(afterT)}</td>
-      </tr>`;
-  });
-  tbody.innerHTML += `
-    <tr class="total-row">
-      <td colspan="4">5-Month Cumulative (${n} account${n>1?'s':''})</td>
-      <td style="color:var(--green)">${fmt(cumulative)}</td>
-    </tr>`;
-}
-
-updateProfitCalc();
 
 // ─────────────────────────────────────────────
 // Tab switching

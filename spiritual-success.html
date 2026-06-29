@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Spiritual Laws of Success</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Raleway:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+    :root {
+      --gold:        #C9A84C;
+      --gold-light:  #F0D080;
+      --gold-glow:   #C9A84C44;
+      --deep:        #05050F;
+      --dark:        #0A0A1A;
+      --panel:       #0F0F22;
+      --panel2:      #131326;
+      --border:      #1E1E3A;
+      --text:        #D8D8F0;
+      --muted:       #7070A0;
+      --white:       #FFFFFF;
+      --purple:      #6644AA;
+      --purple-glow: #6644AA33;
+      --teal:        #2EAAAA;
+      --crimson:     #8B1A1A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep);
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Stars background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 80% 75%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 62% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 72% 88%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 10%, rgba(255,255,255,0.5) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, var(--purple-glow) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, var(--gold-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.8rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--white);
+      text-shadow: 0 0 60px var(--gold-glow), 0 0 120px var(--purple-glow);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), #8B6914);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 28px auto 0;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-divider {
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 40px auto 0;
+      opacity: 0;
+      animation: fadeIn 1s ease 0.8s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+      z-index: 2;
+    }
+
+    .scroll-hint span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease infinite;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,5,15,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-link {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+      background: var(--gold-glow);
+    }
+
+    /* ── Section wrapper ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 48px;
+    }
+
+    /* ── Law cards ── */
+    .laws-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .law-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .law-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .law-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--gold);
+      border-color: var(--gold);
+    }
+
+    .law-card:hover::before { opacity: 1; }
+
+    .law-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .law-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .law-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .law-practices {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .law-practice {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .law-practice-dot {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-top: 8px;
+      box-shadow: 0 0 6px var(--gold);
+    }
+
+    /* ── Expanded modal overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--panel2);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.92) translateY(20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 80px var(--gold-glow), 0 0 160px var(--purple-glow);
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+    .modal-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .modal-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+
+    .modal-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 28px;
+      line-height: 1.3;
+    }
+
+    .modal-practices {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-practice {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.7;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .modal-practice-num {
+      flex-shrink: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      color: var(--gold);
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    /* ── Desires section ── */
+    .desires-section {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, transparent, rgba(102,68,170,0.06), transparent);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 0;
+    }
+
+    .desires-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .desire-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .desire-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .desire-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201,168,76,0.4);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .desire-card:hover::after { opacity: 1; }
+
+    .desire-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .desire-text {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Daily checklist ── */
+    .checklist-section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .checklist-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .checklist-header {
+      background: linear-gradient(135deg, var(--panel2), rgba(102,68,170,0.15));
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .checklist-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .checklist-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), var(--gold));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 0.75rem;
+      color: var(--gold);
+      margin-top: 6px;
+    }
+
+    .checklist-body {
+      padding: 8px 0;
+    }
+
+    .checklist-group-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      padding: 16px 32px 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 32px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid rgba(30,30,58,0.5);
+    }
+
+    .checklist-item:last-child { border-bottom: none; }
+
+    .checklist-item:hover { background: rgba(255,255,255,0.03); }
+
+    .checklist-item.done .item-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .checkbox {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+      margin-top: 2px;
+    }
+
+    .checklist-item.done .checkbox {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .checkbox-check {
+      width: 12px;
+      height: 8px;
+      border-bottom: 2px solid var(--deep);
+      border-left: 2px solid var(--deep);
+      transform: rotate(-45deg) translateY(-1px);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .checklist-item.done .checkbox-check { opacity: 1; }
+
+    .item-text {
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+
+    .item-law-tag {
+      display: inline-block;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      background: var(--gold-glow);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    /* ── Reset button ── */
+    .reset-btn {
+      display: block;
+      margin: 24px auto 0;
+      padding: 12px 28px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Footer ── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 16px;
+    }
+
+    .footer-credit {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: rgba(112,112,160,0.5);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+      50%       { box-shadow: 0 0 20px 8px var(--gold-glow); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .laws-grid { grid-template-columns: 1fr; }
+      .desires-grid { grid-template-columns: 1fr; }
+      .modal { padding: 32px 24px; }
+      .checklist-item { padding: 12px 20px; }
+      .checklist-header { padding: 20px 20px; }
+      .checklist-group-label { padding: 14px 20px 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<section class="hero" id="top">
+  <p class="hero-eyebrow">The Path to Mastery</p>
+  <h1>Spiritual Laws<br>of <span>Success</span></h1>
+  <p class="hero-sub">Seven ancient principles reborn as a modern operating system for an extraordinary life.</p>
+  <div class="hero-divider"></div>
+  <div class="scroll-hint">
+    <span>Explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ── Sticky Nav ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand">7 Laws</a>
+    <div class="nav-links">
+      <a href="#laws" class="nav-link">The Laws</a>
+      <a href="#checklist" class="nav-link">Daily Practice</a>
+      <a href="#desires" class="nav-link">Desires</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Laws ── -->
+<div id="laws" class="section">
+  <p class="section-label">The Seven Laws</p>
+  <h2 class="section-title">Your Operating System</h2>
+  <div class="laws-grid" id="lawsGrid"></div>
+</div>
+
+<!-- ── Daily Checklist ── -->
+<div id="checklist" class="section checklist-section">
+  <p class="section-label">Daily Practice</p>
+  <h2 class="section-title">Today's Execution</h2>
+  <div class="checklist-container">
+    <div class="checklist-header">
+      <div>
+        <div class="checklist-title">Daily Spiritual Checklist</div>
+        <div class="checklist-date" id="todayDate"></div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+        <div class="progress-text" id="progressText">0 / 21 completed</div>
+      </div>
+    </div>
+    <div class="checklist-body" id="checklistBody"></div>
+  </div>
+  <button class="reset-btn" id="resetBtn">Reset Day</button>
+</div>
+
+<!-- ── Desires ── -->
+<section class="desires-section" id="desires">
+  <div class="section">
+    <p class="section-label">Core Desires</p>
+    <h2 class="section-title">Deepest Desires</h2>
+    <div class="desires-grid" id="desiresGrid"></div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <p class="footer-quote">"The present moment is the field of all possibilities."</p>
+  <p class="footer-credit">Built for the relentless pursuit of mastery.</p>
+</footer>
+
+<!-- ── Modal ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <p class="modal-number" id="modalNumber"></p>
+    <span class="modal-icon" id="modalIcon"></span>
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <ul class="modal-practices" id="modalPractices"></ul>
+  </div>
+</div>
+
+<script>
+const LAWS = [
+  {
+    number: "Law I",
+    icon: "🌌",
+    name: "Law of Pure Potentiality",
+    practices: [
+      "Deep breathing focusing on nostril airflow and spinal cord \"Rod\" — use deep breathing muscles to stabilize your posture.",
+      "Visualize putting yourself in someone else's shoes when you reflexively judge someone.",
+      "Notice the beauty in water, sunsets, the night sky, and other natural wonders."
+    ]
+  },
+  {
+    number: "Law II",
+    icon: "🌊",
+    name: "Law of Giving & Receiving",
+    practices: [
+      "Look for the positive in people and express genuine compliments: \"I like your [positive trait], man\" — or for women, \"I think you're really pretty, haha.\"",
+      "Graciously accept any compliments and say \"Thank you so much.\"",
+      "Silently bless every person you meet: \"I wish you happiness, success, and [positive outcome] in life.\" Say a silent prayer for every group you're part of."
+    ]
+  },
+  {
+    number: "Law III",
+    icon: "⚡",
+    name: "Law of Karma",
+    practices: [
+      "Operate from the \"Mental Witness\" — observe without attachment.",
+      "Your default mode is always giving good energy. Radiate it by smiling at every single person you see. Your default is generosity until your boundaries are crossed — then enforce them without hesitation.",
+      "Pay attention to how your heart feels to know if a decision is right or wrong."
+    ]
+  },
+  {
+    number: "Law IV",
+    icon: "🍃",
+    name: "Law of Least Effort",
+    practices: [
+      "When negative events occur, accept what is: \"This moment is as it should be.\"",
+      "Whenever you eat, mindfully chew a double-count of 5–15 biting reps per swallow, and \"mew\" while swallowing to maintain proper posture.",
+      "Release the need to be right. Master the skill of adaptability."
+    ]
+  },
+  {
+    number: "Law V",
+    icon: "🎯",
+    name: "Law of Intention & Desire",
+    practices: [
+      "When you feel powerless or anxious, actively remind yourself of your positive intentions and let that give you power and courage.",
+      "Graciously accept defeat. Genuinely congratulate the winner, as painful as it may be.",
+      "Focus on flawless execution of things under your control. Be proud of trying your hardest and mastering your internal environment regardless of external outcomes."
+    ]
+  },
+  {
+    number: "Law VI",
+    icon: "🌙",
+    name: "Law of Detachment",
+    practices: [
+      "Let go of any worry about things that are not under your control.",
+      "Let go of the need to know the answer to everything. Feel the excitement that uncertainty brings to this journey of life.",
+      "Meditate on your death. Cherish every moment — each day that passes is a unique experience that will never happen the exact same way again."
+    ]
+  },
+  {
+    number: "Law VII",
+    icon: "🔥",
+    name: "Law of Dharma / Ikigai",
+    practices: [
+      "Ruthlessly and relentlessly chase entering flow state. Maximize the time in your day that you spend in flow state.",
+      "Find joy in performing your daily activities that give you purpose and allow you to express your passion.",
+      "Especially when feeling negative emotions, ask yourself \"How can I help?\" and \"How can I be of service?\" — then perform these acts of service with an open heart."
+    ]
+  }
+];
+
+const DESIRES = [
+  { icon: "🧘", text: "Core unshakeable internal peace — even deeper than what lifelong monks achieve — through dedication to the daily process and adherence to Machiavellian spiritual laws." },
+  { icon: "🦁", text: "Fear nothing and nobody except God. Enforce immediate and ruthless boundaries to protect your time, energy, and safety from anything that gives you an uneasy gut feeling." },
+  { icon: "💪", text: "Skin-splitting pump in muscles that makes your soul feel alive and gives you deep, genuine confidence and self-love." },
+  { icon: "🎬", text: "Legendary social media content that genuinely sparks a deep primal energy in people who watch it — inspiring them to level up in a massive way." },
+  { icon: "🌹", text: "Passionate, raw, animalistic connection with perfect technique and total presence." },
+  { icon: "👑", text: "The sickest style: clothes, jewelry, custom car, music taste, and the way you carry yourself." },
+  { icon: "❤️‍🔥", text: "The deepest, soul-blazing love in the universe — so profound it moves you to tears because of how much it means." },
+  { icon: "📈", text: "Catch the cleanest trading setups: orgasmic execution of the trading plan with sniper precision, regardless of win or loss — pure process mastery." }
+];
+
+const CHECKLIST_ITEMS = [
+  { text: "Deep breathing — nostril airflow + spinal rod posture", law: "Law I" },
+  { text: "Notice natural beauty today (water, sky, nature)", law: "Law I" },
+  { text: "When judging someone, visualize their perspective", law: "Law I" },
+  { text: "Find something positive in someone and express it genuinely", law: "Law II" },
+  { text: "Accept a compliment graciously with \"Thank you so much\"", law: "Law II" },
+  { text: "Silently bless every person you encounter today", law: "Law II" },
+  { text: "Operate from the mental witness perspective", law: "Law III" },
+  { text: "Smile at every single person you see today", law: "Law III" },
+  { text: "Check in with your heart before a key decision", law: "Law III" },
+  { text: "Mindful chewing: 5–15 reps per swallow + mewing", law: "Law IV" },
+  { text: "Accept a negative moment: \"This is as it should be\"", law: "Law IV" },
+  { text: "Release the need to be right in at least one situation", law: "Law IV" },
+  { text: "Remind yourself of your positive intentions when anxious", law: "Law V" },
+  { text: "Execute flawlessly on at least one thing fully under your control", law: "Law V" },
+  { text: "Let go of one thing not under your control today", law: "Law VI" },
+  { text: "Sit with uncertainty — embrace the adventure of not knowing", law: "Law VI" },
+  { text: "Meditate on impermanence for even 2 minutes today", law: "Law VI" },
+  { text: "Enter flow state — protect and maximize that time", law: "Law VII" },
+  { text: "Find joy in your purposeful daily activities", law: "Law VII" },
+  { text: "Ask \"How can I help?\" and act on the answer", law: "Law VII" },
+  { text: "Say a silent prayer for a group or community you belong to", law: "Law II" }
+];
+
+// ── Render laws ──
+const grid = document.getElementById('lawsGrid');
+LAWS.forEach((law, i) => {
+  const card = document.createElement('div');
+  card.className = 'law-card reveal';
+  card.style.transitionDelay = `${i * 60}ms`;
+  card.innerHTML = `
+    <div class="law-number">${law.number}</div>
+    <span class="law-icon">${law.icon}</span>
+    <div class="law-name">${law.name}</div>
+    <ul class="law-practices">
+      ${law.practices.map(p => `<li class="law-practice"><span class="law-practice-dot"></span><span>${p}</span></li>`).join('')}
+    </ul>
+  `;
+  card.addEventListener('click', () => openModal(i));
+  grid.appendChild(card);
+});
+
+// ── Render desires ──
+const dGrid = document.getElementById('desiresGrid');
+DESIRES.forEach((d, i) => {
+  const card = document.createElement('div');
+  card.className = 'desire-card reveal';
+  card.style.transitionDelay = `${i * 50}ms`;
+  card.innerHTML = `<span class="desire-icon">${d.icon}</span><p class="desire-text">${d.text}</p>`;
+  dGrid.appendChild(card);
+});
+
+// ── Render checklist ──
+const todayKey = () => new Date().toISOString().slice(0,10);
+const storageKey = 'sls_checklist_' + todayKey();
+
+function loadChecked() {
+  try { return JSON.parse(localStorage.getItem(storageKey)) || []; } catch { return []; }
+}
+function saveChecked(arr) {
+  localStorage.setItem(storageKey, JSON.stringify(arr));
+}
+
+let checked = loadChecked();
+
+function updateProgress() {
+  const total = CHECKLIST_ITEMS.length;
+  const done = checked.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${done} / ${total} completed`;
+}
+
+const body = document.getElementById('checklistBody');
+
+// Group by law
+const groups = {};
+CHECKLIST_ITEMS.forEach((item, i) => {
+  if (!groups[item.law]) groups[item.law] = [];
+  groups[item.law].push({ ...item, index: i });
+});
+
+Object.entries(groups).forEach(([law, items]) => {
+  const label = document.createElement('div');
+  label.className = 'checklist-group-label';
+  label.textContent = law;
+  body.appendChild(label);
+
+  items.forEach(({ text, index }) => {
+    const row = document.createElement('div');
+    row.className = 'checklist-item' + (checked.includes(index) ? ' done' : '');
+    row.dataset.index = index;
+    row.innerHTML = `
+      <div class="checkbox"><div class="checkbox-check"></div></div>
+      <span class="item-text">${text}</span>
+    `;
+    row.addEventListener('click', () => {
+      const idx = parseInt(row.dataset.index);
+      if (checked.includes(idx)) {
+        checked = checked.filter(x => x !== idx);
+        row.classList.remove('done');
+      } else {
+        checked.push(idx);
+        row.classList.add('done');
+      }
+      saveChecked(checked);
+      updateProgress();
+    });
+    body.appendChild(row);
+  });
+});
+
+updateProgress();
+
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  checked = [];
+  saveChecked(checked);
+  document.querySelectorAll('.checklist-item').forEach(el => el.classList.remove('done'));
+  updateProgress();
+});
+
+// ── Modal ──
+function openModal(i) {
+  const law = LAWS[i];
+  document.getElementById('modalNumber').textContent = law.number;
+  document.getElementById('modalIcon').textContent = law.icon;
+  document.getElementById('modalTitle').textContent = law.name;
+  document.getElementById('modalPractices').innerHTML = law.practices.map((p, n) =>
+    `<li class="modal-practice"><span class="modal-practice-num">${n+1}</span><span>${p}</span></li>`
+  ).join('');
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Scroll reveal ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

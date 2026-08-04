@@ -186,16 +186,18 @@
     margin-bottom: 28px;
   }
 
-  #credit {
+  #fx-indicator {
     position: absolute;
-    bottom: 8px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    color: #ddd;
-    font-size: clamp(11px, 2.8vw, 15px);
+    top: 52px;
+    left: 18px;
+    color: #ffef7a;
+    font-size: clamp(13px, 3.2vw, 18px);
     font-weight: 300;
+    line-height: 1.5;
     pointer-events: none;
+    user-select: none;
+    z-index: 5;
+    white-space: pre-line;
   }
 </style>
 </head>
@@ -206,12 +208,11 @@
   <div id="hud">
     <div id="score">Score: 0</div>
     <div id="maxcombo">Max Combo: 0</div>
-    <div id="lives">
-      <div class="life"></div><div class="life"></div><div class="life"></div>
-    </div>
+    <div id="lives"></div>
   </div>
 
   <div id="combo-indicator"></div>
+  <div id="fx-indicator"></div>
 
   <div id="touch-controls">
     <div class="touch-btn" id="btn-left">&#9664;</div>
@@ -227,7 +228,6 @@
     </div>
     <button class="menu-btn" id="btn-play">Play Game</button>
     <button class="menu-btn" id="btn-how">How to Play</button>
-    <div id="credit">A tribute to Pel &copy; scriptedfun.com &mdash; catch the pels!</div>
   </div>
 
   <!-- How to play -->
@@ -237,7 +237,8 @@
       <p>&bull; Pels (little squares) fall down one of <b>three lanes</b>: left, middle, or right.</p>
       <p>&bull; The paddle sits in one lane at a time. Move it with the <b>left / right arrow keys</b>, or tap a lane on mobile.</p>
       <p>&bull; Catch a pel with the paddle and it's collected &mdash; consecutive catches build your <b>combo</b>, and higher combos earn bonus points.</p>
-      <p>&bull; Miss a pel and you lose a life and your combo resets. You have 3 lives.</p>
+      <p>&bull; Miss a pel and you lose a life and your combo resets. You start with 3 lives.</p>
+      <p>&bull; Special boxes fall too &mdash; catch them for power-ups: <b>&hearts;</b> extra life, <b>&harr;</b> wide paddle, <b>&#10052;</b> slow motion, <b>&times;2</b> double points. Missing a box costs nothing.</p>
       <p>&bull; Pels fall faster and more often as time goes on. You can't win &mdash; just survive as long as you can.</p>
       <button class="menu-btn" id="btn-back" style="margin: 26px auto 0;">Back</button>
     </div>
@@ -294,6 +295,17 @@
   var PEL_SIZE = 18;
   var TRAIL_LEN = 7;
   var START_LIVES = 3;
+  var MAX_LIVES = 5;
+  var SPECIAL_SIZE = 34;
+  var SLOW_FACTOR = 0.45;
+
+  // Falling power-up boxes
+  var SPECIAL_TYPES = [
+    { type: 'life',   icon: '♥', label: '+1 Life' },
+    { type: 'wide',   icon: '↔', label: 'Wide Paddle!',  duration: 10 },
+    { type: 'slow',   icon: '❄', label: 'Slow Motion!',  duration: 8 },
+    { type: 'double', icon: '×2', label: 'Double Points!', duration: 10 }
+  ];
 
   var COLORS = ['#7af7ff', '#ff7ae0', '#8dff7a', '#fff27a', '#c09aff', '#ffb37a'];
 
@@ -302,9 +314,12 @@
   var pels = [];
   var popups = [];
   var particles = [];
+  var specials = [];
   var score = 0, combo = 0, maxCombo = 0, lives = START_LIVES;
   var elapsed = 0;         // seconds of play
   var spawnTimer = 0;
+  var specialTimer = 0;
+  var fx = { wide: 0, slow: 0, double: 0 }; // seconds remaining per effect
   var bestScore = 0;
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
 
@@ -321,15 +336,28 @@
 
   function laneWidth() { return W / LANES; }
   function laneCenter(lane) { return laneWidth() * (lane + 0.5); }
-  function laneX(lane) { return laneCenter(lane) - paddle.w / 2; } // paddle x for a lane
+
+  // Paddle footprint: one lane normally, two lanes while the wide power-up is active
+  function paddleSpan() {
+    var wide = fx.wide > 0;
+    var first = wide ? Math.min(paddle.lane, LANES - 2) : paddle.lane;
+    var count = wide ? 2 : 1;
+    return {
+      x: laneWidth() * first + LANE_MARGIN,
+      w: laneWidth() * count - LANE_MARGIN * 2,
+      first: first,
+      last: first + count - 1
+    };
+  }
+  function laneX(lane) { return laneWidth() * lane + LANE_MARGIN; } // paddle x for a lane
 
   // Difficulty scales with elapsed time and score
   function difficulty() { return elapsed / 40 + score / 180; }
   function spawnInterval() { return Math.max(0.38, 1.9 - difficulty() * 0.5); }
   function fallSpeed() { return 150 + difficulty() * 60 + rand(-15, 25); }
 
-  // Combo bonus: every catch is worth 1 + floor(combo / 10)
-  function catchValue() { return 1 + Math.floor(combo / 10); }
+  // Combo bonus: every catch is worth 1 + floor(combo / 10), doubled while ×2 is active
+  function catchValue() { return (1 + Math.floor(combo / 10)) * (fx.double > 0 ? 2 : 1); }
 
   // ---------- Entities ----------
   function spawnPel(demo) {
@@ -345,6 +373,30 @@
       trail: [],
       demo: !!demo
     });
+  }
+
+  function spawnSpecial() {
+    var spec = SPECIAL_TYPES[(Math.random() * SPECIAL_TYPES.length) | 0];
+    // don't offer extra life when already at max
+    if (spec.type === 'life' && lives >= MAX_LIVES) {
+      spec = SPECIAL_TYPES[1 + ((Math.random() * 3) | 0)];
+    }
+    var lane = (Math.random() * LANES) | 0;
+    specials.push({
+      spec: spec,
+      lane: lane,
+      x: laneCenter(lane) - SPECIAL_SIZE / 2,
+      y: -SPECIAL_SIZE,
+      vy: 130 + difficulty() * 25
+    });
+  }
+
+  function applySpecial(spec) {
+    if (spec.type === 'life') {
+      lives = Math.min(lives + 1, MAX_LIVES);
+    } else {
+      fx[spec.type] = spec.duration;
+    }
   }
 
   function addPopup(x, y, text) {
@@ -370,8 +422,11 @@
     pels = [];
     popups = [];
     particles = [];
+    specials = [];
+    fx.wide = 0; fx.slow = 0; fx.double = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
+    specialTimer = rand(8, 14);
     paddle.lane = 1;
     held.dir = 0;
     paddle.y = H - PADDLE_BOTTOM_OFFSET;
@@ -411,6 +466,7 @@
     for (var k in overlays) overlays[k].classList.toggle('hidden', k !== s);
     var inGame = (s === 'playing');
     document.getElementById('combo-indicator').style.display = inGame ? 'block' : 'none';
+    document.getElementById('fx-indicator').style.display = inGame ? 'block' : 'none';
     document.getElementById('touch-controls').classList.toggle('visible', inGame && isTouch);
     if (s === 'menu') { demoMode = true; pels = []; popups = []; particles = []; }
   }
@@ -423,14 +479,15 @@
   var scoreEl = document.getElementById('score');
   var maxComboEl = document.getElementById('maxcombo');
   var comboEl = document.getElementById('combo-indicator');
-  var lifeEls = document.querySelectorAll('#lives .life');
+  var livesEl = document.getElementById('lives');
+  var fxEl = document.getElementById('fx-indicator');
 
   function updateHud() {
     scoreEl.textContent = 'Score: ' + score;
     maxComboEl.textContent = 'Max Combo: ' + maxCombo;
-    for (var i = 0; i < lifeEls.length; i++) {
-      lifeEls[i].classList.toggle('lost', i >= lives);
-    }
+    var lifeHtml = '';
+    for (var i = 0; i < lives; i++) lifeHtml += '<div class="life"></div>';
+    livesEl.innerHTML = lifeHtml;
     if (combo >= 2) {
       comboEl.innerHTML = 'Combo: <span class="' + (combo >= 10 ? 'hot' : '') + '">' + combo + 'x</span>';
     } else {
@@ -450,8 +507,24 @@
       }
     }
 
+    var slowMul = (playing && fx.slow > 0) ? SLOW_FACTOR : 1;
+    var span = paddleSpan();
+
     if (playing) {
       elapsed += dt;
+
+      // effect timers
+      var fxText = '';
+      for (var f in fx) {
+        if (fx[f] > 0) {
+          fx[f] = Math.max(0, fx[f] - dt);
+          if (fx[f] > 0) {
+            var name = f === 'wide' ? 'WIDE' : f === 'slow' ? 'SLOW' : '×2 POINTS';
+            fxText += name + ' ' + Math.ceil(fx[f]) + 's\n';
+          }
+        }
+      }
+      fxEl.textContent = fxText;
 
       // held arrow key keeps stepping lanes
       if (held.dir !== 0) {
@@ -462,11 +535,34 @@
         }
       }
 
-      // slide paddle toward its lane position
-      var target = laneX(paddle.lane);
-      var delta = target - paddle.x;
+      // slide paddle toward its span position (wider while wide power-up runs)
+      span = paddleSpan();
+      paddle.w = span.w;
+      var delta = span.x - paddle.x;
       var maxStep = PADDLE_SLIDE_SPEED * dt;
       paddle.x += clamp(delta, -maxStep, maxStep);
+
+      // special power-up boxes
+      specialTimer -= dt;
+      if (specialTimer <= 0) {
+        spawnSpecial();
+        specialTimer = rand(9, 16);
+      }
+      for (var s = specials.length - 1; s >= 0; s--) {
+        var sp = specials[s];
+        sp.y += sp.vy * slowMul * dt;
+        if (sp.y + SPECIAL_SIZE >= paddle.y &&
+            sp.y <= paddle.y + paddle.h &&
+            sp.lane >= span.first && sp.lane <= span.last) {
+          applySpecial(sp.spec);
+          addPopup(sp.x - 20, sp.y - 10, sp.spec.label);
+          burst(sp.x + SPECIAL_SIZE / 2, paddle.y, '#ffffff');
+          specials.splice(s, 1);
+          updateHud();
+        } else if (sp.y > H) {
+          specials.splice(s, 1); // missing a special costs nothing
+        }
+      }
     }
 
     // pels fall straight down their lane
@@ -476,13 +572,13 @@
       p.trail.push({ x: p.x, y: p.y });
       if (p.trail.length > TRAIL_LEN) p.trail.shift();
 
-      p.y += p.vy * dt;
+      p.y += p.vy * (p.demo ? 1 : slowMul) * dt;
 
       if (playing) {
         // catch: pel reaches paddle level while the paddle is in (or headed to) its lane
         if (p.y + p.size >= paddle.y &&
             p.y <= paddle.y + paddle.h &&
-            paddle.lane === p.lane) {
+            p.lane >= span.first && p.lane <= span.last) {
 
           combo++;
           if (combo > maxCombo) maxCombo = combo;
@@ -548,6 +644,21 @@
       ctx.globalAlpha = 1;
       ctx.fillStyle = p.color;
       ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+
+    // special power-up boxes
+    for (var s = 0; s < specials.length; s++) {
+      var sp = specials[s];
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sp.x, sp.y, SPECIAL_SIZE, SPECIAL_SIZE);
+      ctx.fillStyle = '#fff';
+      ctx.font = '300 ' + (sp.spec.icon.length > 1 ? 16 : 20) + 'px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(sp.spec.icon, sp.x + SPECIAL_SIZE / 2, sp.y + SPECIAL_SIZE / 2 + 1);
+      ctx.textAlign = 'start';
+      ctx.textBaseline = 'alphabetic';
     }
 
     // particles
@@ -677,8 +788,13 @@
 
   // test hook
   window.__pel = {
-    info: function () { return { state: state, score: score, combo: combo, lives: lives, lane: paddle.lane, pels: pels.map(function (p) { return { lane: p.lane, y: p.y }; }) }; },
-    setLane: function (l) { paddle.lane = clamp(l, 0, LANES - 1); paddle.x = laneX(paddle.lane); }
+    info: function () { return { state: state, score: score, combo: combo, lives: lives, lane: paddle.lane, fx: { wide: fx.wide, slow: fx.slow, double: fx.double }, specials: specials.map(function (s) { return { type: s.spec.type, lane: s.lane, y: s.y }; }), pels: pels.map(function (p) { return { lane: p.lane, y: p.y }; }) }; },
+    setLane: function (l) { paddle.lane = clamp(l, 0, LANES - 1); paddle.x = laneX(paddle.lane); },
+    forceSpecial: function (type, lane) {
+      var spec = null;
+      for (var i = 0; i < SPECIAL_TYPES.length; i++) if (SPECIAL_TYPES[i].type === type) spec = SPECIAL_TYPES[i];
+      specials.push({ spec: spec, lane: lane, x: laneCenter(lane) - SPECIAL_SIZE / 2, y: -SPECIAL_SIZE, vy: 200 });
+    }
   };
 })();
 </script>

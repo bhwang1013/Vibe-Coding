@@ -269,8 +269,8 @@
   var PADDLE_BOTTOM_OFFSET = 64;   // paddle distance from bottom
   var PADDLE_H = 14;
   var PADDLE_SLIDE_SPEED = 9000;   // px/s snap between lanes
-  var HOLD_FIRST_DELAY = 0.18;     // s before held key starts repeating
-  var HOLD_REPEAT_DELAY = 0.08;    // s between lane steps while held
+  var HOLD_FIRST_DELAY = 0.3;      // s before held key starts repeating
+  var HOLD_REPEAT_DELAY = 0.14;    // s between lane steps while held
   var PEL_SIZE = 18;
   var TRAIL_LEN = 7;
   var START_LIVES = 3;
@@ -600,7 +600,14 @@
   canvas.addEventListener('touchstart', function (e) {
     if (e.touches.length) jumpToLane(e.touches[0].clientX);
   }, { passive: true });
+  canvas.addEventListener('touchmove', function (e) {
+    if (e.touches.length) jumpToLane(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
   canvas.addEventListener('mousedown', function (e) { jumpToLane(e.clientX); });
+  canvas.addEventListener('mousemove', function (e) {
+    if (e.buttons === 1) jumpToLane(e.clientX);
+  });
 
   // Menu buttons
   document.getElementById('btn-play').addEventListener('click', startGame);

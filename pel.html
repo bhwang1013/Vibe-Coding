@@ -76,19 +76,35 @@
   }
   #combo-indicator .hot { color: #ffef7a; }
 
-  /* Footer hint */
-  #hint {
+  /* Mobile touch buttons */
+  #touch-controls {
     position: absolute;
-    bottom: 8px;
+    bottom: 90px;
     left: 0;
     right: 0;
-    text-align: center;
-    color: #eee;
-    font-size: clamp(12px, 3vw, 17px);
-    font-weight: 300;
-    pointer-events: none;
+    display: none;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 6;
+  }
+  #touch-controls.visible { display: flex; }
+  .touch-btn {
+    width: 78px;
+    height: 78px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.75);
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     user-select: none;
-    z-index: 5;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .touch-btn:active {
+    background: rgba(255,255,255,0.22);
   }
 
   /* Menu / overlays */
@@ -196,7 +212,11 @@
   </div>
 
   <div id="combo-indicator"></div>
-  <div id="hint">Use the left and right arrow keys to move. Press Esc to pause.</div>
+
+  <div id="touch-controls">
+    <div class="touch-btn" id="btn-left">&#9664;</div>
+    <div class="touch-btn" id="btn-right">&#9654;</div>
+  </div>
 
   <!-- Title menu -->
   <div id="menu" class="overlay">
@@ -390,8 +410,8 @@
     state = s;
     for (var k in overlays) overlays[k].classList.toggle('hidden', k !== s);
     var inGame = (s === 'playing');
-    document.getElementById('hint').style.display = inGame ? 'block' : 'none';
     document.getElementById('combo-indicator').style.display = inGame ? 'block' : 'none';
+    document.getElementById('touch-controls').classList.toggle('visible', inGame && isTouch);
     if (s === 'menu') { demoMode = true; pels = []; popups = []; particles = []; }
   }
 
@@ -591,6 +611,30 @@
       held.dir = 0;
     }
   });
+
+  var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+  // On-screen arrow buttons: tap steps one lane, holding repeats
+  function bindHold(id, dir) {
+    var el = document.getElementById(id);
+    var on = function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (state !== 'playing') return;
+      moveLane(dir);
+      held.dir = dir;
+      held.timer = HOLD_FIRST_DELAY;
+    };
+    var off = function () { if (held.dir === dir) held.dir = 0; };
+    el.addEventListener('touchstart', on, { passive: false });
+    el.addEventListener('touchend', off);
+    el.addEventListener('touchcancel', off);
+    el.addEventListener('mousedown', on);
+    el.addEventListener('mouseup', off);
+    el.addEventListener('mouseleave', off);
+  }
+  bindHold('btn-left', -1);
+  bindHold('btn-right', 1);
 
   // Touch / click: jump straight to the tapped lane
   function jumpToLane(clientX) {

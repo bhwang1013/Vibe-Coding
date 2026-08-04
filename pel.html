@@ -183,14 +183,25 @@
     text-align: center;
   }
   .badge.bronze { color: #d08a4a; border-color: #d08a4a; }
-  .badge.silver { color: #cfcfcf; border-color: #cfcfcf; }
-  .badge.gold { color: #ffd700; border-color: #ffd700; }
+  .badge.silver {
+    color: #e2e2e2;
+    border-color: #e2e2e2;
+    text-shadow: 0 0 6px rgba(226, 226, 226, 0.55);
+    box-shadow: 0 0 6px rgba(226, 226, 226, 0.25);
+  }
+  .badge.gold {
+    color: #ffd700;
+    border-color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  }
   .badge.legendary {
     color: #ff5ce1;
     border-color: #ff5ce1;
     text-shadow: 0 0 10px rgba(255, 92, 225, 0.7);
+    box-shadow: 0 0 12px rgba(255, 92, 225, 0.4);
   }
-  .badge.locked { color: #444; border-color: #333; text-shadow: none; }
+  .badge.locked { color: #444; border-color: #333; text-shadow: none; box-shadow: none; }
   @keyframes badgepulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.12); }

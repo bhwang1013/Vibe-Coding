@@ -301,7 +301,16 @@
     </div>
     <button class="menu-btn" id="btn-play">Play Game</button>
     <button class="menu-btn" id="btn-how">How to Play</button>
+    <button class="menu-btn" id="btn-scores">Top Scores</button>
     <div class="badge-row" id="menu-badges"></div>
+  </div>
+
+  <!-- Top scores -->
+  <div id="scores" class="overlay hidden">
+    <div id="scores-title" style="color:#fff; font-size: clamp(24px, 7vw, 40px); font-weight:300; letter-spacing: 3px; margin-bottom: 8px;">TOP SCORES</div>
+    <div class="badge-row" id="scores-badges"></div>
+    <div id="scores-table"></div>
+    <button class="menu-btn" id="btn-scores-back" style="margin-top: 24px;">Back</button>
   </div>
 
   <!-- How to play -->
@@ -428,9 +437,12 @@
     el.innerHTML = html;
   }
 
-  function renderScoreTable(scores, current) {
-    var el = document.getElementById('hs-table');
-    var html = '<div class="hs-title">TOP SCORES</div>';
+  function renderScoreTable(el, scores, current, showTitle) {
+    var html = showTitle ? '<div class="hs-title">TOP SCORES</div>' : '';
+    if (!scores.length) {
+      el.innerHTML = html + '<div class="hs-row"><span class="hs-score">No scores yet &mdash; play a game!</span></div>';
+      return;
+    }
     for (var i = 0; i < scores.length; i++) {
       var s = scores[i];
       var d = new Date(s.d);
@@ -591,13 +603,14 @@
     document.getElementById('final-combo').textContent = maxCombo;
     document.getElementById('new-best').style.visibility = isBest ? 'visible' : 'hidden';
     renderBadges(document.getElementById('badge-row'), prevBest, score);
-    renderScoreTable(scores, entry);
+    renderScoreTable(document.getElementById('hs-table'), scores, entry, true);
     setState('gameover');
   }
 
   var overlays = {
     menu: document.getElementById('menu'),
     howto: document.getElementById('howto'),
+    scores: document.getElementById('scores'),
     paused: document.getElementById('paused'),
     gameover: document.getElementById('gameover')
   };
@@ -922,6 +935,12 @@
   document.getElementById('btn-play').addEventListener('click', startGame);
   document.getElementById('btn-how').addEventListener('click', function () { setState('howto'); });
   document.getElementById('btn-back').addEventListener('click', function () { setState('menu'); });
+  document.getElementById('btn-scores').addEventListener('click', function () {
+    renderBadges(document.getElementById('scores-badges'), bestScore);
+    renderScoreTable(document.getElementById('scores-table'), loadScores(), null, false);
+    setState('scores');
+  });
+  document.getElementById('btn-scores-back').addEventListener('click', function () { setState('menu'); });
   document.getElementById('btn-resume').addEventListener('click', function () { setState('playing'); });
   document.getElementById('btn-quit').addEventListener('click', function () { setState('menu'); });
   document.getElementById('btn-again').addEventListener('click', startGame);

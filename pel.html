@@ -117,6 +117,7 @@
     justify-content: center;
     z-index: 10;
     background: transparent;
+    overflow-y: auto;
   }
   .overlay.hidden { display: none; }
 
@@ -159,11 +160,72 @@
 
   #gameover-title {
     color: #fff;
-    font-size: clamp(34px, 9vw, 56px);
+    font-size: clamp(30px, 8vw, 48px);
     font-weight: 300;
     letter-spacing: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
+
+  /* Badges */
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .badge {
+    border: 2px solid;
+    padding: 5px 10px;
+    font-size: clamp(11px, 2.8vw, 14px);
+    font-weight: 300;
+    letter-spacing: 1.5px;
+    text-align: center;
+  }
+  .badge.bronze { color: #d08a4a; border-color: #d08a4a; }
+  .badge.silver { color: #cfcfcf; border-color: #cfcfcf; }
+  .badge.gold { color: #ffd700; border-color: #ffd700; }
+  .badge.legendary {
+    color: #ff5ce1;
+    border-color: #ff5ce1;
+    text-shadow: 0 0 10px rgba(255, 92, 225, 0.7);
+  }
+  .badge.locked { color: #444; border-color: #333; text-shadow: none; }
+  @keyframes badgepulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .badge.fresh { animation: badgepulse 1s ease-in-out infinite; }
+  .badge .new-tag { display: block; font-size: 10px; color: #fff; letter-spacing: 2px; }
+
+  /* High-score table */
+  #hs-table {
+    margin: 10px 0 4px;
+    min-width: min(280px, 80vw);
+  }
+  .hs-title {
+    color: #fff;
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .hs-row {
+    display: flex;
+    gap: 14px;
+    color: #bbb;
+    font-weight: 300;
+    font-size: clamp(14px, 3.5vw, 18px);
+    line-height: 1.7;
+  }
+  .hs-row .hs-rank { width: 1.4em; color: #777; }
+  .hs-row .hs-score { flex: 1; color: #fff; }
+  .hs-row .hs-combo { color: #888; }
+  .hs-row .hs-date { color: #888; }
+  .hs-row.current, .hs-row.current .hs-score,
+  .hs-row.current .hs-rank, .hs-row.current .hs-combo,
+  .hs-row.current .hs-date { color: #ffef7a; }
   .stat-line {
     color: #ccc;
     font-size: clamp(18px, 4.5vw, 26px);
@@ -228,6 +290,7 @@
     </div>
     <button class="menu-btn" id="btn-play">Play Game</button>
     <button class="menu-btn" id="btn-how">How to Play</button>
+    <div class="badge-row" id="menu-badges"></div>
   </div>
 
   <!-- How to play -->
@@ -239,7 +302,8 @@
       <p>&bull; Catch a pel with the paddle and it's collected &mdash; consecutive catches build your <b>combo</b>, and higher combos earn bonus points.</p>
       <p>&bull; Miss a pel and you lose a life and your combo resets. You start with 3 lives.</p>
       <p>&bull; Special boxes fall too &mdash; catch them for power-ups: <b>&hearts;</b> extra life, <b>&harr;</b> wide paddle, <b>&#10052;</b> slow motion, <b>&times;2</b> double points. Missing a box costs nothing.</p>
-      <p>&bull; Pels fall faster and more often as time goes on. You can't win &mdash; just survive as long as you can.</p>
+      <p>&bull; Difficulty comes in waves &mdash; survive the hard peaks and you get an easier breather before the next, tougher one.</p>
+      <p>&bull; Earn badges: <b style="color:#d08a4a">500 Bronze</b>, <b style="color:#cfcfcf">1000 Silver</b>, <b style="color:#ffd700">1500 Gold</b>, <b style="color:#ff5ce1">2000 Legendary</b>.</p>
       <button class="menu-btn" id="btn-back" style="margin: 26px auto 0;">Back</button>
     </div>
   </div>
@@ -256,8 +320,9 @@
     <div id="gameover-title">GAME OVER</div>
     <div class="stat-line">Score: <span class="val" id="final-score">0</span></div>
     <div class="stat-line">Max Combo: <span class="val" id="final-combo">0</span></div>
-    <div class="stat-line">Best Score: <span class="val" id="best-score">0</span></div>
     <div id="new-best">&#9733; New Best! &#9733;</div>
+    <div class="badge-row" id="badge-row"></div>
+    <div id="hs-table"></div>
     <button class="menu-btn" id="btn-again">Play Again</button>
     <button class="menu-btn" id="btn-menu">Main Menu</button>
   </div>
@@ -324,6 +389,50 @@
   var graceTimer = 0; // world freeze after the wide paddle reverts
   var bestScore = 0;
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
+
+  var BADGES = [
+    { min: 500, name: 'BRONZE', cls: 'bronze' },
+    { min: 1000, name: 'SILVER', cls: 'silver' },
+    { min: 1500, name: 'GOLD', cls: 'gold' },
+    { min: 2000, name: 'LEGENDARY', cls: 'legendary' }
+  ];
+
+  function loadScores() {
+    try {
+      var raw = JSON.parse(localStorage.getItem('pel-scores') || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) { return []; }
+  }
+
+  // Badge chips: lit when earned; runScore/prevBest mark freshly earned ones
+  function renderBadges(el, prevBest, runScore) {
+    var html = '';
+    for (var i = 0; i < BADGES.length; i++) {
+      var b = BADGES[i];
+      var earned = bestScore >= b.min;
+      var fresh = runScore !== undefined && runScore >= b.min && prevBest < b.min;
+      html += '<div class="badge ' + b.cls + (earned ? '' : ' locked') + (fresh ? ' fresh' : '') + '">' +
+        b.name + (fresh ? '<span class="new-tag">NEW!</span>' : '') + '</div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderScoreTable(scores, current) {
+    var el = document.getElementById('hs-table');
+    var html = '<div class="hs-title">TOP SCORES</div>';
+    for (var i = 0; i < scores.length; i++) {
+      var s = scores[i];
+      var d = new Date(s.d);
+      var isCur = current && s.d === current.d && s.s === current.s;
+      html += '<div class="hs-row' + (isCur ? ' current' : '') + '">' +
+        '<span class="hs-rank">' + (i + 1) + '</span>' +
+        '<span class="hs-score">' + s.s + '</span>' +
+        '<span class="hs-combo">&times;' + s.c + '</span>' +
+        '<span class="hs-date">' + (d.getMonth() + 1) + '/' + d.getDate() + '</span>' +
+        '</div>';
+    }
+    el.innerHTML = html;
+  }
 
   var paddle = { lane: 1, x: 0, y: 0, w: 0, h: PADDLE_H };
   var held = { dir: 0, timer: 0 }; // arrow key held for continuous lane stepping
@@ -451,15 +560,27 @@
   }
 
   function endGame() {
+    var prevBest = bestScore;
     var isBest = score > bestScore;
     if (isBest) {
       bestScore = score;
       try { localStorage.setItem('pel-best', String(bestScore)); } catch (e) {}
     }
+
+    // record this run in the local top-5
+    var scores = loadScores();
+    var entry = { s: score, c: maxCombo, d: Date.now() };
+    scores.push(entry);
+    scores.sort(function (a, b) { return b.s - a.s || b.c - a.c; });
+    scores = scores.slice(0, 5);
+    try { localStorage.setItem('pel-scores', JSON.stringify(scores)); } catch (e) {}
+
+    specials = [];
     document.getElementById('final-score').textContent = score;
     document.getElementById('final-combo').textContent = maxCombo;
-    document.getElementById('best-score').textContent = bestScore;
     document.getElementById('new-best').style.visibility = isBest ? 'visible' : 'hidden';
+    renderBadges(document.getElementById('badge-row'), prevBest, score);
+    renderScoreTable(scores, entry);
     setState('gameover');
   }
 
@@ -477,7 +598,10 @@
     document.getElementById('combo-indicator').style.display = inGame ? 'block' : 'none';
     document.getElementById('fx-indicator').style.display = inGame ? 'block' : 'none';
     document.getElementById('touch-controls').classList.toggle('visible', inGame && isTouch);
-    if (s === 'menu') { demoMode = true; pels = []; popups = []; particles = []; }
+    if (s === 'menu') {
+      demoMode = true; pels = []; popups = []; particles = []; specials = [];
+      renderBadges(document.getElementById('menu-badges'), bestScore);
+    }
   }
 
   function moveLane(dir) {
@@ -810,6 +934,7 @@
     info: function () { return { state: state, score: score, combo: combo, lives: lives, lane: paddle.lane, fx: { wide: fx.wide, slow: fx.slow, double: fx.double }, specials: specials.map(function (s) { return { type: s.spec.type, lane: s.lane, y: s.y }; }), pels: pels.map(function (p) { return { lane: p.lane, y: p.y }; }) }; },
     setLane: function (l) { paddle.lane = clamp(l, 0, LANES - 1); paddle.x = laneX(paddle.lane); },
     setFx: function (type, secs) { fx[type] = secs; },
+    setScore: function (v) { score = v; },
     grace: function () { return graceTimer; },
     forceSpecial: function (type, lane) {
       var spec = null;

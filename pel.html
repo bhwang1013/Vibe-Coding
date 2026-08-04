@@ -210,9 +210,8 @@
   .badge .new-tag { display: block; font-size: 10px; color: #fff; letter-spacing: 2px; }
 
   /* High-score table */
-  #hs-table {
+  #hs-table, #scores-table {
     margin: 10px 0 4px;
-    min-width: min(280px, 80vw);
   }
   .hs-title {
     color: #fff;
@@ -224,16 +223,17 @@
   }
   .hs-row {
     display: flex;
-    gap: 14px;
+    justify-content: center;
+    gap: 4px;
     color: #bbb;
     font-weight: 300;
-    font-size: clamp(14px, 3.5vw, 18px);
-    line-height: 1.7;
+    font-size: clamp(15px, 3.8vw, 19px);
+    line-height: 1.8;
   }
-  .hs-row .hs-rank { width: 1.4em; color: #777; }
-  .hs-row .hs-score { flex: 1; color: #fff; }
-  .hs-row .hs-combo { color: #888; }
-  .hs-row .hs-date { color: #888; }
+  .hs-row .hs-rank { width: 1.6em; color: #777; }
+  .hs-row .hs-score { width: 3.2em; text-align: right; color: #fff; }
+  .hs-row .hs-combo { width: 3.4em; text-align: right; color: #888; }
+  .hs-row .hs-date { width: 3em; text-align: right; color: #888; }
   .hs-row.current, .hs-row.current .hs-score,
   .hs-row.current .hs-rank, .hs-row.current .hs-combo,
   .hs-row.current .hs-date { color: #ffef7a; }
@@ -485,13 +485,13 @@
   }
   function laneX(lane) { return laneWidth() * lane + LANE_MARGIN; } // paddle x for a lane
 
-  // Difficulty comes in waves: it climbs to a hard peak (~25s into each
-  // 50s cycle), eases back to a breather, then peaks a little higher each
-  // cycle, so runs last longer than a straight ramp would allow.
+  // Difficulty comes in waves: a hard peak ~22s into each 45s cycle, then
+  // a breather, with each peak (and breather) a little harder than the
+  // last. The first peak already bites and the second (~67s) is brutal.
   function difficulty() {
-    var creep = elapsed / 150; // slow permanent escalation across cycles
-    var wave = (1 - Math.cos(2 * Math.PI * elapsed / 50)) / 2; // 0 -> 1 -> 0 each cycle
-    return creep + wave * (1.2 + creep * 0.6);
+    var creep = elapsed / 90; // permanent escalation across cycles
+    var wave = (1 - Math.cos(2 * Math.PI * elapsed / 45)) / 2; // 0 -> 1 -> 0 each cycle
+    return creep + wave * (1.4 + creep * 0.6);
   }
   function spawnInterval() { return Math.max(0.38, 1.9 - difficulty() * 0.5); }
   function fallSpeed() { return 150 + difficulty() * 60 + rand(-15, 25); }

@@ -353,8 +353,14 @@
   }
   function laneX(lane) { return laneWidth() * lane + LANE_MARGIN; } // paddle x for a lane
 
-  // Difficulty scales with elapsed time and score
-  function difficulty() { return elapsed / 40 + score / 180; }
+  // Difficulty comes in waves: it climbs to a hard peak (~25s into each
+  // 50s cycle), eases back to a breather, then peaks a little higher each
+  // cycle, so runs last longer than a straight ramp would allow.
+  function difficulty() {
+    var creep = elapsed / 150; // slow permanent escalation across cycles
+    var wave = (1 - Math.cos(2 * Math.PI * elapsed / 50)) / 2; // 0 -> 1 -> 0 each cycle
+    return creep + wave * (1.2 + creep * 0.6);
+  }
   function spawnInterval() { return Math.max(0.38, 1.9 - difficulty() * 0.5); }
   function fallSpeed() { return 150 + difficulty() * 60 + rand(-15, 25); }
 
@@ -525,8 +531,8 @@
           if (fx[f] > 0) {
             var name = f === 'wide' ? 'WIDE' : f === 'slow' ? 'SLOW' : '×2 POINTS';
             fxText += name + ' ' + Math.ceil(fx[f]) + 's\n';
-          } else if (f === 'wide') {
-            graceTimer = WIDE_OFF_GRACE; // brief freeze so the player can re-position
+          } else if (f === 'wide' || f === 'slow') {
+            graceTimer = WIDE_OFF_GRACE; // brief freeze so the player can adjust
           }
         }
       }

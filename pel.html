@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PEL</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    touch-action: none;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  #game-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
+  /* HUD */
+  #hud {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    text-align: right;
+    color: #fff;
+    pointer-events: none;
+    user-select: none;
+    z-index: 5;
+  }
+  #score {
+    font-size: clamp(26px, 6vw, 40px);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+  #maxcombo {
+    font-size: clamp(16px, 3.8vw, 24px);
+    font-weight: 300;
+    margin-top: 2px;
+  }
+  #lives {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  #lives .life {
+    width: 14px;
+    height: 14px;
+    background: #fff;
+  }
+  #lives .life.lost { visibility: hidden; }
+
+  #combo-indicator {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    color: #888;
+    font-size: clamp(14px, 3.5vw, 20px);
+    font-weight: 300;
+    pointer-events: none;
+    user-select: none;
+    z-index: 5;
+  }
+  #combo-indicator .hot { color: #ffef7a; }
+
+  /* Footer hint */
+  #hint {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #eee;
+    font-size: clamp(12px, 3vw, 17px);
+    font-weight: 300;
+    pointer-events: none;
+    user-select: none;
+    z-index: 5;
+  }
+
+  /* Menu / overlays */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: transparent;
+  }
+  .overlay.hidden { display: none; }
+
+  #title-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+  #title-row .letter {
+    width: clamp(70px, 20vw, 120px);
+    height: clamp(70px, 20vw, 120px);
+    border: 3px solid #fff;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(44px, 13vw, 80px);
+    font-weight: 300;
+  }
+
+  .menu-btn {
+    display: block;
+    min-width: clamp(200px, 60vw, 280px);
+    margin: 10px 0;
+    padding: 14px 28px;
+    background: #000;
+    border: 2px solid #fff;
+    color: #fff;
+    font-size: clamp(18px, 4.5vw, 24px);
+    font-weight: 300;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .menu-btn:hover, .menu-btn:active {
+    background: #fff;
+    color: #000;
+  }
+
+  #gameover-title {
+    color: #fff;
+    font-size: clamp(34px, 9vw, 56px);
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+  .stat-line {
+    color: #ccc;
+    font-size: clamp(18px, 4.5vw, 26px);
+    font-weight: 300;
+    margin: 4px 0;
+  }
+  .stat-line .val { color: #fff; }
+  #new-best {
+    color: #ffef7a;
+    font-size: clamp(16px, 4vw, 22px);
+    margin: 10px 0 16px;
+    visibility: hidden;
+  }
+
+  #paused-title {
+    color: #fff;
+    font-size: clamp(30px, 8vw, 48px);
+    font-weight: 300;
+    letter-spacing: 6px;
+    margin-bottom: 28px;
+  }
+
+  #credit {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ddd;
+    font-size: clamp(11px, 2.8vw, 15px);
+    font-weight: 300;
+    pointer-events: none;
+  }
+
+  /* Mobile touch buttons */
+  #touch-controls {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: none;
+    justify-content: space-between;
+    padding: 0 18px;
+    z-index: 6;
+  }
+  #touch-controls.visible { display: flex; }
+  .touch-btn {
+    width: 74px;
+    height: 74px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.6);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .touch-btn:active {
+    background: rgba(255,255,255,0.18);
+  }
+</style>
+</head>
+<body>
+<div id="game-wrap">
+  <canvas id="game"></canvas>
+
+  <div id="hud">
+    <div id="score">Score: 0</div>
+    <div id="maxcombo">Max Combo: 0</div>
+    <div id="lives">
+      <div class="life"></div><div class="life"></div><div class="life"></div>
+    </div>
+  </div>
+
+  <div id="combo-indicator"></div>
+  <div id="hint">Use the left and right arrow keys to move. Press Esc to pause.</div>
+
+  <div id="touch-controls">
+    <div class="touch-btn" id="btn-left">&#9664;</div>
+    <div class="touch-btn" id="btn-right">&#9654;</div>
+  </div>
+
+  <!-- Title menu -->
+  <div id="menu" class="overlay">
+    <div id="title-row">
+      <div class="letter">P</div>
+      <div class="letter">E</div>
+      <div class="letter">L</div>
+    </div>
+    <button class="menu-btn" id="btn-play">Play Game</button>
+    <button class="menu-btn" id="btn-how">How to Play</button>
+    <div id="credit">A tribute to Pel &copy; scriptedfun.com &mdash; keep the pels bouncing!</div>
+  </div>
+
+  <!-- How to play -->
+  <div id="howto" class="overlay hidden">
+    <div style="max-width: 520px; padding: 0 24px; color:#ddd; font-weight:300; font-size: clamp(15px, 4vw, 20px); line-height: 1.7;">
+      <p style="color:#fff; font-size: clamp(22px, 6vw, 32px); margin-bottom: 16px;">How to Play</p>
+      <p>&bull; Pels (little squares) fall from the top of the screen.</p>
+      <p>&bull; Move the paddle with the <b>left / right arrow keys</b> (or touch and drag on mobile).</p>
+      <p>&bull; Bounce every pel to score. Consecutive bounces build your <b>combo</b> &mdash; higher combos earn bonus points.</p>
+      <p>&bull; If a pel falls past the paddle you lose a life and your combo resets. Lose all 3 lives and it's game over.</p>
+      <p>&bull; The longer you survive, the faster and more numerous the pels become.</p>
+      <button class="menu-btn" id="btn-back" style="margin: 26px auto 0;">Back</button>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div id="paused" class="overlay hidden">
+    <div id="paused-title">PAUSED</div>
+    <button class="menu-btn" id="btn-resume">Resume</button>
+    <button class="menu-btn" id="btn-quit">Quit to Menu</button>
+  </div>
+
+  <!-- Game over -->
+  <div id="gameover" class="overlay hidden">
+    <div id="gameover-title">GAME OVER</div>
+    <div class="stat-line">Score: <span class="val" id="final-score">0</span></div>
+    <div class="stat-line">Max Combo: <span class="val" id="final-combo">0</span></div>
+    <div class="stat-line">Best Score: <span class="val" id="best-score">0</span></div>
+    <div id="new-best">&#9733; New Best! &#9733;</div>
+    <button class="menu-btn" id="btn-again">Play Again</button>
+    <button class="menu-btn" id="btn-menu">Main Menu</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Canvas setup ----------
+  var canvas = document.getElementById('game');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0, DPR = 1;
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    paddle.y = H - PADDLE_BOTTOM_OFFSET;
+    paddle.x = clamp(paddle.x, 0, W - paddle.w);
+  }
+
+  // ---------- Constants ----------
+  var PADDLE_BOTTOM_OFFSET = 64;   // paddle distance from bottom
+  var PADDLE_H = 14;
+  var PADDLE_W_BASE = 170;
+  var PADDLE_SPEED = 620;          // px/s
+  var GRAVITY = 640;               // px/s^2
+  var PEL_SIZE = 16;
+  var TRAIL_LEN = 7;
+  var START_LIVES = 3;
+
+  var COLORS = ['#7af7ff', '#ff7ae0', '#8dff7a', '#fff27a', '#c09aff', '#ffb37a'];
+
+  // ---------- State ----------
+  var state = 'menu'; // menu | howto | playing | paused | gameover
+  var pels = [];
+  var popups = [];
+  var particles = [];
+  var score = 0, combo = 0, maxCombo = 0, lives = START_LIVES;
+  var elapsed = 0;         // seconds of play
+  var spawnTimer = 0;
+  var bestScore = 0;
+  try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
+
+  var paddle = { x: 0, y: 0, w: PADDLE_W_BASE, h: PADDLE_H };
+
+  var keys = { left: false, right: false };
+  var touchTargetX = null;   // drag-to-move target
+
+  // Demo pels for the menu background
+  var demoMode = true;
+
+  // ---------- Helpers ----------
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
+
+  // Difficulty scales with elapsed time and score
+  function difficulty() { return elapsed / 45 + score / 220; }
+  function spawnInterval() { return Math.max(0.45, 2.2 - difficulty() * 0.55); }
+  function fallSpeed() { return 90 + difficulty() * 55 + rand(-15, 25); }
+
+  // Combo bonus: every bounce is worth 1 + floor(combo / 10)
+  function bounceValue() { return 1 + Math.floor(combo / 10); }
+
+  // ---------- Entities ----------
+  function spawnPel(demo) {
+    var size = PEL_SIZE * rand(0.8, 1.25);
+    pels.push({
+      x: rand(size, Math.max(size + 1, W - size * 2)),
+      y: -size,
+      vx: rand(-40, 40),
+      vy: demo ? rand(40, 120) : fallSpeed(),
+      size: size,
+      color: pick(COLORS),
+      trail: [],
+      demo: !!demo
+    });
+  }
+
+  function addPopup(x, y, text) {
+    popups.push({ x: x, y: y, text: text, life: 0.9, t: 0 });
+  }
+
+  function burst(x, y, color) {
+    for (var i = 0; i < 10; i++) {
+      particles.push({
+        x: x, y: y,
+        vx: rand(-160, 160),
+        vy: rand(-220, -40),
+        size: rand(2, 5),
+        color: color,
+        life: rand(0.3, 0.6),
+        t: 0
+      });
+    }
+  }
+
+  // ---------- Game flow ----------
+  function resetGame() {
+    pels = [];
+    popups = [];
+    particles = [];
+    score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
+    elapsed = 0; spawnTimer = 0.4;
+    paddle.w = PADDLE_W_BASE;
+    paddle.x = (W - paddle.w) / 2;
+    paddle.y = H - PADDLE_BOTTOM_OFFSET;
+    touchTargetX = null;
+    updateHud();
+  }
+
+  function startGame() {
+    demoMode = false;
+    resetGame();
+    setState('playing');
+  }
+
+  function endGame() {
+    var isBest = score > bestScore;
+    if (isBest) {
+      bestScore = score;
+      try { localStorage.setItem('pel-best', String(bestScore)); } catch (e) {}
+    }
+    document.getElementById('final-score').textContent = score;
+    document.getElementById('final-combo').textContent = maxCombo;
+    document.getElementById('best-score').textContent = bestScore;
+    document.getElementById('new-best').style.visibility = isBest ? 'visible' : 'hidden';
+    setState('gameover');
+  }
+
+  var overlays = {
+    menu: document.getElementById('menu'),
+    howto: document.getElementById('howto'),
+    paused: document.getElementById('paused'),
+    gameover: document.getElementById('gameover')
+  };
+
+  function setState(s) {
+    state = s;
+    for (var k in overlays) overlays[k].classList.toggle('hidden', k !== s);
+    var inGame = (s === 'playing');
+    document.getElementById('hint').style.display = inGame ? 'block' : 'none';
+    document.getElementById('combo-indicator').style.display = inGame ? 'block' : 'none';
+    document.getElementById('touch-controls').classList.toggle('visible', inGame && isTouch);
+    if (s === 'menu') { demoMode = true; pels = []; popups = []; particles = []; }
+  }
+
+  // ---------- HUD ----------
+  var scoreEl = document.getElementById('score');
+  var maxComboEl = document.getElementById('maxcombo');
+  var comboEl = document.getElementById('combo-indicator');
+  var lifeEls = document.querySelectorAll('#lives .life');
+
+  function updateHud() {
+    scoreEl.textContent = 'Score: ' + score;
+    maxComboEl.textContent = 'Max Combo: ' + maxCombo;
+    for (var i = 0; i < lifeEls.length; i++) {
+      lifeEls[i].classList.toggle('lost', i >= lives);
+    }
+    if (combo >= 2) {
+      comboEl.innerHTML = 'Combo: <span class="' + (combo >= 10 ? 'hot' : '') + '">' + combo + 'x</span>';
+    } else {
+      comboEl.innerHTML = '';
+    }
+  }
+
+  // ---------- Update ----------
+  function update(dt) {
+    var playing = (state === 'playing');
+
+    if (playing || demoMode) {
+      // spawn
+      spawnTimer -= dt;
+      if (spawnTimer <= 0) {
+        spawnPel(demoMode);
+        spawnTimer = demoMode ? rand(0.5, 1.4) : spawnInterval();
+      }
+    }
+
+    if (playing) {
+      elapsed += dt;
+
+      // paddle movement — keyboard
+      var dir = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+      if (dir !== 0) {
+        paddle.x += dir * PADDLE_SPEED * dt;
+        touchTargetX = null;
+      } else if (touchTargetX !== null) {
+        // drag: ease toward target
+        var target = clamp(touchTargetX - paddle.w / 2, 0, W - paddle.w);
+        var delta = target - paddle.x;
+        var maxStep = PADDLE_SPEED * 1.6 * dt;
+        paddle.x += clamp(delta, -maxStep, maxStep);
+      }
+      paddle.x = clamp(paddle.x, 0, W - paddle.w);
+    }
+
+    // pels
+    var floorY = playing ? H : H + 200; // demo pels just fall out
+    for (var i = pels.length - 1; i >= 0; i--) {
+      var p = pels[i];
+
+      p.trail.push({ x: p.x, y: p.y });
+      if (p.trail.length > TRAIL_LEN) p.trail.shift();
+
+      p.vy += GRAVITY * dt * (p.demo ? 0.25 : 1);
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+
+      // walls
+      if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+      if (p.x > W - p.size) { p.x = W - p.size; p.vx = -Math.abs(p.vx); }
+
+      if (playing) {
+        // paddle collision (only while falling)
+        if (p.vy > 0 &&
+            p.y + p.size >= paddle.y &&
+            p.y + p.size <= paddle.y + paddle.h + Math.max(14, p.vy * dt * 2) &&
+            p.x + p.size > paddle.x &&
+            p.x < paddle.x + paddle.w) {
+
+          combo++;
+          if (combo > maxCombo) maxCombo = combo;
+          var gained = bounceValue();
+          score += gained;
+
+          // bounce: vertical kick + angle based on where it hit the paddle
+          var hitPos = ((p.x + p.size / 2) - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+          p.vy = -rand(480, 620) - difficulty() * 18;
+          p.vx = hitPos * 260 + rand(-30, 30);
+          p.y = paddle.y - p.size;
+
+          addPopup(p.x + p.size + 8, p.y - 6, '+' + gained);
+          burst(p.x + p.size / 2, paddle.y, p.color);
+          updateHud();
+          continue;
+        }
+
+        // missed — fell past the bottom
+        if (p.y > H) {
+          pels.splice(i, 1);
+          combo = 0;
+          lives--;
+          updateHud();
+          if (lives <= 0) { endGame(); return; }
+          continue;
+        }
+      } else if (p.y > floorY) {
+        pels.splice(i, 1);
+      }
+    }
+
+    // popups
+    for (var j = popups.length - 1; j >= 0; j--) {
+      var pop = popups[j];
+      pop.t += dt;
+      pop.y -= 40 * dt;
+      if (pop.t >= pop.life) popups.splice(j, 1);
+    }
+
+    // particles
+    for (var k = particles.length - 1; k >= 0; k--) {
+      var pt = particles[k];
+      pt.t += dt;
+      pt.vy += GRAVITY * 0.6 * dt;
+      pt.x += pt.vx * dt;
+      pt.y += pt.vy * dt;
+      if (pt.t >= pt.life) particles.splice(k, 1);
+    }
+  }
+
+  // ---------- Render ----------
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    // trails + pels
+    for (var i = 0; i < pels.length; i++) {
+      var p = pels[i];
+      for (var t = 0; t < p.trail.length; t++) {
+        var frac = (t + 1) / (p.trail.length + 1); // older = smaller/fainter
+        var ts = p.size * frac * 0.75;
+        ctx.globalAlpha = frac * 0.55;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.trail[t].x + (p.size - ts) / 2, p.trail[t].y + (p.size - ts) / 2, ts, ts);
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+
+    // particles
+    for (var k = 0; k < particles.length; k++) {
+      var pt = particles[k];
+      ctx.globalAlpha = 1 - pt.t / pt.life;
+      ctx.fillStyle = pt.color;
+      ctx.fillRect(pt.x, pt.y, pt.size, pt.size);
+    }
+    ctx.globalAlpha = 1;
+
+    // paddle
+    if (state === 'playing' || state === 'paused') {
+      ctx.fillStyle = '#aaa';
+      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+    }
+
+    // popups
+    ctx.font = '300 26px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#fff';
+    for (var j = 0; j < popups.length; j++) {
+      var pop = popups[j];
+      ctx.globalAlpha = 1 - pop.t / pop.life;
+      ctx.fillText(pop.text, pop.x, pop.y);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Main loop ----------
+  var lastTime = 0;
+  function frame(now) {
+    var dt = Math.min((now - lastTime) / 1000, 1 / 20);
+    lastTime = now;
+    if (state !== 'paused') update(dt);
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- Input ----------
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { keys.left = true; e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { keys.right = true; e.preventDefault(); }
+    else if (e.key === 'Escape') {
+      if (state === 'playing') setState('paused');
+      else if (state === 'paused') setState('playing');
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      if (state === 'menu') startGame();
+      else if (state === 'gameover') startGame();
+      else if (state === 'paused') setState('playing');
+    }
+  });
+  document.addEventListener('keyup', function (e) {
+    if (e.key === 'ArrowLeft') keys.left = false;
+    else if (e.key === 'ArrowRight') keys.right = false;
+  });
+
+  // Touch: drag anywhere on the canvas to move the paddle
+  var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+  function onPointerMove(clientX) {
+    if (state === 'playing') touchTargetX = clientX;
+  }
+  canvas.addEventListener('touchstart', function (e) {
+    if (e.touches.length) onPointerMove(e.touches[0].clientX);
+  }, { passive: true });
+  canvas.addEventListener('touchmove', function (e) {
+    if (e.touches.length) onPointerMove(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('mousemove', function (e) {
+    if (e.buttons === 1) onPointerMove(e.clientX);
+  });
+  canvas.addEventListener('mousedown', function (e) { onPointerMove(e.clientX); });
+
+  // On-screen buttons
+  function bindHold(id, key) {
+    var el = document.getElementById(id);
+    var on = function (e) { keys[key] = true; e.preventDefault(); };
+    var off = function () { keys[key] = false; };
+    el.addEventListener('touchstart', on, { passive: false });
+    el.addEventListener('touchend', off);
+    el.addEventListener('touchcancel', off);
+    el.addEventListener('mousedown', on);
+    el.addEventListener('mouseup', off);
+    el.addEventListener('mouseleave', off);
+  }
+  bindHold('btn-left', 'left');
+  bindHold('btn-right', 'right');
+
+  // Menu buttons
+  document.getElementById('btn-play').addEventListener('click', startGame);
+  document.getElementById('btn-how').addEventListener('click', function () { setState('howto'); });
+  document.getElementById('btn-back').addEventListener('click', function () { setState('menu'); });
+  document.getElementById('btn-resume').addEventListener('click', function () { setState('playing'); });
+  document.getElementById('btn-quit').addEventListener('click', function () { setState('menu'); });
+  document.getElementById('btn-again').addEventListener('click', startGame);
+  document.getElementById('btn-menu').addEventListener('click', function () { setState('menu'); });
+
+  // Pause when the tab loses focus
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && state === 'playing') setState('paused');
+  });
+
+  // ---------- Boot ----------
+  window.addEventListener('resize', resize);
+  resize();
+  paddle.x = (W - paddle.w) / 2;
+  setState('menu');
+  spawnTimer = 0.2;
+  requestAnimationFrame(function (now) { lastTime = now; requestAnimationFrame(frame); });
+})();
+</script>
+</body>
+</html>

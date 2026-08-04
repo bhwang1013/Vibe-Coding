@@ -426,7 +426,7 @@
     fx.wide = 0; fx.slow = 0; fx.double = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
-    specialTimer = rand(8, 14);
+    specialTimer = rand(3, 6);
     paddle.lane = 1;
     held.dir = 0;
     paddle.y = H - PADDLE_BOTTOM_OFFSET;
@@ -546,7 +546,7 @@
       specialTimer -= dt;
       if (specialTimer <= 0) {
         spawnSpecial();
-        specialTimer = rand(9, 16);
+        specialTimer = rand(4, 8);
       }
       for (var s = specials.length - 1; s >= 0; s--) {
         var sp = specials[s];

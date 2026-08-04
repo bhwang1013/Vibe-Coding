@@ -268,7 +268,9 @@
   var LANE_MARGIN = 10;            // gap between paddle edge and lane edge
   var PADDLE_BOTTOM_OFFSET = 64;   // paddle distance from bottom
   var PADDLE_H = 14;
-  var PADDLE_SLIDE_SPEED = 3200;   // px/s snap between lanes
+  var PADDLE_SLIDE_SPEED = 9000;   // px/s snap between lanes
+  var HOLD_FIRST_DELAY = 0.18;     // s before held key starts repeating
+  var HOLD_REPEAT_DELAY = 0.08;    // s between lane steps while held
   var PEL_SIZE = 18;
   var TRAIL_LEN = 7;
   var START_LIVES = 3;
@@ -287,6 +289,7 @@
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
 
   var paddle = { lane: 1, x: 0, y: 0, w: 0, h: PADDLE_H };
+  var held = { dir: 0, timer: 0 }; // arrow key held for continuous lane stepping
 
   // Demo pels for the menu background
   var demoMode = true;
@@ -350,6 +353,7 @@
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
     paddle.lane = 1;
+    held.dir = 0;
     paddle.y = H - PADDLE_BOTTOM_OFFSET;
     paddle.w = laneWidth() - LANE_MARGIN * 2;
     paddle.x = laneX(paddle.lane);
@@ -429,6 +433,15 @@
     if (playing) {
       elapsed += dt;
 
+      // held arrow key keeps stepping lanes
+      if (held.dir !== 0) {
+        held.timer -= dt;
+        if (held.timer <= 0) {
+          moveLane(held.dir);
+          held.timer = HOLD_REPEAT_DELAY;
+        }
+      }
+
       // slide paddle toward its lane position
       var target = laneX(paddle.lane);
       var delta = target - paddle.x;
@@ -446,11 +459,10 @@
       p.y += p.vy * dt;
 
       if (playing) {
-        // catch: pel reaches paddle level while overlapping the paddle
+        // catch: pel reaches paddle level while the paddle is in (or headed to) its lane
         if (p.y + p.size >= paddle.y &&
             p.y <= paddle.y + paddle.h &&
-            p.x + p.size > paddle.x &&
-            p.x < paddle.x + paddle.w) {
+            paddle.lane === p.lane) {
 
           combo++;
           if (combo > maxCombo) maxCombo = combo;
@@ -556,11 +568,13 @@
 
   // ---------- Input ----------
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft') {
-      if (state === 'playing' && !e.repeat) moveLane(-1);
-      e.preventDefault();
-    } else if (e.key === 'ArrowRight') {
-      if (state === 'playing' && !e.repeat) moveLane(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      var dir = e.key === 'ArrowLeft' ? -1 : 1;
+      if (state === 'playing' && !e.repeat) {
+        moveLane(dir);
+        held.dir = dir;
+        held.timer = HOLD_FIRST_DELAY;
+      }
       e.preventDefault();
     } else if (e.key === 'Escape') {
       if (state === 'playing') setState('paused');
@@ -569,6 +583,12 @@
       if (state === 'menu') startGame();
       else if (state === 'gameover') startGame();
       else if (state === 'paused') setState('playing');
+    }
+  });
+  document.addEventListener('keyup', function (e) {
+    if ((e.key === 'ArrowLeft' && held.dir === -1) ||
+        (e.key === 'ArrowRight' && held.dir === 1)) {
+      held.dir = 0;
     }
   });
 

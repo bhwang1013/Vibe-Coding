@@ -89,13 +89,13 @@
   }
   #touch-controls.visible { display: flex; }
   .touch-btn {
-    width: 78px;
-    height: 78px;
+    width: 48px;
+    height: 48px;
     border: 2px solid rgba(255,255,255,0.4);
     border-radius: 50%;
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.75);
-    font-size: 32px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -298,6 +298,7 @@
   var MAX_LIVES = 5;
   var SPECIAL_SIZE = 34;
   var SLOW_FACTOR = 0.45;
+  var WIDE_OFF_GRACE = 0.5;        // s the world freezes when the wide paddle reverts
 
   // Falling power-up boxes
   var SPECIAL_TYPES = [
@@ -320,6 +321,7 @@
   var spawnTimer = 0;
   var specialTimer = 0;
   var fx = { wide: 0, slow: 0, double: 0 }; // seconds remaining per effect
+  var graceTimer = 0; // world freeze after the wide paddle reverts
   var bestScore = 0;
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
 
@@ -424,6 +426,7 @@
     particles = [];
     specials = [];
     fx.wide = 0; fx.slow = 0; fx.double = 0;
+    graceTimer = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
     specialTimer = rand(3, 6);
@@ -499,7 +502,7 @@
   function update(dt) {
     var playing = (state === 'playing');
 
-    if (playing || demoMode) {
+    if ((playing && graceTimer <= 0) || demoMode) {
       spawnTimer -= dt;
       if (spawnTimer <= 0) {
         spawnPel(demoMode);
@@ -509,6 +512,7 @@
 
     var slowMul = (playing && fx.slow > 0) ? SLOW_FACTOR : 1;
     var span = paddleSpan();
+    var frozen = false;
 
     if (playing) {
       elapsed += dt;
@@ -521,10 +525,17 @@
           if (fx[f] > 0) {
             var name = f === 'wide' ? 'WIDE' : f === 'slow' ? 'SLOW' : '×2 POINTS';
             fxText += name + ' ' + Math.ceil(fx[f]) + 's\n';
+          } else if (f === 'wide') {
+            graceTimer = WIDE_OFF_GRACE; // brief freeze so the player can re-position
           }
         }
       }
       fxEl.textContent = fxText;
+
+      if (graceTimer > 0) {
+        graceTimer = Math.max(0, graceTimer - dt);
+        frozen = graceTimer > 0;
+      }
 
       // held arrow key keeps stepping lanes
       if (held.dir !== 0) {
@@ -543,14 +554,16 @@
       paddle.x += clamp(delta, -maxStep, maxStep);
 
       // special power-up boxes
-      specialTimer -= dt;
-      if (specialTimer <= 0) {
-        spawnSpecial();
-        specialTimer = rand(4, 8);
+      if (!frozen) {
+        specialTimer -= dt;
+        if (specialTimer <= 0) {
+          spawnSpecial();
+          specialTimer = rand(4, 8);
+        }
       }
       for (var s = specials.length - 1; s >= 0; s--) {
         var sp = specials[s];
-        sp.y += sp.vy * slowMul * dt;
+        if (!frozen) sp.y += sp.vy * slowMul * dt;
         if (sp.y + SPECIAL_SIZE >= paddle.y &&
             sp.y <= paddle.y + paddle.h &&
             sp.lane >= span.first && sp.lane <= span.last) {
@@ -572,7 +585,7 @@
       p.trail.push({ x: p.x, y: p.y });
       if (p.trail.length > TRAIL_LEN) p.trail.shift();
 
-      p.y += p.vy * (p.demo ? 1 : slowMul) * dt;
+      if (!frozen || p.demo) p.y += p.vy * (p.demo ? 1 : slowMul) * dt;
 
       if (playing) {
         // catch: pel reaches paddle level while the paddle is in (or headed to) its lane
@@ -670,9 +683,9 @@
     }
     ctx.globalAlpha = 1;
 
-    // paddle
+    // paddle (flashes white during the post-wide grace beat)
     if (state === 'playing' || state === 'paused') {
-      ctx.fillStyle = '#aaa';
+      ctx.fillStyle = graceTimer > 0 ? '#fff' : '#aaa';
       ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
     }
 
@@ -790,6 +803,8 @@
   window.__pel = {
     info: function () { return { state: state, score: score, combo: combo, lives: lives, lane: paddle.lane, fx: { wide: fx.wide, slow: fx.slow, double: fx.double }, specials: specials.map(function (s) { return { type: s.spec.type, lane: s.lane, y: s.y }; }), pels: pels.map(function (p) { return { lane: p.lane, y: p.y }; }) }; },
     setLane: function (l) { paddle.lane = clamp(l, 0, LANES - 1); paddle.x = laneX(paddle.lane); },
+    setFx: function (type, secs) { fx[type] = secs; },
+    grace: function () { return graceTimer; },
     forceSpecial: function (type, lane) {
       var spec = null;
       for (var i = 0; i < SPECIAL_TYPES.length; i++) if (SPECIAL_TYPES[i].type === type) spec = SPECIAL_TYPES[i];

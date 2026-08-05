@@ -328,7 +328,7 @@
 
     /* Set table */
     .set-table-head {
-      display: grid; grid-template-columns: 30px 1fr 1fr 1fr 44px;
+      display: grid; grid-template-columns: 28px 1fr 1fr 1fr 40px 22px;
       gap: 4px; padding: 8px 14px; border-bottom: 1px solid var(--line);
       background: rgba(0,0,0,.25);
     }
@@ -340,7 +340,7 @@
 
     .set-rows { display: flex; flex-direction: column; }
     .set-row {
-      display: grid; grid-template-columns: 30px 1fr 1fr 1fr 44px;
+      display: grid; grid-template-columns: 28px 1fr 1fr 1fr 40px 22px;
       gap: 4px; align-items: center; padding: 7px 14px;
       border-bottom: 1px solid rgba(35,41,46,.5);
       border-left: 2px solid transparent;
@@ -385,6 +385,14 @@
     .set-row.done .btn-check {
       background: var(--ember-deep); border-color: var(--ember-deep); color: #0b0d0e;
     }
+
+    .btn-del-set {
+      color: var(--text-faint); font-size: .7rem; line-height: 1;
+      padding: 4px 2px; border-radius: var(--r); justify-self: center;
+      opacity: .35; transition: color .15s, opacity .15s;
+    }
+    .btn-del-set:hover { color: var(--blood-hi); opacity: 1; }
+    .set-row.done .btn-del-set { opacity: .5; }
 
     .btn-add-set {
       width: 100%; padding: 11px; color: var(--text-dim);
@@ -1551,10 +1559,12 @@ function renderWorkout() {
   document.getElementById('workoutBody').addEventListener('click', e=>{
     const check    = e.target.closest('.btn-check');
     const addSet   = e.target.closest('.btn-add-set');
+    const delSet   = e.target.closest('.btn-del-set');
     const delEx    = e.target.closest('.btn-del-ex');
     const progress = e.target.closest('.btn-ex-progress');
     if (check)    { toggleDone(+check.dataset.ex, +check.dataset.set); return; }
     if (addSet)   { addNewSet(+addSet.dataset.addSet);                  return; }
+    if (delSet)   { removeSet(+delSet.dataset.delSetEx, +delSet.dataset.delSetIdx); return; }
     if (delEx)    { removeEx(+delEx.dataset.delEx);                     return; }
     if (progress) { openProgressChart(progress.dataset.exname);         return; }
   });
@@ -1571,7 +1581,7 @@ function renderExBlock(ex, exIdx) {
       <button class="btn-del-ex" data-del-ex="${exIdx}" aria-label="Remove">✕</button>
     </div>
     <div class="set-table-head">
-      <span>Set</span><span>Previous</span><span>lbs</span><span>Reps</span><span></span>
+      <span>Set</span><span>Previous</span><span>lbs</span><span>Reps</span><span></span><span></span>
     </div>
     <div class="set-rows">${ex.sets.map((s,si)=>renderSetRow(s,exIdx,si)).join('')}</div>
     <button class="btn-add-set" data-add-set="${exIdx}">+ Add Set</button>
@@ -1586,6 +1596,7 @@ function renderSetRow(set, exIdx, setIdx) {
     <input class="set-input" type="number" inputmode="decimal"  placeholder="lbs"  value="${escHtml(set.weight)}" data-field="weight" data-ex="${exIdx}" data-set="${setIdx}"/>
     <input class="set-input" type="number" inputmode="numeric"  placeholder="reps" value="${escHtml(set.reps)}"   data-field="reps"   data-ex="${exIdx}" data-set="${setIdx}"/>
     <button class="btn-check" data-ex="${exIdx}" data-set="${setIdx}" aria-label="Complete">✓</button>
+    <button class="btn-del-set" data-del-set-ex="${exIdx}" data-del-set-idx="${setIdx}" aria-label="Remove set ${setIdx+1}" title="Remove set">✕</button>
   </div>`;
 }
 
@@ -1611,8 +1622,24 @@ function addNewSet(exIdx) {
   const si2 = ex.sets.length - 1;
   const div = document.createElement('div');
   div.innerHTML = renderSetRow(ex.sets[si2], exIdx, si2);
+  const row   = div.firstElementChild;   // appendChild moves it out of div
   const block = document.querySelector(`[data-ex-block="${exIdx}"] .set-rows`);
-  if (block) { block.appendChild(div.firstElementChild); div.firstElementChild.querySelector('input').focus(); }
+  if (block && row) { block.appendChild(row); row.querySelector('input')?.focus(); }
+}
+
+function removeSet(exIdx, setIdx) {
+  const ex = state.workout.exercises[exIdx];
+  if (!ex || !ex.sets[setIdx]) return;
+  ex.sets.splice(setIdx, 1);
+  saveActive();
+  // Every later set's index shifted, so re-render this block to keep the
+  // data-set attributes in sync. Other blocks keep their indices.
+  const block = document.querySelector(`[data-ex-block="${exIdx}"]`);
+  if (block) {
+    const div = document.createElement('div');
+    div.innerHTML = renderExBlock(ex, exIdx);
+    block.replaceWith(div.firstElementChild);
+  }
 }
 
 function removeEx(exIdx) {

@@ -76,6 +76,19 @@
   }
   #combo-indicator .hot { color: #ffef7a; }
 
+  #mute {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    color: #888;
+    font-size: 22px;
+    z-index: 20;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* Mobile touch buttons */
   #touch-controls {
     position: absolute;
@@ -286,6 +299,7 @@
 
   <div id="combo-indicator"></div>
   <div id="fx-indicator"></div>
+  <div id="mute" title="Toggle sound">&#128266;</div>
 
   <div id="touch-controls">
     <div class="touch-btn" id="btn-left">&#9664;</div>
@@ -464,6 +478,67 @@
   // Demo pels for the menu background
   var demoMode = true;
 
+  // ---------- Sound & haptics ----------
+  var muted = false;
+  try { muted = localStorage.getItem('pel-muted') === '1'; } catch (e) {}
+  var audioCtx = null;
+
+  function ac() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function tone(freq, dur, type, vol, delay) {
+    if (muted) return;
+    try {
+      var c = ac();
+      if (!c) return;
+      var t0 = c.currentTime + (delay || 0);
+      var o = c.createOscillator();
+      var g = c.createGain();
+      o.type = type || 'square';
+      o.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.linearRampToValueAtTime(vol || 0.08, t0 + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t0); o.stop(t0 + dur + 0.02);
+    } catch (e) {}
+  }
+
+  function buzz(pattern) {
+    try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+  }
+
+  // catch blip rises a semitone per combo, capped two octaves up
+  function sndCatch(c) { tone(330 * Math.pow(2, Math.min(c, 24) / 12), 0.07, 'square', 0.07); buzz(12); }
+  function sndMiss() { tone(130, 0.22, 'sawtooth', 0.1); tone(90, 0.28, 'sawtooth', 0.08, 0.05); buzz(70); }
+  function sndSpecial() { tone(620, 0.09, 'triangle', 0.1); tone(930, 0.12, 'triangle', 0.1, 0.09); buzz([20, 40, 20]); }
+  function sndGameOver() { tone(392, 0.18, 'square', 0.09); tone(294, 0.18, 'square', 0.09, 0.18); tone(196, 0.34, 'square', 0.1, 0.36); buzz([80, 60, 140]); }
+
+  var muteEl = document.getElementById('mute');
+  function renderMute() { muteEl.innerHTML = muted ? '&#128263;' : '&#128266;'; }
+  muteEl.addEventListener('click', function () {
+    muted = !muted;
+    try { localStorage.setItem('pel-muted', muted ? '1' : '0'); } catch (e) {}
+    renderMute();
+    if (!muted) tone(660, 0.08, 'square', 0.07);
+  });
+  renderMute();
+
+  // browsers require a user gesture before audio can start
+  ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+    document.addEventListener(ev, function once() {
+      document.removeEventListener(ev, once);
+      if (!muted) ac();
+    });
+  });
+
   // ---------- Helpers ----------
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
   function rand(a, b) { return a + Math.random() * (b - a); }
@@ -614,6 +689,7 @@
   }
 
   function endGame() {
+    sndGameOver();
     var prevBest = bestScore;
     var isBest = score > bestScore;
     if (isBest) {
@@ -756,6 +832,7 @@
             sp.y <= paddle.y + paddle.h &&
             sp.lane >= span.first && sp.lane <= span.last) {
           applySpecial(sp.spec);
+          sndSpecial();
           addPopup(sp.x - 20, sp.y - 10, sp.spec.label);
           burst(sp.x + SPECIAL_SIZE / 2, paddle.y, '#ffffff');
           specials.splice(s, 1);
@@ -786,6 +863,7 @@
           var gained = catchValue();
           score += gained;
 
+          sndCatch(combo);
           addPopup(p.x + p.size + 10, p.y - 4, '+' + gained);
           burst(p.x + p.size / 2, paddle.y, p.color);
           pels.splice(i, 1);
@@ -798,6 +876,7 @@
           pels.splice(i, 1);
           combo = 0;
           lives--;
+          sndMiss();
           updateHud();
           if (lives <= 0) { endGame(); return; }
           continue;

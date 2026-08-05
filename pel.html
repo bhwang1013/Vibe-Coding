@@ -422,6 +422,7 @@
   var specialTimer = 0;
   var fx = { wide: 0, slow: 0, double: 0 }; // seconds remaining per effect
   var graceTimer = 0; // world freeze after the wide paddle reverts
+  var flashAlpha = 0; // red screen flash when a life is lost
   var bestScore = 0;
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
 
@@ -515,6 +516,25 @@
     try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
   }
 
+  // iOS mutes Web Audio when the ringer switch is silent unless the page
+  // holds a "playback" media session: declare it via the Audio Session API
+  // where available, and keep a looping near-silent <audio> element alive
+  // so the session sticks.
+  var keeper = null;
+  function ensurePlaybackSession() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    try {
+      if (!keeper) {
+        keeper = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA');
+        keeper.loop = true;
+        keeper.volume = 0.001;
+        keeper.setAttribute('playsinline', '');
+      }
+      var p = keeper.play();
+      if (p && p.catch) p.catch(function () {});
+    } catch (e) {}
+  }
+
   // catch blip rises a semitone per combo, capped two octaves up
   function sndCatch(c) { tone(330 * Math.pow(2, Math.min(c, 24) / 12), 0.07, 'square', 0.07); buzz(12); }
   function sndMiss() { tone(130, 0.22, 'sawtooth', 0.1); tone(90, 0.28, 'sawtooth', 0.08, 0.05); buzz(70); }
@@ -527,7 +547,12 @@
     muted = !muted;
     try { localStorage.setItem('pel-muted', muted ? '1' : '0'); } catch (e) {}
     renderMute();
-    if (!muted) tone(660, 0.08, 'square', 0.07);
+    if (muted) {
+      if (keeper) keeper.pause();
+    } else {
+      ensurePlaybackSession();
+      tone(660, 0.08, 'square', 0.07);
+    }
   });
   renderMute();
 
@@ -535,7 +560,7 @@
   ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
     document.addEventListener(ev, function once() {
       document.removeEventListener(ev, once);
-      if (!muted) ac();
+      if (!muted) { ac(); ensurePlaybackSession(); }
     });
   });
 
@@ -671,6 +696,7 @@
     specials = [];
     fx.wide = 0; fx.slow = 0; fx.double = 0;
     graceTimer = 0;
+    flashAlpha = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
     specialTimer = rand(3, 6);
@@ -876,6 +902,7 @@
           pels.splice(i, 1);
           combo = 0;
           lives--;
+          flashAlpha = 0.4;
           sndMiss();
           updateHud();
           if (lives <= 0) { endGame(); return; }
@@ -903,6 +930,9 @@
       pt.y += pt.vy * dt;
       if (pt.t >= pt.life) particles.splice(k, 1);
     }
+
+    // red life-lost flash fades out fast
+    if (flashAlpha > 0) flashAlpha = Math.max(0, flashAlpha - dt * 1.6);
   }
 
   // ---------- Render ----------
@@ -965,6 +995,14 @@
       ctx.fillText(pop.text, pop.x, pop.y);
     }
     ctx.globalAlpha = 1;
+
+    // red life-lost flash
+    if (flashAlpha > 0) {
+      ctx.globalAlpha = flashAlpha;
+      ctx.fillStyle = '#ff2222';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
   }
 
   // ---------- Main loop ----------

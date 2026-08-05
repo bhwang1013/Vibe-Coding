@@ -551,11 +551,18 @@
     N.F4, N.E5, N.D5, N.C5,
     N.E4, N.D5, N.C5, N.B4
   ];
+  // The melody position survives combo breaks (per run), so the song
+  // resumes where it left off instead of restarting at the opening.
+  var melodyPos = 0;
   function sndCatch(c) {
     var idx = Math.max(0, c - 1);
-    var freq = idx <= 24
-      ? 330 * Math.pow(2, idx / 12)
-      : FUR_ELISE[(idx - 25) % FUR_ELISE.length];
+    var freq;
+    if (idx <= 24) {
+      freq = 330 * Math.pow(2, idx / 12);
+    } else {
+      freq = FUR_ELISE[melodyPos % FUR_ELISE.length];
+      melodyPos++;
+    }
     tone(freq, 0.09, 'square', 0.07);
     buzz(12);
   }
@@ -732,6 +739,7 @@
     graceTimer = 0;
     flashAlpha = 0;
     spawnLastLane = -1; spawnStreak = 0; spawnLog.length = 0;
+    melodyPos = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
     specialTimer = rand(3, 6);

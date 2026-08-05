@@ -781,6 +781,9 @@
     document.getElementById('combo-indicator').style.display = inGame ? 'block' : 'none';
     document.getElementById('fx-indicator').style.display = inGame ? 'block' : 'none';
     document.getElementById('touch-controls').classList.toggle('visible', inGame && isTouch);
+    // keep the mute toggle off the play screen so frantic taps near the
+    // arrow buttons can't silently mute the game
+    muteEl.style.display = inGame ? 'none' : 'block';
     if (s === 'menu') {
       demoMode = true; pels = []; popups = []; particles = []; specials = [];
       renderBadges(document.getElementById('menu-badges'), bestScore);
@@ -1123,9 +1126,13 @@
   document.getElementById('btn-again').addEventListener('click', startGame);
   document.getElementById('btn-menu').addEventListener('click', function () { setState('menu'); });
 
-  // Pause when the tab loses focus
+  // Pause when the tab loses focus; wake audio back up on return
   document.addEventListener('visibilitychange', function () {
     if (document.hidden && state === 'playing') setState('paused');
+    if (!document.hidden && !muted) {
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      ensurePlaybackSession();
+    }
   });
 
   // ---------- Boot ----------

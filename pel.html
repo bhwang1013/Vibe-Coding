@@ -535,11 +535,12 @@
     } catch (e) {}
   }
 
-  // Catch blips climb two octaves semitone-by-semitone (combo 1-25),
-  // then keep the combo going and they play Fur Elise on loop — the full
-  // famous passage (51 notes: both A-section phrases plus the B section).
-  var N = { C4: 261.63, E4: 329.63, F4: 349.23, G4: 392.00, Gs4: 415.30, A4: 440.00, B4: 493.88, C5: 523.25, D5: 587.33, Ds5: 622.25, E5: 659.25, F5: 698.46 };
-  var FUR_ELISE = [
+  // Catch blips climb two octaves semitone-by-semitone (combo 1-25), then
+  // keep the combo going and they play Fur Elise on loop — arranged as the
+  // rondo: full A section, the F-major episode (second section), then the
+  // A section again (~126 notes per loop).
+  var N = { C4: 261.63, E4: 329.63, F4: 349.23, G4: 392.00, Gs4: 415.30, A4: 440.00, B4: 493.88, C5: 523.25, D5: 587.33, Ds5: 622.25, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00 };
+  var A_SECTION = [
     N.E5, N.Ds5, N.E5, N.Ds5, N.E5, N.B4, N.D5, N.C5, N.A4,
     N.C4, N.E4, N.A4, N.B4,
     N.E4, N.Gs4, N.B4, N.C5,
@@ -551,6 +552,14 @@
     N.F4, N.E5, N.D5, N.C5,
     N.E4, N.D5, N.C5, N.B4
   ];
+  var EPISODE = [
+    N.C5, N.F5, N.E5, N.E5, N.D5,
+    N.D5, N.G5, N.F5, N.F5, N.E5,
+    N.E5, N.A5, N.G5, N.G5, N.F5,
+    N.E5, N.D5, N.C5, N.B4, N.A4,
+    N.B4, N.C5, N.D5, N.E5
+  ];
+  var FUR_ELISE = A_SECTION.concat(EPISODE, A_SECTION);
   // The melody position survives combo breaks (per run), so the song
   // resumes where it left off instead of restarting at the opening.
   var melodyPos = 0;

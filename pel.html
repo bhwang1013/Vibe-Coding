@@ -535,8 +535,15 @@
     } catch (e) {}
   }
 
-  // catch blip rises a semitone per combo, capped two octaves up
-  function sndCatch(c) { tone(330 * Math.pow(2, Math.min(c, 24) / 12), 0.07, 'square', 0.07); buzz(12); }
+  // catch blips climb a pentatonic ladder (5 notes x 3 octaves), then
+  // wrap around — always rising, never stuck on one note
+  var PENT = [0, 2, 4, 7, 9];
+  function sndCatch(c) {
+    var idx = Math.max(0, c - 1);
+    var semis = PENT[idx % 5] + 12 * (Math.floor(idx / 5) % 3);
+    tone(262 * Math.pow(2, semis / 12), 0.07, 'square', 0.07);
+    buzz(12);
+  }
   function sndMiss() { tone(130, 0.22, 'sawtooth', 0.1); tone(90, 0.28, 'sawtooth', 0.08, 0.05); buzz(70); }
   function sndSpecial() { tone(620, 0.09, 'triangle', 0.1); tone(930, 0.12, 'triangle', 0.1, 0.09); buzz([20, 40, 20]); }
   function sndGameOver() { tone(392, 0.18, 'square', 0.09); tone(294, 0.18, 'square', 0.09, 0.18); tone(196, 0.34, 'square', 0.1, 0.36); buzz([80, 60, 140]); }
@@ -601,9 +608,12 @@
   function catchValue() { return (1 + Math.floor(combo / 10)) * (fx.double > 0 ? 2 : 1); }
 
   // ---------- Entities ----------
-  // Minimum arrival-time gap at the paddle between pels in different
-  // lanes, so streams stay physically catchable at max intensity.
-  function laneGapNeeded(dist) { return dist === 0 ? 0 : dist === 1 ? 0.3 : 0.42; }
+  // Minimum arrival-time gap at the paddle between pels, so streams stay
+  // physically catchable (and visually distinct) at max intensity.
+  function laneGapNeeded(dist) { return dist === 0 ? 0.18 : dist === 1 ? 0.3 : 0.42; }
+
+  var spawnLastLane = -1, spawnStreak = 0; // avoid boring single-lane streams
+  var spawnLog = []; // recent spawn lanes (test hook)
 
   function spawnPel(demo) {
     var size = PEL_SIZE * rand(0.85, 1.2);
@@ -617,6 +627,11 @@
       // pick a lane whose arrival time doesn't clash with other pels
       var tNew = (paddle.y + size) / vy;
       var order = [0, 1, 2].sort(function () { return Math.random() - 0.5; });
+      // after 2 in a row try that lane last; after 3 skip it entirely
+      if (spawnStreak >= 2) {
+        order = order.filter(function (l) { return l !== spawnLastLane; });
+        if (spawnStreak < 3) order.push(spawnLastLane);
+      }
       lane = -1;
       for (var li = 0; li < order.length; li++) {
         var cand = order[li];
@@ -631,6 +646,10 @@
         if (ok) { lane = cand; break; }
       }
       if (lane === -1) return false; // no fair lane right now — retry shortly
+      if (lane === spawnLastLane) spawnStreak++;
+      else { spawnLastLane = lane; spawnStreak = 1; }
+      spawnLog.push(lane);
+      if (spawnLog.length > 200) spawnLog.shift();
     }
 
     pels.push({
@@ -697,6 +716,7 @@
     fx.wide = 0; fx.slow = 0; fx.double = 0;
     graceTimer = 0;
     flashAlpha = 0;
+    spawnLastLane = -1; spawnStreak = 0; spawnLog.length = 0;
     score = 0; combo = 0; maxCombo = 0; lives = START_LIVES;
     elapsed = 0; spawnTimer = 0.5;
     specialTimer = rand(3, 6);
@@ -1117,6 +1137,7 @@
     setFx: function (type, secs) { fx[type] = secs; },
     setScore: function (v) { score = v; },
     setElapsed: function (v) { elapsed = v; },
+    spawnLog: function () { return spawnLog.slice(); },
     grace: function () { return graceTimer; },
     forceSpecial: function (type, lane) {
       var spec = null;

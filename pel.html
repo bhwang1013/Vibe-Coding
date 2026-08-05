@@ -536,11 +536,20 @@
   }
 
   // Catch blips climb two octaves semitone-by-semitone (combo 1-25),
-  // then keep the combo going and they play the Fur Elise theme on loop.
+  // then keep the combo going and they play Fur Elise on loop — the full
+  // famous passage (51 notes: both A-section phrases plus the B section).
+  var N = { C4: 261.63, E4: 329.63, F4: 349.23, G4: 392.00, Gs4: 415.30, A4: 440.00, B4: 493.88, C5: 523.25, D5: 587.33, Ds5: 622.25, E5: 659.25, F5: 698.46 };
   var FUR_ELISE = [
-    659.25, 622.25, 659.25, 622.25, 659.25, 493.88, 587.33, 523.25, 440,
-    261.63, 329.63, 440, 493.88,
-    329.63, 415.30, 493.88, 523.25
+    N.E5, N.Ds5, N.E5, N.Ds5, N.E5, N.B4, N.D5, N.C5, N.A4,
+    N.C4, N.E4, N.A4, N.B4,
+    N.E4, N.Gs4, N.B4, N.C5,
+    N.E4, N.E5, N.Ds5, N.E5, N.Ds5, N.E5, N.B4, N.D5, N.C5, N.A4,
+    N.C4, N.E4, N.A4, N.B4,
+    N.E4, N.C5, N.B4, N.A4,
+    N.B4, N.C5, N.D5, N.E5,
+    N.G4, N.F5, N.E5, N.D5,
+    N.F4, N.E5, N.D5, N.C5,
+    N.E4, N.D5, N.C5, N.B4
   ];
   function sndCatch(c) {
     var idx = Math.max(0, c - 1);

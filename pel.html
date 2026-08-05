@@ -607,8 +607,8 @@
     var wave = (1 - Math.cos(2 * Math.PI * elapsed / 30)) / 2; // 0 -> 1 -> 0 each cycle
     return creep + wave * (1.8 + creep * 0.5);
   }
-  function spawnInterval() { return Math.max(0.26, 1.7 - difficulty() * 0.5); }
-  function fallSpeed() { return 150 + difficulty() * 60 + rand(-15, 25); }
+  function spawnInterval() { return Math.max(0.24, 1.7 - difficulty() * 0.5); }
+  function fallSpeed() { return 155 + difficulty() * 68 + rand(-15, 25); }
 
   // Combo bonus: every catch is worth 1 + floor(combo / 10), doubled while ×2 is active
   function catchValue() { return (1 + Math.floor(combo / 10)) * (fx.double > 0 ? 2 : 1); }
@@ -616,7 +616,7 @@
   // ---------- Entities ----------
   // Minimum arrival-time gap at the paddle between pels, so streams stay
   // physically catchable (and visually distinct) at max intensity.
-  function laneGapNeeded(dist) { return dist === 0 ? 0.18 : dist === 1 ? 0.3 : 0.42; }
+  function laneGapNeeded(dist) { return dist === 0 ? 0.16 : dist === 1 ? 0.26 : 0.36; }
 
   var spawnLastLane = -1, spawnStreak = 0; // avoid boring single-lane streams
   var spawnLog = []; // recent spawn lanes (test hook)

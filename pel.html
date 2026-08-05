@@ -485,15 +485,15 @@
   }
   function laneX(lane) { return laneWidth() * lane + LANE_MARGIN; } // paddle x for a lane
 
-  // Difficulty comes in waves: a hard peak ~22s into each 45s cycle, then
-  // a breather, with each peak (and breather) a little harder than the
-  // last. The first peak already bites and the second (~67s) is brutal.
+  // Difficulty ramps hard and fast: the first peak ~15s in already bites,
+  // ~45s is extreme, and the short breathers between peaks get harder
+  // every cycle too.
   function difficulty() {
-    var creep = elapsed / 90; // permanent escalation across cycles
-    var wave = (1 - Math.cos(2 * Math.PI * elapsed / 45)) / 2; // 0 -> 1 -> 0 each cycle
-    return creep + wave * (1.4 + creep * 0.6);
+    var creep = elapsed / 40; // fast permanent escalation across cycles
+    var wave = (1 - Math.cos(2 * Math.PI * elapsed / 30)) / 2; // 0 -> 1 -> 0 each cycle
+    return creep + wave * (1.8 + creep * 0.5);
   }
-  function spawnInterval() { return Math.max(0.38, 1.9 - difficulty() * 0.5); }
+  function spawnInterval() { return Math.max(0.26, 1.7 - difficulty() * 0.5); }
   function fallSpeed() { return 150 + difficulty() * 60 + rand(-15, 25); }
 
   // Combo bonus: every catch is worth 1 + floor(combo / 10), doubled while ×2 is active

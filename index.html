@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="description" content="Gotham's Fitness Protocol — a Batman-themed workout tracker with templates, rest timer, history and progress charts."/>
+  <meta name="theme-color" content="#0a0a0a"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Batman Workout"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Crect width='200' height='100' fill='%230a0a0a' rx='16'/%3E%3Cpath fill='%23FFD700' d='M100 30C100 30 85 10 60 15C40 18 20 10 5 20C20 22 30 30 35 42C25 38 10 38 0 48C15 46 30 50 40 60C30 65 22 75 25 85C35 72 50 66 60 70C70 74 80 88 100 90C120 88 130 74 140 70C150 66 165 72 175 85C178 75 170 65 160 60C170 50 185 46 200 48C190 38 175 38 165 42C170 30 180 22 195 20C180 10 160 18 140 15C115 10 100 30 100 30Z'/%3E%3C/svg%3E"/>
   <title>BATMAN WORKOUT</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&display=swap');
@@ -556,6 +562,62 @@
     /* Progress button in workout exercise header */
     .btn-ex-progress { color: #333; font-size: .85rem; padding: 2px 5px; border-radius: 6px; transition: color .15s; line-height: 1; }
     .btn-ex-progress:hover { color: var(--bat-yellow); }
+
+    /* ══════════════════════════════════════════
+       RESUME BANNER
+    ══════════════════════════════════════════ */
+    .resume-banner {
+      width: min(480px, calc(100% - 32px));
+      display: flex; align-items: center; gap: 12px;
+      background: #1c1700; border: 1px solid var(--bat-yellow-dark);
+      border-radius: 14px; padding: 13px 16px; margin-bottom: 18px;
+      box-shadow: 0 4px 24px #FFD70022;
+    }
+    .resume-dot {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+      background: var(--bat-yellow); animation: resumePulse 1.4s ease-in-out infinite;
+    }
+    @keyframes resumePulse {
+      0%,100% { box-shadow: 0 0 0 0 #FFD70088; }
+      50%      { box-shadow: 0 0 0 6px #FFD70000; }
+    }
+    .resume-info { flex: 1; min-width: 0; text-align: left; }
+    .resume-label {
+      font-family: 'Bebas Neue', sans-serif; font-size: .8rem; letter-spacing: 2px;
+      color: var(--bat-yellow);
+    }
+    .resume-meta {
+      font-size: .68rem; color: #887; letter-spacing: .5px; margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .btn-resume {
+      background: linear-gradient(135deg, var(--bat-yellow-dark), var(--bat-yellow));
+      color: #111; border-radius: 8px; flex-shrink: 0;
+      font-family: 'Bebas Neue', sans-serif; font-size: .85rem; letter-spacing: 2px;
+      padding: 9px 14px; transition: opacity .15s;
+    }
+    .btn-resume:hover { opacity: .88; }
+    .btn-resume-discard {
+      color: #665; font-size: .95rem; padding: 6px; flex-shrink: 0;
+      border-radius: 6px; transition: color .15s; line-height: 1;
+    }
+    .btn-resume-discard:hover { color: #e55; }
+
+    /* History delete button */
+    .btn-hist-del { color: #333; font-size: .85rem; padding: 4px 6px; border-radius: 6px; transition: color .15s; line-height: 1; flex-shrink: 0; }
+    .btn-hist-del:hover { color: #e55; }
+
+    /* PR badge */
+    .pr-badge {
+      display: inline-block; margin-left: 6px; font-size: .75rem;
+      filter: drop-shadow(0 0 4px #FFD70088);
+    }
+    .summary-pr-line {
+      width: min(480px, calc(100% - 28px));
+      text-align: center; margin: -8px 0 18px;
+      font-family: 'Bebas Neue', sans-serif; font-size: .8rem; letter-spacing: 3px;
+      color: var(--bat-yellow); text-shadow: 0 0 14px #FFD70066;
+    }
   </style>
 </head>
 <body>
@@ -611,8 +673,8 @@
 <!-- CONFIRM DIALOG -->
 <div id="confirm-overlay">
   <div class="confirm-box">
-    <div class="confirm-title">End Workout?</div>
-    <div class="confirm-body">Your session will be saved and you'll see your summary.</div>
+    <div class="confirm-title" id="confirmTitle">End Workout?</div>
+    <div class="confirm-body" id="confirmBody">Your session will be saved and you'll see your summary.</div>
     <div class="confirm-actions">
       <button class="btn-confirm-no"  id="btnConfirmNo">Cancel</button>
       <button class="btn-confirm-yes" id="btnConfirmYes">Finish</button>
@@ -856,7 +918,23 @@ function saveWorkout(record) {
   const list = loadWorkouts();
   list.push(record);
   if (list.length > 200) list.splice(0, list.length - 200);
+  saveWorkoutsList(list);
+}
+function saveWorkoutsList(list) {
   try { localStorage.setItem(WORKOUTS_KEY, JSON.stringify(list)); } catch {}
+}
+
+/* ── localStorage in-progress workout (crash / refresh recovery) ── */
+const ACTIVE_KEY = 'batmanActiveWorkout';
+function saveActive() {
+  if (!state.workout) return;
+  try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(state.workout)); } catch {}
+}
+function loadActive() {
+  try { return JSON.parse(localStorage.getItem(ACTIVE_KEY)||'null'); } catch { return null; }
+}
+function clearActive() {
+  try { localStorage.removeItem(ACTIVE_KEY); } catch {}
 }
 
 /* ══════════════════════════════════════════
@@ -927,6 +1005,18 @@ function renderHome() {
     </div>
     ${groupsHtml}`;
 
+  const active = loadActive();
+  const resumeHtml = active ? `
+    <div class="resume-banner">
+      <span class="resume-dot"></span>
+      <div class="resume-info">
+        <div class="resume-label">Workout In Progress</div>
+        <div class="resume-meta">${escHtml(active.name||'My Workout')} · started ${formatTime(Math.floor((Date.now()-active.startTime)/1000))} ago</div>
+      </div>
+      <button class="btn-resume" id="btnResume">Resume</button>
+      <button class="btn-resume-discard" id="btnResumeDiscard" aria-label="Discard workout">✕</button>
+    </div>` : '';
+
   document.getElementById('app').innerHTML = `
     <div id="screen-home">
       ${skylineSVG()}
@@ -934,6 +1024,7 @@ function renderHome() {
         <div class="home-title">BATMAN WORKOUT</div>
         <div class="home-sub">Gotham's Fitness Protocol</div>
       </div>
+      ${resumeHtml}
       <div class="home-tabs">
         <button class="home-tab${homeTab==='templates'?' active':''}" id="tabTemplates">Templates</button>
         <button class="home-tab${homeTab==='history'?' active':''}" id="tabHistory">History</button>
@@ -946,6 +1037,15 @@ function renderHome() {
   document.getElementById('tabTemplates').addEventListener('click', ()=>{ homeTab='templates'; renderHome(); });
   document.getElementById('tabHistory').addEventListener('click', ()=>{ homeTab='history'; renderHome(); });
 
+  if (active) {
+    document.getElementById('btnResume').addEventListener('click', resumeWorkout);
+    document.getElementById('btnResumeDiscard').addEventListener('click', ()=>{
+      openConfirm('Discard Workout?', 'Your in-progress session will be deleted. This cannot be undone.', 'Discard', ()=>{
+        clearActive(); renderHome();
+      });
+    });
+  }
+
   if (homeTab === 'templates') {
     document.getElementById('btnStartEmpty').addEventListener('click', ()=>startWorkout(null));
     document.querySelectorAll('.template-card').forEach(btn=>{
@@ -955,6 +1055,16 @@ function renderHome() {
     document.querySelector('.hist-list')?.addEventListener('click', e=>{
       const prog = e.target.closest('.btn-hist-progress');
       if (prog) { e.stopPropagation(); openProgressChart(prog.dataset.exname); return; }
+      const del = e.target.closest('.btn-hist-del');
+      if (del) {
+        e.stopPropagation();
+        const date = +del.dataset.delDate;
+        openConfirm('Delete Workout?', 'This session will be removed from your history. This cannot be undone.', 'Delete', ()=>{
+          saveWorkoutsList(loadWorkouts().filter(w=>w.date!==date));
+          renderHome();
+        });
+        return;
+      }
       const card = e.target.closest('.hist-card');
       if (card) card.classList.toggle('open');
     });
@@ -989,6 +1099,7 @@ function renderHistCard(w) {
         <div class="hist-card-name">${escHtml(w.name)}</div>
         <div class="hist-card-meta">${meta}</div>
       </div>
+      <button class="btn-hist-del" data-del-date="${w.date}" aria-label="Delete workout">✕</button>
       <div class="hist-chevron">▼</div>
     </div>
     <div class="hist-card-body">${exRows||'<div style="padding:12px 16px;font-size:.7rem;color:#444">No exercises logged.</div>'}</div>
@@ -1007,8 +1118,23 @@ function startWorkout(template) {
     exercises: template ? template.exercises.map(makeExercise) : [],
   };
   state.screen = 'workout';
+  saveActive();
   renderWorkout();
+  startElapsedTimer();
+}
 
+function resumeWorkout() {
+  const w = loadActive();
+  if (!w) { renderHome(); return; }
+  doFlash();
+  w.elapsed = Math.floor((Date.now() - w.startTime) / 1000);
+  state.workout = w;
+  state.screen  = 'workout';
+  renderWorkout();
+  startElapsedTimer();
+}
+
+function startElapsedTimer() {
   clearInterval(state.elapsedInterval);
   state.elapsedInterval = setInterval(()=>{
     if (!state.workout) return;
@@ -1053,14 +1179,17 @@ function renderWorkout() {
       <button class="btn-add-exercise" id="btnAddExercise">+ Add Exercise</button>
     </div>`;
 
-  document.getElementById('topBarName').addEventListener('input', e=>{ state.workout.name=e.target.value; });
-  document.getElementById('btnFinish').addEventListener('click', openConfirm);
+  document.getElementById('topBarName').addEventListener('input', e=>{ state.workout.name=e.target.value; saveActive(); });
+  document.getElementById('btnFinish').addEventListener('click', ()=>{
+    openConfirm('End Workout?', "Your session will be saved and you'll see your summary.", 'Finish', finishWorkout);
+  });
   document.getElementById('btnAddExercise').addEventListener('click', openModal);
 
   document.getElementById('workoutBody').addEventListener('input', e=>{
     const inp = e.target;
     if (!inp.classList.contains('set-input')) return;
     state.workout.exercises[+inp.dataset.ex].sets[+inp.dataset.set][inp.dataset.field] = inp.value;
+    saveActive();
   });
 
   document.getElementById('workoutBody').addEventListener('click', e=>{
@@ -1121,6 +1250,7 @@ function toggleDone(exIdx, setIdx) {
       inp.style.color       = style.inC;
     });
   }
+  saveActive();
   if (set.done) startRest(state.workout.exercises[exIdx].name);
 }
 
@@ -1132,6 +1262,7 @@ function addNewSet(exIdx) {
     ? makeSet(hist[si].weight, hist[si].reps)           // last session's same set
     : (ex.sets.length ? makeSet(ex.sets[ex.sets.length-1].weight, ex.sets[ex.sets.length-1].reps) : makeSet());
   ex.sets.push(prev);
+  saveActive();
   const si2 = ex.sets.length - 1;
   const div = document.createElement('div');
   div.innerHTML = renderSetRow(ex.sets[si2], exIdx, si2);
@@ -1141,6 +1272,7 @@ function addNewSet(exIdx) {
 
 function removeEx(exIdx) {
   state.workout.exercises.splice(exIdx, 1);
+  saveActive();
   renderWorkout();
 }
 
@@ -1149,20 +1281,51 @@ function removeEx(exIdx) {
 ══════════════════════════════════════════ */
 const REST_C = 2*Math.PI*30; // ~188.5
 
+/* Timestamp-based countdown: stays accurate even when the browser
+   throttles timers (backgrounded tab / locked phone screen). */
 function startRest(exName) {
   clearInterval(state.rest.interval);
-  Object.assign(state.rest, { active:true, total:60, remaining:60, exName });
+  const total = 60;
+  Object.assign(state.rest, { active:true, total, remaining:total, exName, endsAt: Date.now()+total*1000 });
+  initAudio(); // user gesture — unlock audio for the end-of-rest alert
   updateRestUI();
   document.getElementById('rest-sheet').classList.add('open');
   state.rest.interval = setInterval(()=>{
-    state.rest.remaining--;
-    state.rest.remaining<=0 ? stopRest() : updateRestUI();
-  }, 1000);
+    state.rest.remaining = Math.max(0, Math.ceil((state.rest.endsAt - Date.now())/1000));
+    if (state.rest.remaining <= 0) { stopRest(); playRestAlert(); }
+    else updateRestUI();
+  }, 250);
 }
 function stopRest() {
   clearInterval(state.rest.interval);
   state.rest.active = false;
   document.getElementById('rest-sheet').classList.remove('open');
+}
+
+/* End-of-rest alert: short two-tone chime + vibration */
+let _audioCtx = null;
+function initAudio() {
+  try {
+    _audioCtx = _audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  } catch {}
+}
+function playRestAlert() {
+  try {
+    if (_audioCtx) {
+      [[880,0],[1320,.18]].forEach(([freq,t])=>{
+        const o = _audioCtx.createOscillator(), g = _audioCtx.createGain();
+        o.type = 'sine'; o.frequency.value = freq;
+        const t0 = _audioCtx.currentTime + t;
+        g.gain.setValueAtTime(.001, t0);
+        g.gain.exponentialRampToValueAtTime(.28, t0+.02);
+        g.gain.exponentialRampToValueAtTime(.001, t0+.16);
+        o.connect(g); g.connect(_audioCtx.destination);
+        o.start(t0); o.stop(t0+.18);
+      });
+    }
+  } catch {}
+  if (navigator.vibrate) navigator.vibrate([200,100,200]);
 }
 function updateRestUI() {
   const { remaining, total, exName } = state.rest;
@@ -1173,7 +1336,8 @@ function updateRestUI() {
 
 document.getElementById('btnRestSkip').addEventListener('click', stopRest);
 document.getElementById('btnRestAdd30').addEventListener('click', ()=>{
-  state.rest.remaining += 30;
+  state.rest.endsAt += 30000;
+  state.rest.remaining = Math.max(0, Math.ceil((state.rest.endsAt - Date.now())/1000));
   state.rest.total = Math.max(state.rest.total, state.rest.remaining);
   updateRestUI();
 });
@@ -1218,6 +1382,7 @@ document.getElementById('modalList').addEventListener('click', e=>{
 function appendExercise(name) {
   if (!state.workout) return;
   state.workout.exercises.push(makeExercise(name));
+  saveActive();
   const exIdx = state.workout.exercises.length-1;
   const ex    = state.workout.exercises[exIdx];
   const body  = document.getElementById('workoutBody');
@@ -1232,11 +1397,21 @@ function appendExercise(name) {
 /* ══════════════════════════════════════════
    CONFIRM / FINISH
 ══════════════════════════════════════════ */
-function openConfirm()  { document.getElementById('confirm-overlay').classList.add('open'); }
+let _confirmYes = null;
+function openConfirm(title, body, yesLabel, onYes) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmBody').textContent  = body;
+  document.getElementById('btnConfirmYes').textContent = yesLabel;
+  _confirmYes = onYes;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
 function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); }
 
 document.getElementById('btnConfirmNo').addEventListener('click', closeConfirm);
-document.getElementById('btnConfirmYes').addEventListener('click', ()=>{ closeConfirm(); finishWorkout(); });
+document.getElementById('btnConfirmYes').addEventListener('click', ()=>{
+  closeConfirm();
+  if (_confirmYes) { const fn = _confirmYes; _confirmYes = null; fn(); }
+});
 
 function finishWorkout() {
   clearInterval(state.elapsedInterval);
@@ -1248,6 +1423,17 @@ function finishWorkout() {
   const vol = doneSets.reduce((a,s)=>{
     return a + (parseFloat(s.weight)||0)*(parseInt(s.reps)||0);
   }, 0);
+  // Detect personal records: best weight this session beats all prior sessions
+  const priorBest = {};
+  loadWorkouts().forEach(pw=>(pw.exercises||[]).forEach(ex=>{
+    const b = ex.sets.reduce((m,s)=>Math.max(m, parseFloat(s.weight)||0), 0);
+    priorBest[ex.name] = Math.max(priorBest[ex.name]||0, b);
+  }));
+  const prs = [];
+  w.exercises.forEach(ex=>{
+    const b = ex.sets.filter(s=>s.done).reduce((m,s)=>Math.max(m, parseFloat(s.weight)||0), 0);
+    if (ex.name in priorBest && b > priorBest[ex.name]) prs.push(ex.name);
+  });
   // Save full workout record for history + progress charts
   saveWorkout({
     id: uid(),
@@ -1263,11 +1449,12 @@ function finishWorkout() {
   });
   state.summary = {
     name: w.name, elapsed: w.elapsed, exercises: w.exercises,
-    totalSets: doneSets.length, totalVol: vol,
+    totalSets: doneSets.length, totalVol: vol, prs,
     quote: QUOTES[Math.floor(Math.random()*QUOTES.length)],
   };
   state.screen  = 'summary';
   state.workout = null;
+  clearActive();
   renderSummary();
 }
 
@@ -1278,11 +1465,12 @@ function renderSummary() {
   const s = state.summary;
   const vol = s.totalVol > 0 ? (s.totalVol>=1000 ? (s.totalVol/1000).toFixed(1)+'k' : Math.round(s.totalVol)+'') : '—';
 
+  const prSet = new Set(s.prs||[]);
   const exBlocks = s.exercises.map(ex=>{
     const done = ex.sets.filter(st=>st.done);
     if (!done.length) return '';
     return `<div class="summary-ex-block">
-      <div class="summary-ex-name">${getExDef(ex.name).icon} ${escHtml(ex.name)}</div>
+      <div class="summary-ex-name">${getExDef(ex.name).icon} ${escHtml(ex.name)}${prSet.has(ex.name)?'<span class="pr-badge" title="New personal record">🏆</span>':''}</div>
       ${done.map((st,i)=>`<div class="summary-set-row"><span>Set ${i+1}</span><span>${st.weight?st.weight+' lbs':'—'} × ${st.reps||'—'} reps</span></div>`).join('')}
     </div>`;
   }).filter(Boolean).join('');
@@ -1299,6 +1487,7 @@ function renderSummary() {
         <div class="stat-cell"><div class="stat-val">${s.totalSets}</div><div class="stat-lbl">Sets Done</div></div>
         <div class="stat-cell"><div class="stat-val">${vol}</div><div class="stat-lbl">Vol (lbs)</div></div>
       </div>
+      ${prSet.size ? `<div class="summary-pr-line">🏆 ${prSet.size} New Personal Record${prSet.size!==1?'s':''}</div>` : ''}
       <div class="summary-exercises">
         ${exBlocks||'<p style="color:#444;font-size:.75rem;letter-spacing:2px;text-align:center;padding:20px 0">No completed sets.</p>'}
       </div>

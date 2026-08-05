@@ -378,6 +378,7 @@
   var HOLD_FIRST_DELAY = 0.3;      // s before held key starts repeating
   var HOLD_REPEAT_DELAY = 0.14;    // s between lane steps while held
   var PEL_SIZE = 18;
+  var MAX_PELS = 7;                // max pels falling at once
   var TRAIL_LEN = 7;
   var START_LIVES = 3;
   var MAX_LIVES = 5;
@@ -512,6 +513,7 @@
     if (demo) {
       lane = (Math.random() * LANES) | 0;
     } else {
+      if (pels.length >= MAX_PELS) return false; // screen full — retry shortly
       // pick a lane whose arrival time doesn't clash with other pels
       var tNew = (paddle.y + size) / vy;
       var order = [0, 1, 2].sort(function () { return Math.random() - 0.5; });

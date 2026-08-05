@@ -337,7 +337,7 @@
       <p>&bull; Miss a pel and you lose a life and your combo resets. You start with 3 lives.</p>
       <p>&bull; Special boxes fall too &mdash; catch them for power-ups: <b>&hearts;</b> extra life, <b>&harr;</b> wide paddle, <b>&#10052;</b> slow motion, <b>&times;2</b> double points. Missing a box costs nothing.</p>
       <p>&bull; Difficulty comes in waves &mdash; survive the hard peaks and you get an easier breather before the next, tougher one.</p>
-      <p>&bull; Earn badges: <b style="color:#d08a4a">500 Bronze</b>, <b style="color:#cfcfcf">1000 Silver</b>, <b style="color:#ffd700">1500 Gold</b>, <b style="color:#ff5ce1">2000 Legendary</b>.</p>
+      <p>&bull; Earn badges: <b style="color:#d08a4a">2500 Bronze</b>, <b style="color:#cfcfcf">5000 Silver</b>, <b style="color:#ffd700">7500 Gold</b>, <b style="color:#ff5ce1">15000 Legendary</b>.</p>
       <button class="menu-btn" id="btn-back" style="margin: 26px auto 0;">Back</button>
     </div>
   </div>
@@ -427,10 +427,10 @@
   try { bestScore = parseInt(localStorage.getItem('pel-best') || '0', 10) || 0; } catch (e) {}
 
   var BADGES = [
-    { min: 500, name: 'BRONZE', cls: 'bronze' },
-    { min: 1000, name: 'SILVER', cls: 'silver' },
-    { min: 1500, name: 'GOLD', cls: 'gold' },
-    { min: 2000, name: 'LEGENDARY', cls: 'legendary' }
+    { min: 2500, name: 'BRONZE', cls: 'bronze' },
+    { min: 5000, name: 'SILVER', cls: 'silver' },
+    { min: 7500, name: 'GOLD', cls: 'gold' },
+    { min: 15000, name: 'LEGENDARY', cls: 'legendary' }
   ];
 
   function loadScores() {

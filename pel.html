@@ -214,7 +214,14 @@
     text-shadow: 0 0 10px rgba(255, 92, 225, 0.7);
     box-shadow: 0 0 12px rgba(255, 92, 225, 0.4);
   }
-  .badge.locked { color: #444; border-color: #333; text-shadow: none; box-shadow: none; }
+  .badge.ubermensch {
+    color: #2b8a3e;
+    border-color: #2b8a3e;
+    background: rgba(43, 138, 62, 0.12);
+    text-shadow: 0 0 14px rgba(43, 138, 62, 0.9);
+    box-shadow: 0 0 16px rgba(43, 138, 62, 0.5), inset 0 0 12px rgba(43, 138, 62, 0.25);
+  }
+  .badge.locked { color: #444; border-color: #333; background: none; text-shadow: none; box-shadow: none; }
   @keyframes badgepulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.12); }
@@ -337,7 +344,7 @@
       <p>&bull; Miss a pel and you lose a life and your combo resets. You start with 3 lives.</p>
       <p>&bull; Special boxes fall too &mdash; catch them for power-ups: <b>&hearts;</b> extra life, <b>&harr;</b> wide paddle, <b>&#10052;</b> slow motion, <b>&times;2</b> double points. Missing a box costs nothing.</p>
       <p>&bull; Difficulty comes in waves &mdash; survive the hard peaks and you get an easier breather before the next, tougher one.</p>
-      <p>&bull; Earn badges: <b style="color:#d08a4a">2500 Bronze</b>, <b style="color:#cfcfcf">5000 Silver</b>, <b style="color:#ffd700">7500 Gold</b>, <b style="color:#ff5ce1">15000 Legendary</b>.</p>
+      <p>&bull; Earn badges: <b style="color:#d08a4a">2500 Bronze</b>, <b style="color:#cfcfcf">5000 Silver</b>, <b style="color:#ffd700">7500 Gold</b>, <b style="color:#ff5ce1">15000 Legendary</b>, <b style="color:#2b8a3e">50000 &Uuml;bermensch</b>.</p>
       <button class="menu-btn" id="btn-back" style="margin: 26px auto 0;">Back</button>
     </div>
   </div>
@@ -430,7 +437,8 @@
     { min: 2500, name: 'BRONZE', cls: 'bronze' },
     { min: 5000, name: 'SILVER', cls: 'silver' },
     { min: 7500, name: 'GOLD', cls: 'gold' },
-    { min: 15000, name: 'LEGENDARY', cls: 'legendary' }
+    { min: 15000, name: 'LEGENDARY', cls: 'legendary' },
+    { min: 50000, name: 'ÜBERMENSCH', cls: 'ubermensch' }
   ];
 
   function loadScores() {

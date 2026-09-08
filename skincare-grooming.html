@@ -484,26 +484,16 @@
 const DAYS_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-// S1 – Quick Morning Freshen Up (same every day)
-const S_QUICK = [
-  'Floss',
-  'Brush Teeth',
-  'Rose Water',
-  'Hyaluronic Acid',
-  'Essence',
-  'Facial Moisturizer On Face And Neck',
-  'Sunscreen On Face And Neck',
-  'Lubriderm Lotion And Body Oil On Body',
-  'Sunscreen On Body',
-  'Mouthwash And Apply Lip Balm And Tinted Lip Oil',
-];
-
-// S2 – Full Freshen Up (optional, same every day — word for word)
-const S_FULL = [
-  'Lumify Eye Drops And Sheet Mask',
+// S1 – Freshen Up (single unified routine, same every day — word for word)
+const FRESHEN_UP = [
+  'Sheet Mask',
+  'Armpit Deodorant',
+  'Cologne',
+  'Lumify Eye Drops',
   'Floss',
   'Tongue Scraper',
   'Brush Teeth',
+  'Baby Wipe For Butthole',
   'Rose Water',
   'Hyaluronic Acid',
   'Essence',
@@ -511,224 +501,239 @@ const S_FULL = [
   'Caffeine Eye Serum',
   'Facial Moisturizer On Face And Neck',
   'Sunscreen On Face And Neck',
-  'Lubriderm Lotion And Body Oil On Body',
+  'Lubriderm Lotion On Body',
+  'Body Oil On Body',
   'Sunscreen On Body',
-  'Contacts And Artificial Tears',
-  'Sea Salt Spray And Comb Hair',
-  'Armpit Deodorant',
-  'Cologne',
+  'Mouthwash',
+  'Contacts',
+  'Artificial Tears',
+  'Texture Tonic Spray On Hair',
+  'Comb Hair',
   'Prepare Baby Wipes To Help Wipe Makeup When Putting On Makeup',
-  'K-Beauty Water Tint Lip Stain',
-  'Brush Eyebrows With Spoolie Then Brow Gel Brushed Through Eyebrows',
-  'Apply Subtle Waterproof Eyeliner To The Outer Half Of The Upper Lash Tightline',
   'Tinted BB Cream Blended Under Eyes With Finger Tapping',
   'Translucent Loose Setting Powder Applied Using Mini Triangle Powder Puff',
+  'Brow Gel Brushed Through Eyebrows',
+  'K-Beauty Water Tint Lip Stain',
   'Setting Spray',
-  'Hair Oil Everywhere Except Front Of Hair',
   'Curl Eyelashes',
-  'Waterproof Or Non-Waterproof Mascara Depending On What You Are Doing Brushed Through Lashes Then Brush Eyelashes With Spoolie',
-  'Mouthwash And Apply Lip Balm And Tinted Lip Oil',
+  'Non-Waterproof Mascara Brushed Through Lashes',
+  'Matte Clay On Hair',
+  'Apply Lip Balm',
+  'Apply Tinted Lip Oil',
+  'Apply SPF Lip Balm',
 ];
 
-// S3 – Ultimate Shower — fully defined per day, word for word
-const LONGEVITY = [
-  {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-  {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-  {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
-  'Baby Wipe For Butthole',
-];
-
+// S2 – Ultimate Shower Routine — fully defined per day, word for word, single flat list
 const SHOWER_DATA = {
-  0: { // Monday
-    pre: [
-      {t:'Manicure', tag:'s'},
-      'Tweezers For Face',
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-      'Exfoliate Body',
-    ],
-    post: [
-      'Special Serum',
-      'Normal Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  1: { // Tuesday
-    pre: [
-      'Tweezers For Face',
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-      {t:'Shave Pubes With Real Razor', tag:'s'},
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      {t:'Exfoliate Face', tag:'s'},
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-    ],
-    post: [
-      'Special Serum',
-      'Normal Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  2: { // Wednesday
-    pre: [
-      'Tweezers For Face',
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-      {t:'Nair On Abdomen', tag:'s'},
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      {t:'Ketocozanole Shampoo', tag:'s'},
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-    ],
-    post: [
-      'Special Serum',
-      'Normal Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  3: { // Thursday
-    pre: [
-      {t:'Manicure', tag:'s'},
-      'Tweezers For Face',
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-      'Exfoliate Body',
-    ],
-    post: [
-      'Special Serum',
-      'Normal Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  4: { // Friday
-    pre: [
-      'Tweezers For Face',
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-      {t:'Shave Pubes With Real Razor', tag:'s'},
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      {t:'Exfoliate Face', tag:'s'},
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-    ],
-    post: [
-      'Special Serum',
-      'Normal Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  5: { // Saturday
-    pre: [
-      {t:'Pedicure', tag:'s'},
-      'Tweezers For Face',
-      {t:'Manscaped Electric Razor For Back Of Neck Hairline And Trim Hair', tag:'s'},
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      'Normal Shampoo',
-      'Normal Conditioner',
-      'Normal Cleanser For Body',
-    ],
-    post: [
-      'Special Serum',
-      'Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
-  6: { // Sunday
-    pre: [
-      'Tweezers For Face',
-      {t:'Electric Trimmer For Nose', tag:'s'},
-      'Facial Razor',
-      'Electric Razor For Face',
-      'Manscaped Electric Razor For Body',
-    ],
-    wash: [
-      'Micellar Water On Cotton Pads To Gently Wipe Off Makeup And Artificial Tears',
-      'Oil Cleanser Then Gentle Cleanser For Face',
-      {t:'Ketocozanole Shampoo', tag:'s'},
-      'Normal Shampoo',
-      {t:'Deep Conditioning Hair Mask', tag:'s'},
-      'Normal Cleanser For Body',
-    ],
-    post: [
-      'Special Serum',
-      'Eye Cream',
-      'Facial Moisturizer On Face And Neck',
-      "Lubriderm Lotion And Palmer's Cocoa Butter On Body",
-      'Leave-In Conditioner On Hair',
-    ],
-    longevity: LONGEVITY,
-  },
+  0: [ // Monday
+    {t:'Manicure', tag:'s'},
+    'Tweezers For Face',
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    {t:'Exfoliate Body', tag:'s'},
+    'Special Serum',
+    'Normal Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  1: [ // Tuesday
+    'Tweezers For Face',
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    {t:'Shave Pubes With Real Razor', tag:'s'},
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    {t:'Exfoliate Face', tag:'s'},
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    'Special Serum',
+    'Normal Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  2: [ // Wednesday
+    'Tweezers For Face',
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    {t:'Nair On Abdomen', tag:'s'},
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    {t:'Glycolic Acid On Body', tag:'s'},
+    'Special Serum',
+    'Normal Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  3: [ // Thursday
+    {t:'Manicure', tag:'s'},
+    'Tweezers For Face',
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    {t:'Exfoliate Body', tag:'s'},
+    'Special Serum',
+    'Normal Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  4: [ // Friday
+    'Tweezers For Face',
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    {t:'Shave Pubes With Real Razor', tag:'s'},
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    {t:'Exfoliate Face', tag:'s'},
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    'Special Serum',
+    'Normal Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  5: [ // Saturday
+    {t:'Pedicure', tag:'s'},
+    'Tweezers For Face',
+    {t:'Manscaped Electric Razor For Back Of Neck Hairline And Trim Hair', tag:'s'},
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    'Special Serum',
+    'Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  6: [ // Sunday
+    'Tweezers For Face',
+    {t:'Electric Trimmer For Nose', tag:'s'},
+    'Facial Razor',
+    'Electric Razor For Face',
+    'Manscaped Electric Razor For Body',
+    {t:'Nair On Abdomen', tag:'s'},
+    'Micellar Water On Cotton Pads To Gently Wipe Off Makeup',
+    'Artificial Tears',
+    'Oil Cleanser',
+    'Gentle Cleanser For Face',
+    'Normal Conditioner',
+    'Normal Cleanser For Body',
+    'Special Serum',
+    'Eye Cream',
+    'Facial Moisturizer On Face And Neck',
+    'Lubriderm Lotion On Body',
+    "Palmer's Cocoa Butter On Body",
+    'Leave-In Conditioner On Hair',
+    'Normal Shower',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
 };
 
 function buildShower(dayIdx) {
   return SHOWER_DATA[dayIdx];
 }
-
-// S4 – Normal Shower (same every day)
-const S_NORMAL = [
-  'Normal Shower',
-  'Baby Wash For Hair',
-  'Baby Wash For Face',
-  'Baby Wash For Body',
-  'Facial Moisturizer On Face And Neck',
-  'Lubriderm Lotion On Body',
-];
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const SK = 'mmm_groom_v2';
@@ -750,13 +755,8 @@ function key(day, sec, idx) { return `d${day}_${sec}_${idx}`; }
 function itemsOf(dayIdx) {
   const sh = buildShower(dayIdx);
   return [
-    { sec:'quick',    items: S_QUICK },
-    { sec:'full',     items: S_FULL  },
-    { sec:'pre',      items: sh.pre  },
-    { sec:'wash',     items: sh.wash },
-    { sec:'post',     items: sh.post },
-    { sec:'long',     items: sh.longevity },
-    { sec:'normal',   items: S_NORMAL },
+    { sec:'fresh',  items: FRESHEN_UP },
+    { sec:'shower', items: sh },
   ];
 }
 
@@ -838,39 +838,14 @@ function renderDay(dayIdx) {
     </div>
   `;
 
-  // Card I – Quick
-  html += buildCard('quick','I','Freshen Up','',
-    `<ul class="checklist">${buildChecklist(dayIdx,'quick',S_QUICK)}</ul>`
+  // Card I – Freshen Up
+  html += buildCard('fresh','I','Freshen Up','',
+    `<ul class="checklist">${buildChecklist(dayIdx,'fresh',FRESHEN_UP)}</ul>`
   );
 
-  // Card II – Full Freshen Up
-  html += buildCard('full','II','Freshen Up',
-    `<span class="badge">Only If You Want To Look Good</span>`,
-    `<ul class="checklist">${buildChecklist(dayIdx,'full',S_FULL)}</ul>`
-  );
-
-  // Card III – Ultimate Shower (multi-sub-section)
-  const showerBody = `
-    <div class="sub-heading">Grooming</div>
-    <ul class="checklist">${buildChecklist(dayIdx,'pre', sh.pre)}</ul>
-
-    <div class="sub-heading">Cleanse</div>
-    <ul class="checklist">${buildChecklist(dayIdx,'wash', sh.wash)}</ul>
-
-    <div class="sub-heading">Treatment</div>
-    <ul class="checklist">${buildChecklist(dayIdx,'post', sh.post)}</ul>
-
-    <div class="sub-heading">Longevity</div>
-    <ul class="checklist">${buildChecklist(dayIdx,'long', sh.longevity)}</ul>
-  `;
-  html += buildCard('shower','III','Ultimate Shower Routine',
-    `<span class="badge">Only If You Want To Look Good</span>`,
-    showerBody
-  );
-
-  // Card IV – Normal Shower
-  html += buildCard('normal','IV','Normal Shower','',
-    `<ul class="checklist">${buildChecklist(dayIdx,'normal',S_NORMAL)}</ul>`
+  // Card II – Ultimate Shower Routine
+  html += buildCard('shower','II','Ultimate Shower Routine','',
+    `<ul class="checklist">${buildChecklist(dayIdx,'shower', sh)}</ul>`
   );
 
   // Footer
@@ -915,18 +890,17 @@ function renderDay(dayIdx) {
     renderDay(dayIdx);
   });
 
-  // Auto-open Quick Freshen Up
-  const qHead = document.querySelector('[data-card="quick"]');
-  const qBody = document.getElementById('body_quick');
+  // Auto-open Freshen Up
+  const qHead = document.querySelector('[data-card="fresh"]');
+  const qBody = document.getElementById('body_fresh');
   qHead.classList.add('open');
   qBody.classList.add('open');
 }
 
 function updateSubtitles(dayIdx, sh) {
   const sets = [
-    { id:'quick',  items: S_QUICK,  sec:'quick' },
-    { id:'full',   items: S_FULL,   sec:'full'  },
-    { id:'normal', items: S_NORMAL, sec:'normal'},
+    { id:'fresh',  items: FRESHEN_UP, sec:'fresh'  },
+    { id:'shower', items: sh,         sec:'shower' },
   ];
   sets.forEach(({id, items, sec}) => {
     const el = document.getElementById('sub_' + id);
@@ -934,12 +908,6 @@ function updateSubtitles(dayIdx, sh) {
     const {done, total} = secStats(dayIdx, sec, items);
     el.textContent = `${done} of ${total} complete`;
   });
-  const shSec  = ['pre','wash','post','long'];
-  const shItms = [sh.pre, sh.wash, sh.post, sh.longevity];
-  let shD = 0, shT = 0;
-  shSec.forEach((s,si) => { const r = secStats(dayIdx,s,shItms[si]); shD+=r.done; shT+=r.total; });
-  const shEl = document.getElementById('sub_shower');
-  if (shEl) shEl.textContent = `${shD} of ${shT} complete`;
 }
 
 function refreshProgress(dayIdx, sh) {

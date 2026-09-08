@@ -509,6 +509,7 @@ const FRESHEN_UP = [
   'Artificial Tears',
   'Texture Tonic Spray On Hair',
   'Comb Hair',
+  'Sea Salt Spray On Back Of Hair And Scrunch With Hands',
   'Prepare Baby Wipes To Help Wipe Makeup When Putting On Makeup',
   'Tinted BB Cream Blended Under Eyes With Finger Tapping',
   'Translucent Loose Setting Powder Applied Using Mini Triangle Powder Puff',
@@ -517,13 +518,13 @@ const FRESHEN_UP = [
   'Setting Spray',
   'Curl Eyelashes',
   'Non-Waterproof Mascara Brushed Through Lashes',
-  'Matte Clay On Hair',
+  'Matte Clay On Front And Sides Of Hair',
   'Apply Lip Balm',
   'Apply Tinted Lip Oil',
   'Apply SPF Lip Balm',
 ];
 
-// S2 – Ultimate Shower Routine — fully defined per day, word for word, single flat list
+// S2 – Ultimate Shower Routine — fully defined per day, word for word, 18 steps each
 const SHOWER_DATA = {
   0: [ // Monday
     {t:'Manicure', tag:'s'},
@@ -544,16 +545,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    {t:'Hair Mask', tag:'s'},
-    'Normal Shampoo',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   1: [ // Tuesday
     'Tweezers For Face',
@@ -574,14 +565,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   2: [ // Wednesday
     'Tweezers For Face',
@@ -602,16 +585,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    {t:'Hair Mask', tag:'s'},
-    'Normal Shampoo',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   3: [ // Thursday
     {t:'Manicure', tag:'s'},
@@ -632,14 +605,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   4: [ // Friday
     'Tweezers For Face',
@@ -660,16 +625,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    {t:'Hair Mask', tag:'s'},
-    'Normal Shampoo',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   5: [ // Saturday
     {t:'Pedicure', tag:'s'},
@@ -690,16 +645,6 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
-    {t:'Hair Mask', tag:'s'},
-    'Normal Shampoo',
-    'Baby Wash For Face',
-    'Baby Wash For Body',
-    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
-    'Facial Moisturizer On Face And Neck',
-    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
-    'Lubriderm Lotion On Body',
-    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
   ],
   6: [ // Sunday
     'Tweezers For Face',
@@ -720,7 +665,74 @@ const SHOWER_DATA = {
     'Lubriderm Lotion On Body',
     "Palmer's Cocoa Butter On Body",
     'Leave-In Conditioner On Hair',
-    'Normal Shower',
+  ],
+};
+
+// S3 – Final Shower — fully defined per day, word for word (7 or 9 steps)
+const FINAL_SHOWER_DATA = {
+  0: [ // Monday
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  1: [ // Tuesday
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  2: [ // Wednesday
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  3: [ // Thursday
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  4: [ // Friday
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  5: [ // Saturday
+    {t:'Hair Mask', tag:'s'},
+    'Normal Shampoo',
+    'Baby Wash For Face',
+    'Baby Wash For Body',
+    {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
+    'Facial Moisturizer On Face And Neck',
+    {t:'Longevity Routine For Penis (Alpha Arbutin Serum)', tag:'l'},
+    'Lubriderm Lotion On Body',
+    {t:'Longevity Routine For Hair (Vaseline On Eyebrows And Eyelashes)', tag:'l'},
+  ],
+  6: [ // Sunday
     'Baby Wash For Face',
     'Baby Wash For Body',
     {t:'Longevity Routine For Face (Retinoid)', tag:'l'},
@@ -733,6 +745,10 @@ const SHOWER_DATA = {
 
 function buildShower(dayIdx) {
   return SHOWER_DATA[dayIdx];
+}
+
+function buildFinalShower(dayIdx) {
+  return FINAL_SHOWER_DATA[dayIdx];
 }
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
@@ -754,9 +770,11 @@ function key(day, sec, idx) { return `d${day}_${sec}_${idx}`; }
 
 function itemsOf(dayIdx) {
   const sh = buildShower(dayIdx);
+  const fs = buildFinalShower(dayIdx);
   return [
     { sec:'fresh',  items: FRESHEN_UP },
     { sec:'shower', items: sh },
+    { sec:'final',  items: fs },
   ];
 }
 
@@ -824,6 +842,7 @@ function renderDay(dayIdx) {
   const { done, total } = dayStats(dayIdx);
   const pct = total ? Math.round((done / total) * 100) : 0;
   const sh  = buildShower(dayIdx);
+  const fs  = buildFinalShower(dayIdx);
 
   let html = `
     <div class="prog-row">
@@ -848,6 +867,11 @@ function renderDay(dayIdx) {
     `<ul class="checklist">${buildChecklist(dayIdx,'shower', sh)}</ul>`
   );
 
+  // Card III – Final Shower
+  html += buildCard('final','III','Final Shower','',
+    `<ul class="checklist">${buildChecklist(dayIdx,'final', fs)}</ul>`
+  );
+
   // Footer
   html += `
     <div class="footer">
@@ -859,7 +883,7 @@ function renderDay(dayIdx) {
   document.getElementById('dayView').innerHTML = html;
 
   // Wire section subtitles
-  updateSubtitles(dayIdx, sh);
+  updateSubtitles(dayIdx, sh, fs);
 
   // ── Wire card toggles
   document.querySelectorAll('.card-head').forEach(hd => {
@@ -878,7 +902,7 @@ function renderDay(dayIdx) {
       state[k]  = !state[k];
       saveState(state);
       item.classList.toggle('done', !!state[k]);
-      refreshProgress(dayIdx, sh);
+      refreshProgress(dayIdx, sh, fs);
     });
   });
 
@@ -897,10 +921,11 @@ function renderDay(dayIdx) {
   qBody.classList.add('open');
 }
 
-function updateSubtitles(dayIdx, sh) {
+function updateSubtitles(dayIdx, sh, fs) {
   const sets = [
     { id:'fresh',  items: FRESHEN_UP, sec:'fresh'  },
     { id:'shower', items: sh,         sec:'shower' },
+    { id:'final',  items: fs,         sec:'final'  },
   ];
   sets.forEach(({id, items, sec}) => {
     const el = document.getElementById('sub_' + id);
@@ -910,14 +935,14 @@ function updateSubtitles(dayIdx, sh) {
   });
 }
 
-function refreshProgress(dayIdx, sh) {
+function refreshProgress(dayIdx, sh, fs) {
   const {done, total} = dayStats(dayIdx);
   const pct = total ? Math.round((done/total)*100) : 0;
   const fill = document.getElementById('progFill');
   const lbl  = document.getElementById('progLbl');
   if (fill) fill.style.width = pct + '%';
   if (lbl)  lbl.innerHTML  = `<b>${done}</b> of ${total} complete`;
-  updateSubtitles(dayIdx, sh);
+  updateSubtitles(dayIdx, sh, fs);
 }
 
 // ─── TABS ─────────────────────────────────────────────────────────────────────

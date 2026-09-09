@@ -849,6 +849,9 @@
       <div>
         <strong>Trade Thesis Invalidation Rule:</strong> When there is a change of bias from Long to Short or Short to Long for the confluences — <strong>reset your trade thesis and restart this checklist from Step 1.</strong>
         Also: Long thesis is INVALID if VWAP Bands direction changes to <em>down</em>. Short thesis is INVALID if VWAP Bands direction changes to <em>up</em>.
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,59,92,0.25);font-size:13.5px;">
+          <strong>To clarify:</strong> VWAP Bands direction means their <em>general direction during the whole trading session</em> — not just their current direction. You are actively looking for short-term pullbacks to enter.
+        </div>
       </div>
     </div>
 
@@ -856,6 +859,13 @@
       <div class="icon">🎯</div>
       <div>
         <strong>Stop Loss Tightening Caveat:</strong> Even though you should have preset TPs and max stop losses, you can decrease your max stop loss on particular trades to increase your Risk/Reward on those trades — especially when there is a clear Support/Resistance level that would clearly invalidate your trade thesis if crossed.
+      </div>
+    </div>
+
+    <div class="caveat-box" style="background:rgba(255,59,92,0.06);border-color:rgba(255,59,92,0.45);border-left-color:var(--red);">
+      <div class="icon">🛑</div>
+      <div>
+        <strong style="color:var(--red)">Anti-Revenge-Trading Rule:</strong> After taking a loss, <strong>delete the trading app for the remainder of the trading day.</strong> Reinstall only after the trading day is over. One trade a day means one trade — the loss is done, the day is done.
       </div>
     </div>
 
@@ -930,7 +940,8 @@
 
     <div class="reset-banner">
       <span style="font-size:20px">🔄</span>
-      <span><strong>Key Rule:</strong> When there is a change of bias from Long to Short or Short to Long for the confluences — stop, reset your trade thesis completely, and restart the trading protocol from Step 1.</span>
+      <span><strong>Key Rule:</strong> When there is a change of bias from Long to Short or Short to Long for the confluences — stop, reset your trade thesis completely, and restart the trading protocol from Step 1.
+      <br><br><strong>To clarify:</strong> VWAP Bands direction means their <em>general direction during the whole trading session</em> — not just their current direction. You are actively looking for short-term pullbacks to enter.</span>
     </div>
 
     <hr class="divider">
@@ -1212,7 +1223,6 @@ const CONFLUENCES = [
   { symbol: 'SPX', desc: 'S&P 500 Index', corrs: [{ label: 'Top Gainers', type: 'pos' }] },
   { symbol: 'ES', desc: 'S&P 500 Futures', corrs: [{ label: 'SPX', type: 'pos' }] },
   { symbol: 'NQ', desc: 'Nasdaq-100 Futures', corrs: [{ label: 'ES', type: 'pos' }] },
-  { symbol: 'YM', desc: 'Dow Jones Futures', corrs: [{ label: 'ES', type: 'pos' }] },
   { symbol: 'DXY', desc: 'US Dollar Index', corrs: [{ label: 'USDJPY', type: 'pos' }, { label: 'EUR/USD', type: 'inv' }, { label: 'GBP/USD', type: 'inv' }] },
   { symbol: 'ZN', desc: '10-Year T-Note Futures', corrs: [{ label: 'USDJPY', type: 'inv' }] },
   { symbol: 'USDJPY', desc: 'Dollar / Yen', corrs: [{ label: 'DXY', type: 'pos' }, { label: 'ZN', type: 'inv' }] },
@@ -1360,7 +1370,7 @@ const GLOSSARY = {
   'vwap': 'VWAP (Volume Weighted Average Price): The average price weighted by volume traded throughout the day. Acts as a "fair value" line — price above VWAP is bullish, below is bearish.',
   'smc': 'SMC (Smart Money Concepts): A trading framework based on how institutional traders (banks, hedge funds) move the market. Key levels are Order Blocks, Fair Value Gaps, and Break of Structure points.',
   'fibonacci': 'Fibonacci Retracement: A tool that draws horizontal lines at key % levels (23.6%, 38.2%, 50%, 61.8%) between two price points. These levels often act as support/resistance where price reverses.',
-  'confluence': 'Confluence: When multiple independent signals or indicators agree on the same direction. More confluences = higher probability trade. Example: Price above VWAP on ES, NQ, AND YM all at once.',
+  'confluence': 'Confluence: When multiple independent signals or indicators agree on the same direction. More confluences = higher probability trade. Example: Price above VWAP on SPX, ES, AND NQ all at once.',
   'aoi': 'Area of Interest (AOI): A rectangular price zone where you expect a trade setup to form — defined by a VWAP band and a Fibonacci level.',
   'tp': 'Take Profit (TP): Your predetermined exit price where you lock in gains. TP1 = conservative, TP2 = standard, TP3 = extended. Always set before entering a trade.',
   'trailing drawdown': 'Trailing Drawdown: Apex\'s risk rule where the max loss limit "trails" as your account balance grows. If your account peaks at $105,000, the max loss floor moves up with it.',

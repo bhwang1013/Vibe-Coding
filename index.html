@@ -882,6 +882,8 @@ const EXERCISES = [
   { cat:'Chest',     name:'Pause Close Width Pushups',                  muscle:'Triceps · Pecs',          icon:'💪' },
   { cat:'Chest',     name:'Close Width Pushups',                        muscle:'Triceps · Pecs',          icon:'💪' },
   { cat:'Chest',     name:'Normal Width Pushups',                       muscle:'Pecs · Triceps · Core',   icon:'💪' },
+  { cat:'Chest',     name:'Incline Dumbbell Bench Press',               muscle:'Upper Pecs',              icon:'🏋️' },
+  { cat:'Chest',     name:'Dumbbell Fly',                               muscle:'Pecs',                    icon:'🏋️' },
   // Shoulders
   { cat:'Shoulders', name:'Dumbbell Lateral Raise',                     muscle:'Side Deltoids',           icon:'🤸' },
   { cat:'Shoulders', name:'Dumbbell Isolation Lateral Raise',           muscle:'Side Deltoids',           icon:'🤸' },
@@ -902,6 +904,9 @@ const EXERCISES = [
   { cat:'Shoulders', name:'One Arm Cable Handle Rear Delt Fly',         muscle:'Rear Deltoids',           icon:'🔗' },
   { cat:'Shoulders', name:'Dumbbell Around-The-World Lateral Raise',    muscle:'All Deltoids',            icon:'🔄' },
   { cat:'Shoulders', name:'Cable Handle Rear Delt Raise',               muscle:'Rear Deltoids',           icon:'🔗' },
+  { cat:'Shoulders', name:'Dumbbell Neutral Grip Front Raise',          muscle:'Front Deltoids',          icon:'🤸' },
+  { cat:'Shoulders', name:'Dumbbell Pronated Grip Front Raise',         muscle:'Front Deltoids',          icon:'🤸' },
+  { cat:'Shoulders', name:'Dumbbell Rear Delt Fly',                     muscle:'Rear Deltoids',           icon:'🤸' },
   // Traps
   { cat:'Traps',     name:'Barbell Shrug',                              muscle:'Traps',                   icon:'🏋️' },
   // Triceps
@@ -925,6 +930,7 @@ const EXERCISES = [
   { cat:'Biceps',    name:'One Arm Dumbbell Hammer Curl',               muscle:'Biceps · Brachialis',     icon:'🔨' },
   { cat:'Biceps',    name:'Cable Bar Curl',                             muscle:'Biceps',                  icon:'🔗' },
   { cat:'Biceps',    name:'EZ-Bar Curl',                                muscle:'Biceps',                  icon:'💪' },
+  { cat:'Biceps',    name:'Dumbbell Bicep Curl',                        muscle:'Biceps',                  icon:'💪' },
   // Forearms
   { cat:'Forearms',  name:'One Arm Dumbbell Reverse Curl',              muscle:'Brachioradialis',         icon:'💪' },
   { cat:'Forearms',  name:'One Arm Dumbbell Seated Wrist Curl',         muscle:'Forearms',                icon:'💪' },
@@ -940,6 +946,8 @@ const EXERCISES = [
   { cat:'Legs',      name:'Dumbbell Romanian Deadlift',                 muscle:'Hamstrings · Glutes',     icon:'🏋️' },
   { cat:'Legs',      name:'Dumbbell Stiff-Legged Deadlift',             muscle:'Hamstrings · Glutes',     icon:'🏋️' },
   { cat:'Legs',      name:'Two Dumbbell Squat',                         muscle:'Quads · Glutes',          icon:'🏋️' },
+  { cat:'Legs',      name:'Dumbbell Squat',                             muscle:'Quads · Glutes',          icon:'🏋️' },
+  { cat:'Legs',      name:'Dumbbell Lunge',                             muscle:'Quads · Glutes',          icon:'🦵' },
   { cat:'Legs',      name:'Two Dumbbell Goblet Squat Normal Stance',    muscle:'Quads · Glutes',          icon:'🏋️' },
   { cat:'Legs',      name:'Two Dumbbell Goblet Squat Wide Stance',      muscle:'Glutes · Quads',          icon:'🏋️' },
   { cat:'Legs',      name:'Two Dumbbell Goblet Squat Close Stance',     muscle:'Quads',                   icon:'🏋️' },
@@ -1098,6 +1106,12 @@ const TEMPLATE_GROUPS = [
         { name:'Cable Handle Rear Delt Raise',         scheme:'4 Sets 12-20 Reps' },
         { name:'One Arm Tricep Cable Handle Pushdown', scheme:'50 Reps Total' },
       ]},
+      { name:'Shoulder Pump · Home', exercises:[
+        { name:'Dumbbell Neutral Grip Front Raise',  scheme:'4 Sets 12-20 Reps' },
+        { name:'Dumbbell Lateral Raise',             scheme:'4 Sets 12-20 Reps' },
+        { name:'Dumbbell Rear Delt Fly',             scheme:'4 Sets 12-20 Reps' },
+        { name:'Dumbbell Pronated Grip Front Raise', scheme:'4 Sets 12-20 Reps' },
+      ]},
     ]
   },
   {
@@ -1118,6 +1132,16 @@ const TEMPLATE_GROUPS = [
         { name:'One Arm Dumbbell Bicep Curl',      scheme:'3 Sets 4-8 Reps' },
         { name:'Dumbbell Lateral Raise',           scheme:'50 Reps Total' },
         { name:'Dumbbell Stiff-Legged Deadlift',   scheme:'4 Sets 12-20 Reps, 1 Set Finisher' },
+      ]},
+      { name:'Full Body Pump · Home', exercises:[
+        { name:'Seated Dumbbell Lateral Raise',  scheme:'3 Sets 4-8 Reps' },
+        { name:'Dumbbell Fly',                   scheme:'3 Sets 4-8 Reps' },
+        { name:'Dumbbell Lunge',                 scheme:'3 Sets 4-8 Reps' },
+        { name:'Dumbbell Bicep Curl',            scheme:'3 Sets 4-8 Reps' },
+        { name:'One Arm Dumbbell Row',           scheme:'3 Sets 4-8 Reps' },
+        { name:'Incline Dumbbell Bench Press',   scheme:'3 Sets 4-8 Reps' },
+        { name:'Dumbbell Calf Raise',            scheme:'3 Sets 4-8 Reps' },
+        { name:'Dumbbell Squat',                 scheme:'3 Sets 4-8 Reps' },
       ]},
     ]
   },

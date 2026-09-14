@@ -848,7 +848,7 @@
       <div class="icon">⚠️</div>
       <div>
         <strong>Trade Thesis Invalidation Rule:</strong> When there is a change of bias from Long to Short or Short to Long for the confluences — <strong>reset your trade thesis and restart this checklist from Step 1.</strong>
-        Also: Long thesis is INVALID if VWAP Bands direction changes to <em>down</em>. Short thesis is INVALID if VWAP Bands direction changes to <em>up</em>.
+        Also: Long thesis is INVALID if VWAP Bands direction is <em>more than a pullback</em> and actually changes to <em>down</em>. Short thesis is INVALID if VWAP Bands direction is <em>more than a pullback</em> and actually changes to <em>up</em>.
         <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,59,92,0.25);font-size:13.5px;">
           <strong>To clarify:</strong> VWAP Bands direction means their <em>general direction during the whole trading session</em> — not just their current direction. You are actively looking for short-term pullbacks to enter.
         </div>
@@ -1043,13 +1043,13 @@ const SESSION_START_H = 7, SESSION_END_H = 9; // PT hours
 const PREP_STEPS = [
   {
     platform: 'TradingView + ThinkOrSwim',
-    text: 'Clear unnecessary drawings from charts',
-    detail: 'Check the Economic Calendar for news events. Determine confluence VWAP Bands direction and predicted behavior. Which way are the VWAP Bands pointing?'
+    text: 'Check Economic Calendar and determine VWAP Bands direction',
+    detail: 'Check the Economic Calendar for news events. Determine VWAP Bands direction and predicted behavior. Which way are the VWAP Bands pointing?'
   },
   {
     platform: 'TradingView — 5-Minute Chart',
-    text: 'Determine your setup based on confluences',
-    detail: 'Identify 2 major SMC (Smart Money Concept) levels based on determined confluences VWAP Bands direction and predicted behavior. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
+    text: 'Use 2 major SMC levels to draw Fibonacci Retracement',
+    detail: 'Identify 2 major SMC (Smart Money Concept) levels. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
   },
   {
     platform: 'TradingView — 5-Minute Chart',
@@ -1174,8 +1174,8 @@ function buildFlowchart(cfg) {
   const titleClass = isLong ? 'long' : 'short';
   const entryClass = isLong ? 'entry-long' : 'entry-short';
   const invalidMsg = isLong
-    ? '🚫 INVALID if VWAP Bands direction changes to DOWN'
-    : '🚫 INVALID if VWAP Bands direction changes to UP';
+    ? '🚫 INVALID if VWAP Bands direction is more than a pullback and actually changes to DOWN'
+    : '🚫 INVALID if VWAP Bands direction is more than a pullback and actually changes to UP';
 
   return `<div class="flowchart">
     <div class="flowchart-title ${titleClass}">${isLong ? '📈 LONG Setup' : '📉 SHORT Setup'} (VWAP Bands Direction ${isLong ? '↑ Up' : '↓ Down'})</div>
@@ -1191,7 +1191,7 @@ function buildFlowchart(cfg) {
 }
 
 const longSteps = [
-  { label: '✅ Confluences VWAP Bands Direction UP + trendline break down→up', cls: 'trigger' },
+  { label: '✅ VWAP Bands Direction UP', cls: 'trigger' },
   { label: '🔍 Choose setup with VWAP/price behavior most similar to confluences', cls: '' },
   { label: '📉 Pullback Down toward VWAP / AOI', cls: '' },
   { label: '⏸ Brief Consolidation (base forms)', cls: '' },
@@ -1202,7 +1202,7 @@ const longSteps = [
 ];
 
 const shortSteps = [
-  { label: '✅ Confluences VWAP Bands Direction DOWN + trendline break up→down', cls: 'trigger' },
+  { label: '✅ VWAP Bands Direction DOWN', cls: 'trigger' },
   { label: '🔍 Choose setup with VWAP/price behavior most similar to confluences', cls: '' },
   { label: '📈 Pullback Up toward VWAP / AOI', cls: '' },
   { label: '⏸ Brief Consolidation (base forms)', cls: '' },

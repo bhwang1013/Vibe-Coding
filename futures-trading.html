@@ -840,7 +840,7 @@
   <!-- ════════════════════════════ PROTOCOL ════════════════════════════ -->
   <section class="tab-section active" id="tab-protocol">
     <div class="section-header">
-      <div class="section-title">Trading Protocol Checklist</div>
+      <div class="section-title">Simplified Trading Protocol</div>
       <div class="section-desc">Work through every step before each trade. Tap a step to mark it complete. Session window: <strong>7–9 AM PT</strong> (NY open).</div>
     </div>
 
@@ -876,7 +876,7 @@
         <div id="prep-count" style="font-size:13px;color:var(--muted)"></div>
       </div>
       <div class="progress-label">
-        <span>Steps 1–5</span>
+        <span>Steps 1–3</span>
         <span id="prep-pct">0%</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="prep-bar" style="width:0%"></div></div>
@@ -890,7 +890,7 @@
         <div id="plan-count" style="font-size:13px;color:var(--muted)"></div>
       </div>
       <div class="progress-label">
-        <span>Steps 6–10</span>
+        <span>Steps 4–6</span>
         <span id="plan-pct">0%</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="plan-bar" style="width:0%"></div></div>
@@ -1042,64 +1042,44 @@ const SESSION_START_H = 7, SESSION_END_H = 9; // PT hours
 // ─────────────────────────────────────────────
 const PREP_STEPS = [
   {
-    platform: 'TradingView + ThinkOrSwim',
-    text: 'Check Economic Calendar and determine VWAP Bands direction',
-    detail: 'Check the Economic Calendar for news events. Determine VWAP Bands direction and predicted behavior. Which way are the VWAP Bands pointing?'
+    platform: "TradingView — 5-Minute Chart",
+    text: "Mark up Trendline Break Strategy for potential trades",
+    detail: "Look for price overextended past the VWAP Bands. That stretch away from the bands is what sets up the break."
   },
   {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Use 2 major SMC levels to draw Fibonacci Retracement',
-    detail: 'Identify 2 major SMC (Smart Money Concept) levels. Use those 2 levels to draw a Fibonacci Retracement — these become your key price zones.'
+    platform: "TradingView — 5-Minute Chart",
+    text: "Mark up Fibonacci Retracement Strategy for potential trades",
+    detail: "Look for price pulling back to a VWAP Band. That pullback into the band is where the retracement setup plays out."
   },
   {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Draw the Potential Area of Interest (AOI) box',
-    detail: 'Use the 0.5 to 0.618 Fibonacci levels to define the top/bottom of a rectangle. This rectangle is your Potential Area of Interest — where you expect a trade setup to form.'
-  },
-  {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Draw Risk/Reward prediction using Potential AOI and/or near specific VWAP band for potential Long/Short trades',
-    detail: 'Using the Potential AOI and/or near a specific VWAP band, draw projected R/R lines for a potential Long/Short trade.'
-  },
-  {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Set 1 alert for price nearing Potential AOI and/or near specific VWAP band — then wait for price to actually enter AOI and/or near VWAP band',
-    detail: 'One alert only. Set it for price nearing your Potential AOI and/or near a specific VWAP band. Then wait patiently for price to actually enter that zone before doing anything.'
+    platform: "TradingView — 5-Minute Chart",
+    text: "Set price alert near ideal entry area and patiently wait",
+    detail: "One alert, placed near your ideal entry area. Then wait. Do NOT sit and stare at the chart."
   }
 ];
 
 const PLAN_STEPS = [
   {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Price entered Potential AOI and/or near specific VWAP band — validate trade thesis with candlesticks + volume',
-    detail: 'Look for reversal or continuation candle patterns (engulfing, pin bar, inside bar). Check if volume confirms the move. Is your original thesis still valid?'
+    platform: "TradingView — 5-Minute Chart",
+    text: "Wait for confirmed Trendline Break OR Fibonacci level rejection using candlestick price action",
+    detail: "Either a confirmed break of your trendline, or a clear rejection off a Fibonacci level. Read the candles — wait for confirmation, not anticipation."
   },
   {
-    platform: 'TradingView — 5-Min, 1-Hour & 1-Min Charts',
-    text: 'Check confluence charts candlestick patterns in various timeframes',
-    detail: 'Confirm the confluences have not changed bias. All timeframes should agree. If they disagree, do NOT enter the trade.'
+    platform: "Trading Platform",
+    text: "Enter trade with preset stop loss and take profit — and actually set the stop",
+    detail: "Decide your stop loss and take profit before you enter, then actually place the stop order. Set price alerts near important potential exit levels."
   },
   {
-    platform: 'Trading Platform (Apex/ThinkOrSwim)',
-    text: 'Enter trade — lowest chance of stop out, highest chance of reaching near a VWAP band hitting your TP',
-    detail: 'Set your Stop Loss immediately after entry. Choose the entry with the least risk of being stopped out and the best path toward your TP near a VWAP band.'
-  },
-  {
-    platform: 'TradingView — 5-Minute Chart',
-    text: 'Update R/R to reflect exact entry. Set 3 alerts + 2 horizontal rays',
-    detail: 'Delete the AOI entry alert. Set: Alert 1 = < halfway to max loss | Alert 2 = slightly above break even | Alert 3 = slightly below TP2. Ray 1 = ideal small loss. Ray 2 = current actual goal TP.'
-  },
-  {
-    platform: 'Trading Platforms + TradingView 5-Minute Chart',
-    text: 'Exit at TP1 / TP2 / TP3 / 1.5×TP3 / Break Even / Auto Max Loss. Delete all alerts.',
-    detail: 'Stick to your plan. TP1 = conservative, TP2 = standard, TP3/1.5×TP3 = extended move. If momentum dies or thesis is invalidated — exit near break even. Delete every alert when the trade is closed.'
+    platform: "Trading Platform",
+    text: "Exit based on what price action is telling you — not your profit/loss. Delete all alerts. Stop trading for the day.",
+    detail: "Let price action decide the exit, never your P&L. Delete every alert when the trade is closed. Then stop trading for the day — win or lose."
   }
 ];
 
 // ─────────────────────────────────────────────
 // Render checklists
 // ─────────────────────────────────────────────
-const STORAGE_KEY = 'ftc_v1_checklist';
+const STORAGE_KEY = 'ftc_v2_checklist';
 
 function loadChecked() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -1139,14 +1119,14 @@ function toggleItem(key) {
   checked[key] = !checked[key];
   saveChecked(checked);
   renderList('prep-checklist', PREP_STEPS, 1);
-  renderList('plan-checklist', PLAN_STEPS, 6);
+  renderList('plan-checklist', PLAN_STEPS, 4);
 }
 
 function updateProgress() {
   const prepTotal = PREP_STEPS.length;
   const planTotal = PLAN_STEPS.length;
   const prepDone = PREP_STEPS.filter((_, i) => checked[`step_${i + 1}`]).length;
-  const planDone = PLAN_STEPS.filter((_, i) => checked[`step_${i + 6}`]).length;
+  const planDone = PLAN_STEPS.filter((_, i) => checked[`step_${i + 4}`]).length;
 
   const pPct = Math.round((prepDone / prepTotal) * 100);
   const plPct = Math.round((planDone / planTotal) * 100);
@@ -1163,7 +1143,7 @@ function resetChecklist() {
   checked = {};
   saveChecked(checked);
   renderList('prep-checklist', PREP_STEPS, 1);
-  renderList('plan-checklist', PLAN_STEPS, 6);
+  renderList('plan-checklist', PLAN_STEPS, 4);
 }
 
 // ─────────────────────────────────────────────
@@ -1407,7 +1387,7 @@ document.body.addEventListener('mouseout', e => {
 // Initial render
 // ─────────────────────────────────────────────
 renderList('prep-checklist', PREP_STEPS, 1);
-renderList('plan-checklist', PLAN_STEPS, 6);
+renderList('plan-checklist', PLAN_STEPS, 4);
 </script>
 </body>
 </html>

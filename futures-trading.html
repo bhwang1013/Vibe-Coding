@@ -829,8 +829,6 @@
 <!-- ─── Navigation ─── -->
 <nav id="nav">
   <button class="tab-btn active" data-tab="protocol"><span class="tab-emoji">✅</span>Protocol</button>
-  <button class="tab-btn" data-tab="setup"><span class="tab-emoji">📊</span>Setup</button>
-  <button class="tab-btn" data-tab="confluences"><span class="tab-emoji">🔗</span>Confluences</button>
   <button class="tab-btn" data-tab="account"><span class="tab-emoji">💼</span>Account</button>
 </nav>
 
@@ -899,65 +897,6 @@
 
     <div class="checklist-controls">
       <button class="btn btn-primary" onclick="resetChecklist()">↺ Reset All Steps</button>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════ SETUP ════════════════════════════ -->
-  <section class="tab-section" id="tab-setup">
-    <div class="section-header">
-      <div class="section-title">Primary Trade Setups</div>
-      <div class="section-desc">Your setup is based on <span class="tooltip-trigger" data-term="vwap">VWAP Bands</span> direction. Read the correct flowchart before entering any trade.</div>
-    </div>
-
-    <div class="trades-bar">
-      <div class="trade-card">
-        <div class="trade-type">Day Trading</div>
-        <div class="trade-instrument" style="color:var(--green)">Top Gainer</div>
-        <div class="trade-detail">2nd Most Volatile · Long Only · Full Position · Target: TP2</div>
-      </div>
-      <div class="trade-card">
-        <div class="trade-type">Futures Trading</div>
-        <div class="trade-instrument" style="color:var(--blue)">ES</div>
-        <div class="trade-detail">Long or Short · Target: TP1</div>
-      </div>
-      <div class="trade-card">
-        <div class="trade-type">Forex Trading</div>
-        <div class="trade-instrument" style="color:var(--yellow)">USDJPY</div>
-        <div class="trade-detail">Long or Short · Target: TP2</div>
-      </div>
-    </div>
-
-    <div class="setup-grid" id="setup-grid"></div>
-
-  </section>
-
-  <!-- ════════════════════════════ CONFLUENCES ════════════════════════════ -->
-  <section class="tab-section" id="tab-confluences">
-    <div class="section-header">
-      <div class="section-title">Confluence Charts</div>
-      <div class="section-desc">Check all of these instruments before every trade. <span class="tooltip-trigger" data-term="confluence">Confluences</span> confirm whether the market is trending up or down.</div>
-    </div>
-
-    <div class="reset-banner">
-      <span style="font-size:20px">🔄</span>
-      <span><strong>Key Rule:</strong> When there is a change of bias from Long to Short or Short to Long for the confluences — stop, reset your trade thesis completely, and restart the trading protocol from Step 1.
-      <br><br><strong>To clarify:</strong> VWAP Bands direction means their <em>general direction during the whole trading session</em> — not just their current direction. You are actively looking for short-term pullbacks to enter.</span>
-    </div>
-
-    <hr class="divider">
-
-    <div class="card-title" style="margin-bottom:14px"><span>📡</span> Instrument Correlations</div>
-    <div class="conf-grid" id="conf-grid"></div>
-
-    <div class="card" style="margin-top:4px">
-      <div class="card-title"><span>🔍</span> How to Read Confluences</div>
-      <div style="font-size:14px;line-height:1.8;color:var(--muted)">
-        <p>1. Open each confluence instrument on TradingView before trading.</p>
-        <p>2. Check if price is <strong style="color:var(--green)">above VWAP</strong> (bullish) or <strong style="color:var(--red)">below VWAP</strong> (bearish).</p>
-        <p>3. If <strong>most confluences are bullish</strong> → look for a <span class="tag tag-green">LONG</span> setup on your primary instrument.</p>
-        <p>4. If <strong>most confluences are bearish</strong> → look for a <span class="tag tag-red">SHORT</span> setup on your primary instrument.</p>
-        <p>5. Mixed signals = <strong style="color:var(--yellow)">no trade</strong>. Patience is a position.</p>
-      </div>
     </div>
   </section>
 
@@ -1145,86 +1084,6 @@ function resetChecklist() {
   renderList('prep-checklist', PREP_STEPS, 1);
   renderList('plan-checklist', PLAN_STEPS, 4);
 }
-
-// ─────────────────────────────────────────────
-// Setup flowcharts
-// ─────────────────────────────────────────────
-function buildFlowchart(cfg) {
-  const isLong = cfg.direction === 'long';
-  const titleClass = isLong ? 'long' : 'short';
-  const entryClass = isLong ? 'entry-long' : 'entry-short';
-  const invalidMsg = isLong
-    ? '🚫 INVALID if VWAP Bands direction is more than a pullback and actually changes to DOWN'
-    : '🚫 INVALID if VWAP Bands direction is more than a pullback and actually changes to UP';
-
-  return `<div class="flowchart">
-    <div class="flowchart-title ${titleClass}">${isLong ? '📈 LONG Setup' : '📉 SHORT Setup'} (VWAP Bands Direction ${isLong ? '↑ Up' : '↓ Down'})</div>
-    ${cfg.steps.map((s, i) => `
-      <div class="flow-step">
-        <div class="flow-box ${s.cls}">${s.label}</div>
-        ${i < cfg.steps.length - 1 ? '<div class="flow-arrow">↓</div>' : ''}
-      </div>`).join('')}
-    <div style="margin-top:12px">
-      <div class="flow-box invalid">${invalidMsg}</div>
-    </div>
-  </div>`;
-}
-
-const longSteps = [
-  { label: '✅ VWAP Bands Direction UP', cls: 'trigger' },
-  { label: '🔍 Choose setup with VWAP/price behavior most similar to confluences', cls: '' },
-  { label: '📉 Pullback Down toward VWAP / AOI', cls: '' },
-  { label: '⏸ Brief Consolidation (base forms)', cls: '' },
-  { label: '🟢 ENTER LONG — Confirmation candle', cls: 'entry-long' },
-  { label: '📈 Continuation Up', cls: '' },
-  { label: '🔥 Overextended Continuation Up', cls: '' },
-  { label: '🎯 EXIT at TP1 / TP2 / TP3', cls: 'exit' },
-];
-
-const shortSteps = [
-  { label: '✅ VWAP Bands Direction DOWN', cls: 'trigger' },
-  { label: '🔍 Choose setup with VWAP/price behavior most similar to confluences', cls: '' },
-  { label: '📈 Pullback Up toward VWAP / AOI', cls: '' },
-  { label: '⏸ Brief Consolidation (base forms)', cls: '' },
-  { label: '🔴 ENTER SHORT — Confirmation candle', cls: 'entry-short' },
-  { label: '📉 Continuation Down', cls: '' },
-  { label: '🔥 Overextended Continuation Down', cls: '' },
-  { label: '🎯 EXIT at TP1 / TP2 / TP3', cls: 'exit' },
-];
-
-document.getElementById('setup-grid').innerHTML =
-  buildFlowchart({ direction: 'long', steps: longSteps }) +
-  buildFlowchart({ direction: 'short', steps: shortSteps });
-
-// ─────────────────────────────────────────────
-// Confluences
-// ─────────────────────────────────────────────
-const CONFLUENCES = [
-  { symbol: 'SPX', desc: 'S&P 500 Index', corrs: [{ label: 'Top Gainers', type: 'pos' }] },
-  { symbol: 'ES', desc: 'S&P 500 Futures', corrs: [{ label: 'SPX', type: 'pos' }] },
-  { symbol: 'NQ', desc: 'Nasdaq-100 Futures', corrs: [{ label: 'ES', type: 'pos' }] },
-  { symbol: 'DXY', desc: 'US Dollar Index', corrs: [{ label: 'USDJPY', type: 'pos' }, { label: 'EUR/USD', type: 'inv' }, { label: 'GBP/USD', type: 'inv' }] },
-  { symbol: 'ZN', desc: '10-Year T-Note Futures', corrs: [{ label: 'USDJPY', type: 'inv' }] },
-  { symbol: 'USDJPY', desc: 'Dollar / Yen', corrs: [{ label: 'DXY', type: 'pos' }, { label: 'ZN', type: 'inv' }] },
-  { symbol: '6E', desc: 'Euro Futures', corrs: [{ label: 'EUR/USD', type: 'pos' }] },
-  { symbol: 'EURUSD', desc: 'Euro / Dollar', corrs: [{ label: 'DXY', type: 'inv' }, { label: '6E', type: 'pos' }] },
-  { symbol: 'GBPUSD', desc: 'Pound / Dollar', corrs: [{ label: 'DXY', type: 'inv' }, { label: '6E', type: 'pos' }] },
-];
-
-const confGrid = document.getElementById('conf-grid');
-CONFLUENCES.forEach(c => {
-  const corrHTML = c.corrs.map(r =>
-    r.type === 'pos'
-      ? `<span class="corr-pos">↑ ${r.label} (positive)</span>`
-      : `<span class="corr-inv">↓ ${r.label} (inverse)</span>`
-  ).join('<br>');
-  confGrid.innerHTML += `
-    <div class="conf-card">
-      <div class="conf-symbol">${c.symbol}</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${c.desc}</div>
-      <div class="conf-corr">${corrHTML}</div>
-    </div>`;
-});
 
 // ─────────────────────────────────────────────
 // Account — Payout table
